@@ -76,16 +76,6 @@
             box-shadow: 0 0 0 3px rgba(102, 126, 234, 0.1);
         }
 
-        .form-group input[type="number"] {
-            -moz-appearance: textfield;
-        }
-
-        .form-group input[type="number"]::-webkit-outer-spin-button,
-        .form-group input[type="number"]::-webkit-inner-spin-button {
-            -webkit-appearance: none;
-            margin: 0;
-        }
-
         .grid-2 {
             display: grid;
             grid-template-columns: 1fr 1fr;
@@ -94,15 +84,6 @@
 
         .grid-2 .form-group {
             margin-bottom: 0;
-        }
-
-        .grid-2 .form-group label {
-            font-size: 12px;
-        }
-
-        .grid-2 .form-group input {
-            padding: 10px;
-            font-size: 14px;
         }
 
         .divider {
@@ -149,10 +130,6 @@
             box-shadow: 0 5px 20px rgba(102, 126, 234, 0.4);
         }
 
-        .btn-submit:active {
-            transform: translateY(0);
-        }
-
         .btn-reset {
             background: #f0f0f0;
             color: #333;
@@ -194,20 +171,6 @@
             color: #1565c0;
             margin-bottom: 20px;
         }
-
-        @media (max-width: 600px) {
-            .container {
-                padding: 20px;
-            }
-
-            .header h1 {
-                font-size: 24px;
-            }
-
-            .grid-2 {
-                grid-template-columns: 1fr;
-            }
-        }
     </style>
 </head>
 <body>
@@ -222,7 +185,6 @@
         </div>
 
         <form id="reportForm">
-            <!-- Hora -->
             <div class="form-group">
                 <label for="hora">🕐 Selecciona Hora *</label>
                 <select id="hora" name="hora" required>
@@ -242,7 +204,6 @@
 
             <div class="divider"></div>
 
-            <!-- Entrada -->
             <div class="section-title">📍 Entrada</div>
             <div class="grid-2">
                 <div class="form-group">
@@ -255,7 +216,6 @@
                 </div>
             </div>
 
-            <!-- Salida -->
             <div class="section-title" style="margin-top: 20px;">🚗 Salida</div>
             <div class="grid-2">
                 <div class="form-group">
@@ -268,9 +228,8 @@
                 </div>
             </div>
 
-            <!-- Total/Ocupación -->
             <div class="divider"></div>
-            <div class="section-title">📊 Ocupación (al final de la hora)</div>
+            <div class="section-title">📊 Ocupación</div>
             <div class="grid-2">
                 <div class="form-group">
                     <label for="totalCarros">Total Carros *</label>
@@ -282,13 +241,11 @@
                 </div>
             </div>
 
-            <!-- Botones -->
             <div class="button-group">
                 <button type="submit" class="btn btn-submit">✅ Enviar Reporte</button>
                 <button type="reset" class="btn btn-reset">↻ Limpiar</button>
             </div>
 
-            <!-- Status -->
             <div id="status" class="status"></div>
         </form>
     </div>
@@ -296,51 +253,47 @@
     <script>
         const form = document.getElementById('reportForm');
         const statusDiv = document.getElementById('status');
-
-        // Web App URL de Google Apps Script
-        const GOOGLE_SCRIPT_URL = 'https://script.google.com/macros/s/AKfycbyIH-OkTmakPfMmG9gnrRLFn80i1ZbW5l_lhXzUDceY_mERxtpRgqW-HiXnLBGoC1p/usercontent';
+        const APPS_SCRIPT_URL = 'https://script.google.com/macros/s/AKfycby8rF8StaDJkyrkQ-9MtJPNS6AQugCYv0n67LmtykCgMoD4kSp9MtnRFmxcS2KUX5s/exec';
 
         form.addEventListener('submit', async (e) => {
             e.preventDefault();
 
-            // Validar que todos los campos estén completos
             if (!form.checkValidity()) {
                 showStatus('Por favor completa todos los campos', 'error');
                 return;
             }
 
-            // Recopilar datos
             const formData = {
                 timestamp: new Date().toLocaleString('es-GT'),
                 hora: document.getElementById('hora').value,
-                entradaCarros: document.getElementById('entradaCarros').value,
-                entradaMotos: document.getElementById('entradaMotos').value,
-                salidaCarros: document.getElementById('salidaCarros').value,
-                salidaMotos: document.getElementById('salidaMotos').value,
-                totalCarros: document.getElementById('totalCarros').value,
-                totalMotos: document.getElementById('totalMotos').value,
+                entradaCarros: parseInt(document.getElementById('entradaCarros').value),
+                entradaMotos: parseInt(document.getElementById('entradaMotos').value),
+                salidaCarros: parseInt(document.getElementById('salidaCarros').value),
+                salidaMotos: parseInt(document.getElementById('salidaMotos').value),
+                totalCarros: parseInt(document.getElementById('totalCarros').value),
+                totalMotos: parseInt(document.getElementById('totalMotos').value),
             };
 
             try {
-                // Envía datos a Google Apps Script
-                const response = await fetch(GOOGLE_SCRIPT_URL, {
+                const response = await fetch(APPS_SCRIPT_URL, {
                     method: 'POST',
-                    mode: 'no-cors',
                     body: JSON.stringify(formData)
                 });
 
-                console.log('Datos enviados:', formData);
-                showStatus('✅ Reporte enviado correctamente a las ' + formData.hora, 'success');
-                form.reset();
-
-                // Limpiar status después de 5 segundos
-                setTimeout(() => {
-                    statusDiv.style.display = 'none';
-                }, 5000);
+                const result = await response.json();
+                
+                if (result.status === 'success') {
+                    showStatus('✅ Reporte enviado correctamente', 'success');
+                    form.reset();
+                    setTimeout(() => {
+                        statusDiv.style.display = 'none';
+                    }, 3000);
+                } else {
+                    showStatus('❌ Error: ' + result.message, 'error');
+                }
 
             } catch (error) {
-                console.error('Error:', error);
-                showStatus('❌ Error al enviar. Intenta de nuevo.', 'error');
+                showStatus('❌ Error al enviar: ' + error.message, 'error');
             }
         });
 

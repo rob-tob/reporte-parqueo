@@ -125,9 +125,14 @@
             color: white;
         }
 
-        .btn-submit:hover {
+        .btn-submit:hover:not(:disabled) {
             transform: translateY(-2px);
             box-shadow: 0 5px 20px rgba(102, 126, 234, 0.4);
+        }
+
+        .btn-submit:disabled {
+            opacity: 0.6;
+            cursor: not-allowed;
         }
 
         .btn-reset {
@@ -135,8 +140,13 @@
             color: #333;
         }
 
-        .btn-reset:hover {
+        .btn-reset:hover:not(:disabled) {
             background: #e0e0e0;
+        }
+
+        .btn-reset:disabled {
+            opacity: 0.6;
+            cursor: not-allowed;
         }
 
         .status {
@@ -162,6 +172,13 @@
             display: block;
         }
 
+        .status.loading {
+            background: #cfe2ff;
+            color: #0c5de4;
+            border: 1px solid #b6d4fe;
+            display: block;
+        }
+
         .info-box {
             background: #e3f2fd;
             border-left: 4px solid #2196F3;
@@ -170,6 +187,22 @@
             font-size: 12px;
             color: #1565c0;
             margin-bottom: 20px;
+        }
+
+        .spinner {
+            display: inline-block;
+            width: 14px;
+            height: 14px;
+            border: 2px solid rgba(12, 93, 228, 0.3);
+            border-radius: 50%;
+            border-top-color: #0c5de4;
+            animation: spin 0.8s linear infinite;
+            margin-right: 8px;
+            vertical-align: middle;
+        }
+
+        @keyframes spin {
+            to { transform: rotate(360deg); }
         }
     </style>
 </head>
@@ -242,8 +275,8 @@
             </div>
 
             <div class="button-group">
-                <button type="submit" class="btn btn-submit">✅ Enviar Reporte</button>
-                <button type="reset" class="btn btn-reset">↻ Limpiar</button>
+                <button type="submit" id="submitBtn" class="btn btn-submit">✅ Enviar Reporte</button>
+                <button type="reset" id="resetBtn" class="btn btn-reset">↻ Limpiar</button>
             </div>
 
             <div id="status" class="status"></div>
@@ -253,15 +286,26 @@
     <script>
         const form = document.getElementById('reportForm');
         const statusDiv = document.getElementById('status');
+        const submitBtn = document.getElementById('submitBtn');
+        const resetBtn = document.getElementById('resetBtn');
         const APPS_SCRIPT_URL = 'https://script.google.com/macros/s/AKfycby8rF8StaDJkyrkQ-9MtJPNS6AQugCYv0n67LmtykCgMoD4kSp9MtnRFmxcS2KUX5s/exec';
+
+        let isSubmitting = false;
 
         form.addEventListener('submit', async (e) => {
             e.preventDefault();
+
+            if (isSubmitting) return;
 
             if (!form.checkValidity()) {
                 showStatus('Por favor completa todos los campos', 'error');
                 return;
             }
+
+            isSubmitting = true;
+            submitBtn.disabled = true;
+            resetBtn.disabled = true;
+            showStatus('<span class="spinner"></span>Enviando...', 'loading');
 
             const formData = {
                 timestamp: new Date().toLocaleString('es-GT'),
@@ -294,11 +338,15 @@
 
             } catch (error) {
                 showStatus('❌ Error al enviar: ' + error.message, 'error');
+            } finally {
+                isSubmitting = false;
+                submitBtn.disabled = false;
+                resetBtn.disabled = false;
             }
         });
 
         function showStatus(message, type) {
-            statusDiv.textContent = message;
+            statusDiv.innerHTML = message;
             statusDiv.className = 'status ' + type;
         }
     </script>

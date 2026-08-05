@@ -219,6 +219,11 @@
 
         <form id="reportForm">
             <div class="form-group">
+                <label for="fecha">📅 Fecha del Reporte *</label>
+                <input type="date" id="fecha" name="fecha" required>
+            </div>
+
+            <div class="form-group">
                 <label for="hora">🕐 Selecciona Hora *</label>
                 <select id="hora" name="hora" required>
                     <option value="">-- Elige una hora --</option>
@@ -288,9 +293,22 @@
         const statusDiv = document.getElementById('status');
         const submitBtn = document.getElementById('submitBtn');
         const resetBtn = document.getElementById('resetBtn');
+        const fechaInput = document.getElementById('fecha');
         const APPS_SCRIPT_URL = 'https://script.google.com/macros/s/AKfycby8rF8StaDJkyrkQ-9MtJPNS6AQugCYv0n67LmtykCgMoD4kSp9MtnRFmxcS2KUX5s/exec';
 
         let isSubmitting = false;
+
+        // Establecer fecha de hoy por defecto
+        function setTodayDate() {
+            const today = new Date();
+            const year = today.getFullYear();
+            const month = String(today.getMonth() + 1).padStart(2, '0');
+            const day = String(today.getDate()).padStart(2, '0');
+            fechaInput.value = `${year}-${month}-${day}`;
+        }
+
+        // Llamar al cargar la página
+        setTodayDate();
 
         form.addEventListener('submit', async (e) => {
             e.preventDefault();
@@ -308,6 +326,7 @@
             showStatus('<span class="spinner"></span>Enviando...', 'loading');
 
             const formData = {
+                fecha: document.getElementById('fecha').value,
                 timestamp: new Date().toLocaleString('es-GT'),
                 hora: document.getElementById('hora').value,
                 entradaCarros: parseInt(document.getElementById('entradaCarros').value),
@@ -329,6 +348,7 @@
                 if (result.status === 'success') {
                     showStatus('✅ Reporte enviado correctamente', 'success');
                     form.reset();
+                    setTodayDate();
                     setTimeout(() => {
                         statusDiv.style.display = 'none';
                     }, 3000);

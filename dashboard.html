@@ -1,0 +1,1095 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+  <title>Dashboard de Parqueo</title>
+
+  <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.7/dist/chart.umd.min.js"></script>
+
+  <style>
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+    }
+
+    :root {
+      --primary: #667eea;
+      --secondary: #764ba2;
+      --background: #f5f7fb;
+      --surface: #ffffff;
+      --text: #222b3a;
+      --muted: #718096;
+      --border: #e2e8f0;
+      --success: #18864b;
+      --danger: #d64545;
+      --warning: #d68a00;
+      --shadow: 0 8px 24px rgba(31, 45, 61, 0.08);
+    }
+
+    body {
+      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto,
+        Arial, sans-serif;
+      background: var(--background);
+      color: var(--text);
+      min-height: 100vh;
+    }
+
+    .topbar {
+      background: linear-gradient(
+        135deg,
+        var(--primary) 0%,
+        var(--secondary) 100%
+      );
+      color: white;
+      padding: 22px 24px;
+    }
+
+    .topbar-content {
+      max-width: 1400px;
+      margin: 0 auto;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 20px;
+    }
+
+    .topbar h1 {
+      font-size: 25px;
+      margin-bottom: 4px;
+    }
+
+    .topbar p {
+      font-size: 13px;
+      opacity: 0.85;
+    }
+
+    .topbar-actions {
+      display: flex;
+      gap: 10px;
+      flex-wrap: wrap;
+    }
+
+    .topbar-button {
+      border: 1px solid rgba(255, 255, 255, 0.35);
+      background: rgba(255, 255, 255, 0.13);
+      color: white;
+      padding: 10px 14px;
+      border-radius: 9px;
+      text-decoration: none;
+      font-size: 13px;
+      font-weight: 600;
+      cursor: pointer;
+      transition: 0.2s;
+    }
+
+    .topbar-button:hover {
+      background: rgba(255, 255, 255, 0.22);
+    }
+
+    .dashboard {
+      max-width: 1400px;
+      margin: 0 auto;
+      padding: 24px;
+    }
+
+    .status-bar {
+      background: var(--surface);
+      border-radius: 12px;
+      box-shadow: var(--shadow);
+      padding: 16px 18px;
+      margin-bottom: 20px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      gap: 15px;
+      flex-wrap: wrap;
+    }
+
+    .status-left {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+    }
+
+    .status-indicator {
+      width: 10px;
+      height: 10px;
+      border-radius: 50%;
+      background: var(--success);
+    }
+
+    .status-indicator.loading {
+      background: var(--warning);
+      animation: pulse 1s infinite;
+    }
+
+    .status-indicator.error {
+      background: var(--danger);
+    }
+
+    @keyframes pulse {
+      50% {
+        opacity: 0.35;
+      }
+    }
+
+    .status-text {
+      font-size: 13px;
+      color: var(--muted);
+    }
+
+    .filter-group {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+    }
+
+    .filter-group label {
+      font-size: 13px;
+      color: var(--muted);
+      font-weight: 600;
+    }
+
+    .filter-group select {
+      padding: 9px 12px;
+      border: 1px solid var(--border);
+      border-radius: 8px;
+      background: white;
+      color: var(--text);
+      font-size: 14px;
+      min-width: 155px;
+    }
+
+    .kpi-grid {
+      display: grid;
+      grid-template-columns: repeat(4, minmax(0, 1fr));
+      gap: 18px;
+      margin-bottom: 20px;
+    }
+
+    .kpi-card {
+      background: var(--surface);
+      border-radius: 14px;
+      box-shadow: var(--shadow);
+      padding: 20px;
+      position: relative;
+      overflow: hidden;
+    }
+
+    .kpi-card::before {
+      content: "";
+      position: absolute;
+      top: 0;
+      left: 0;
+      width: 5px;
+      height: 100%;
+      background: var(--primary);
+    }
+
+    .kpi-title {
+      color: var(--muted);
+      font-size: 13px;
+      font-weight: 600;
+      margin-bottom: 8px;
+    }
+
+    .kpi-value {
+      font-size: 32px;
+      font-weight: 750;
+      color: var(--text);
+      line-height: 1;
+    }
+
+    .kpi-subtitle {
+      color: var(--muted);
+      font-size: 12px;
+      margin-top: 9px;
+    }
+
+    .chart-grid {
+      display: grid;
+      grid-template-columns: 1.5fr 1fr;
+      gap: 18px;
+      margin-bottom: 20px;
+    }
+
+    .panel {
+      background: var(--surface);
+      border-radius: 14px;
+      box-shadow: var(--shadow);
+      padding: 20px;
+    }
+
+    .panel-header {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      margin-bottom: 18px;
+      gap: 10px;
+    }
+
+    .panel-title {
+      font-size: 16px;
+      font-weight: 700;
+    }
+
+    .panel-subtitle {
+      font-size: 12px;
+      color: var(--muted);
+      margin-top: 4px;
+    }
+
+    .chart-container {
+      position: relative;
+      height: 330px;
+    }
+
+    .table-wrapper {
+      overflow-x: auto;
+    }
+
+    table {
+      width: 100%;
+      border-collapse: collapse;
+      min-width: 850px;
+    }
+
+    th,
+    td {
+      padding: 12px 11px;
+      border-bottom: 1px solid var(--border);
+      text-align: right;
+      font-size: 13px;
+      white-space: nowrap;
+    }
+
+    th {
+      color: var(--muted);
+      font-weight: 700;
+      background: #fafbfc;
+    }
+
+    th:first-child,
+    th:nth-child(2),
+    td:first-child,
+    td:nth-child(2) {
+      text-align: left;
+    }
+
+    tbody tr:hover {
+      background: #f8f9fc;
+    }
+
+    .loading-screen {
+      position: fixed;
+      inset: 0;
+      background: rgba(245, 247, 251, 0.94);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      z-index: 999;
+    }
+
+    .loading-card {
+      background: white;
+      padding: 28px 34px;
+      border-radius: 14px;
+      box-shadow: var(--shadow);
+      text-align: center;
+    }
+
+    .spinner {
+      width: 35px;
+      height: 35px;
+      border: 4px solid #e7eaf3;
+      border-top-color: var(--primary);
+      border-radius: 50%;
+      animation: spin 0.8s linear infinite;
+      margin: 0 auto 14px;
+    }
+
+    @keyframes spin {
+      to {
+        transform: rotate(360deg);
+      }
+    }
+
+    .error-box {
+      display: none;
+      background: #fff1f1;
+      color: #9a2828;
+      border: 1px solid #ffd1d1;
+      padding: 14px 16px;
+      border-radius: 10px;
+      margin-bottom: 20px;
+      font-size: 13px;
+    }
+
+    .empty-message {
+      padding: 40px 10px;
+      text-align: center;
+      color: var(--muted);
+      font-size: 14px;
+    }
+
+    @media (max-width: 1000px) {
+      .kpi-grid {
+        grid-template-columns: repeat(2, minmax(0, 1fr));
+      }
+
+      .chart-grid {
+        grid-template-columns: 1fr;
+      }
+    }
+
+    @media (max-width: 620px) {
+      .topbar {
+        padding: 18px 16px;
+      }
+
+      .topbar-content {
+        align-items: flex-start;
+        flex-direction: column;
+      }
+
+      .topbar h1 {
+        font-size: 21px;
+      }
+
+      .dashboard {
+        padding: 15px;
+      }
+
+      .status-bar {
+        align-items: flex-start;
+        flex-direction: column;
+      }
+
+      .filter-group {
+        width: 100%;
+        justify-content: space-between;
+      }
+
+      .filter-group select {
+        flex: 1;
+        min-width: 0;
+      }
+
+      .kpi-grid {
+        grid-template-columns: 1fr 1fr;
+        gap: 12px;
+      }
+
+      .kpi-card {
+        padding: 17px 15px;
+      }
+
+      .kpi-value {
+        font-size: 27px;
+      }
+
+      .panel {
+        padding: 16px;
+      }
+
+      .chart-container {
+        height: 280px;
+      }
+    }
+
+    @media (max-width: 420px) {
+      .kpi-grid {
+        grid-template-columns: 1fr;
+      }
+    }
+  </style>
+</head>
+
+<body>
+  <header class="topbar">
+    <div class="topbar-content">
+      <div>
+        <h1>Dashboard de Parqueo</h1>
+        <p>Monitoreo de ocupación, entradas y salidas</p>
+      </div>
+
+      <div class="topbar-actions">
+        <a class="topbar-button" href="./index.html">Ingresar reporte</a>
+        <button class="topbar-button" id="refreshButton" type="button">
+          Actualizar datos
+        </button>
+      </div>
+    </div>
+  </header>
+
+  <main class="dashboard">
+    <div id="errorBox" class="error-box"></div>
+
+    <section class="status-bar">
+      <div class="status-left">
+        <span id="statusIndicator" class="status-indicator loading"></span>
+
+        <div>
+          <div id="connectionStatus"><strong>Cargando información...</strong></div>
+          <div id="updatedAt" class="status-text">Esperando respuesta del servidor</div>
+        </div>
+      </div>
+
+      <div class="filter-group">
+        <label for="dateFilter">Fecha del reporte</label>
+        <select id="dateFilter"></select>
+      </div>
+    </section>
+
+    <section class="kpi-grid">
+      <article class="kpi-card">
+        <div class="kpi-title">Carros estacionados</div>
+        <div id="currentCars" class="kpi-value">—</div>
+        <div id="carsTime" class="kpi-subtitle">Último registro</div>
+      </article>
+
+      <article class="kpi-card">
+        <div class="kpi-title">Motos estacionadas</div>
+        <div id="currentMotorcycles" class="kpi-value">—</div>
+        <div id="motorcyclesTime" class="kpi-subtitle">Último registro</div>
+      </article>
+
+      <article class="kpi-card">
+        <div class="kpi-title">Entradas del día</div>
+        <div id="dailyEntries" class="kpi-value">—</div>
+        <div id="entriesBreakdown" class="kpi-subtitle">Carros y motos</div>
+      </article>
+
+      <article class="kpi-card">
+        <div class="kpi-title">Salidas del día</div>
+        <div id="dailyExits" class="kpi-value">—</div>
+        <div id="exitsBreakdown" class="kpi-subtitle">Carros y motos</div>
+      </article>
+
+      <article class="kpi-card">
+        <div class="kpi-title">Máximo de carros</div>
+        <div id="maximumCars" class="kpi-value">—</div>
+        <div id="maximumCarsTime" class="kpi-subtitle">Pico del día</div>
+      </article>
+
+      <article class="kpi-card">
+        <div class="kpi-title">Máximo de motos</div>
+        <div id="maximumMotorcycles" class="kpi-value">—</div>
+        <div id="maximumMotorcyclesTime" class="kpi-subtitle">Pico del día</div>
+      </article>
+
+      <article class="kpi-card">
+        <div class="kpi-title">Registros del día</div>
+        <div id="dailyRecords" class="kpi-value">—</div>
+        <div class="kpi-subtitle">Bloques horarios reportados</div>
+      </article>
+
+      <article class="kpi-card">
+        <div class="kpi-title">Última hora reportada</div>
+        <div id="latestHour" class="kpi-value">—</div>
+        <div id="latestTimestamp" class="kpi-subtitle">Hora de ingreso</div>
+      </article>
+    </section>
+
+    <section class="chart-grid">
+      <article class="panel">
+        <div class="panel-header">
+          <div>
+            <div class="panel-title">Ocupación durante el día</div>
+            <div class="panel-subtitle">
+              Total de vehículos estacionados por bloque horario
+            </div>
+          </div>
+        </div>
+
+        <div class="chart-container">
+          <canvas id="occupancyChart"></canvas>
+        </div>
+      </article>
+
+      <article class="panel">
+        <div class="panel-header">
+          <div>
+            <div class="panel-title">Movimientos por hora</div>
+            <div class="panel-subtitle">
+              Entradas y salidas combinadas
+            </div>
+          </div>
+        </div>
+
+        <div class="chart-container">
+          <canvas id="movementsChart"></canvas>
+        </div>
+      </article>
+    </section>
+
+    <section class="panel">
+      <div class="panel-header">
+        <div>
+          <div class="panel-title">Detalle del día</div>
+          <div class="panel-subtitle">
+            Información enviada desde el formulario
+          </div>
+        </div>
+      </div>
+
+      <div class="table-wrapper">
+        <table>
+          <thead>
+            <tr>
+              <th>Hora</th>
+              <th>Registro</th>
+              <th>Entrada carros</th>
+              <th>Entrada motos</th>
+              <th>Salida carros</th>
+              <th>Salida motos</th>
+              <th>Total carros</th>
+              <th>Total motos</th>
+            </tr>
+          </thead>
+
+          <tbody id="recordsTable"></tbody>
+        </table>
+      </div>
+    </section>
+  </main>
+
+  <div id="loadingScreen" class="loading-screen">
+    <div class="loading-card">
+      <div class="spinner"></div>
+      <strong>Cargando dashboard</strong>
+      <div class="status-text" style="margin-top: 7px">
+        Consultando información del parqueo
+      </div>
+    </div>
+  </div>
+
+  <script>
+    const API_URL =
+      "https://script.google.com/macros/s/AKfycbwMErK_ZakrjehkOH1WRNI-wo3iAOWoght6QxuerL-Ss3dVvsksTOwjIGJZp6At_qgS/exec";
+
+    const AUTO_REFRESH_MS = 60000;
+
+    let allRecords = [];
+    let occupancyChart = null;
+    let movementsChart = null;
+    let selectedDate = "";
+
+    const dateFilter = document.getElementById("dateFilter");
+    const refreshButton = document.getElementById("refreshButton");
+    const loadingScreen = document.getElementById("loadingScreen");
+    const errorBox = document.getElementById("errorBox");
+    const statusIndicator = document.getElementById("statusIndicator");
+
+    function toNumber(value) {
+      const number = Number(String(value).replace(",", "."));
+      return Number.isFinite(number) ? number : 0;
+    }
+
+    function parseSpanishDate(dateText) {
+      if (!dateText) return null;
+
+      const parts = String(dateText).trim().split("/");
+
+      if (parts.length !== 3) return null;
+
+      const day = Number(parts[0]);
+      const month = Number(parts[1]);
+      const year = Number(parts[2]);
+
+      if (!day || !month || !year) return null;
+
+      return new Date(year, month - 1, day);
+    }
+
+    function dateSortValue(dateText) {
+      const date = parseSpanishDate(dateText);
+      return date ? date.getTime() : 0;
+    }
+
+    function hourSortValue(hourText) {
+      const clean = String(hourText || "")
+        .trim()
+        .toLowerCase()
+        .replace(/\s/g, "");
+
+      const match = clean.match(/^(\d{1,2}):(\d{2})(am|pm)$/);
+
+      if (!match) return 0;
+
+      let hour = Number(match[1]);
+      const minutes = Number(match[2]);
+      const period = match[3];
+
+      if (period === "am" && hour === 12) hour = 0;
+      if (period === "pm" && hour !== 12) hour += 12;
+
+      return hour * 60 + minutes;
+    }
+
+    function formatHour(hourText) {
+      const clean = String(hourText || "").toLowerCase();
+
+      return clean
+        .replace("am", " a. m.")
+        .replace("pm", " p. m.");
+    }
+
+    function normalizeRecord(record) {
+      return {
+        fecha: String(record["Fecha"] || "").trim(),
+        timestamp: String(record["Timestamp"] || "").trim(),
+        hora: String(record["Hora"] || "").trim(),
+        entradaCarros: toNumber(record["Entrada Carros"]),
+        entradaMotos: toNumber(record["Entrada Motos"]),
+        salidaCarros: toNumber(record["Salida Carros"]),
+        salidaMotos: toNumber(record["Salida Motos"]),
+        totalCarros: toNumber(record["Total Carros"]),
+        totalMotos: toNumber(record["Total Motos"])
+      };
+    }
+
+    async function loadData(showFullLoader = false) {
+      if (showFullLoader) {
+        loadingScreen.style.display = "flex";
+      }
+
+      setLoadingStatus();
+
+      try {
+        const response = await fetch(
+          API_URL + "?cache=" + new Date().getTime(),
+          {
+            method: "GET",
+            cache: "no-store"
+          }
+        );
+
+        if (!response.ok) {
+          throw new Error("El servidor respondió con estado " + response.status);
+        }
+
+        const result = await response.json();
+
+        if (result.status !== "success") {
+          throw new Error(result.message || "No se pudieron obtener los datos");
+        }
+
+        allRecords = Array.isArray(result.data)
+          ? result.data.map(normalizeRecord)
+          : [];
+
+        if (!allRecords.length) {
+          throw new Error("La hoja todavía no contiene registros");
+        }
+
+        populateDateFilter();
+
+        if (!selectedDate || !allRecords.some(r => r.fecha === selectedDate)) {
+          selectedDate = getLatestDate();
+        }
+
+        dateFilter.value = selectedDate;
+
+        renderDashboard();
+        setSuccessStatus(result.updatedAt);
+        hideError();
+
+      } catch (error) {
+        console.error(error);
+        showError(
+          "No fue posible cargar la información. " +
+          "Verifica la conexión y vuelve a intentar. Detalle: " +
+          error.message
+        );
+        setErrorStatus();
+
+      } finally {
+        loadingScreen.style.display = "none";
+      }
+    }
+
+    function getLatestDate() {
+      const dates = [...new Set(allRecords.map(record => record.fecha))];
+
+      dates.sort((a, b) => dateSortValue(b) - dateSortValue(a));
+
+      return dates[0] || "";
+    }
+
+    function populateDateFilter() {
+      const previousValue = dateFilter.value;
+
+      const dates = [...new Set(
+        allRecords
+          .map(record => record.fecha)
+          .filter(Boolean)
+      )];
+
+      dates.sort((a, b) => dateSortValue(b) - dateSortValue(a));
+
+      dateFilter.innerHTML = "";
+
+      dates.forEach(date => {
+        const option = document.createElement("option");
+        option.value = date;
+        option.textContent = date;
+        dateFilter.appendChild(option);
+      });
+
+      if (dates.includes(previousValue)) {
+        dateFilter.value = previousValue;
+      }
+    }
+
+    function getSelectedRecords() {
+      return allRecords
+        .filter(record => record.fecha === selectedDate)
+        .sort((a, b) => hourSortValue(a.hora) - hourSortValue(b.hora));
+    }
+
+    function sum(records, field) {
+      return records.reduce(
+        (total, record) => total + toNumber(record[field]),
+        0
+      );
+    }
+
+    function getMaximumRecord(records, field) {
+      if (!records.length) return null;
+
+      return records.reduce((maximum, record) => {
+        return record[field] > maximum[field] ? record : maximum;
+      }, records[0]);
+    }
+
+    function renderDashboard() {
+      const records = getSelectedRecords();
+
+      if (!records.length) {
+        renderEmptyDashboard();
+        return;
+      }
+
+      const latestRecord = records[records.length - 1];
+
+      const entriesCars = sum(records, "entradaCarros");
+      const entriesMotorcycles = sum(records, "entradaMotos");
+      const exitsCars = sum(records, "salidaCarros");
+      const exitsMotorcycles = sum(records, "salidaMotos");
+
+      const maximumCarsRecord = getMaximumRecord(records, "totalCarros");
+      const maximumMotorcyclesRecord =
+        getMaximumRecord(records, "totalMotos");
+
+      setText("currentCars", latestRecord.totalCarros);
+      setText("currentMotorcycles", latestRecord.totalMotos);
+
+      setText(
+        "carsTime",
+        "Registro de las " + formatHour(latestRecord.hora)
+      );
+
+      setText(
+        "motorcyclesTime",
+        "Registro de las " + formatHour(latestRecord.hora)
+      );
+
+      setText(
+        "dailyEntries",
+        entriesCars + entriesMotorcycles
+      );
+
+      setText(
+        "entriesBreakdown",
+        entriesCars + " carros · " +
+        entriesMotorcycles + " motos"
+      );
+
+      setText(
+        "dailyExits",
+        exitsCars + exitsMotorcycles
+      );
+
+      setText(
+        "exitsBreakdown",
+        exitsCars + " carros · " +
+        exitsMotorcycles + " motos"
+      );
+
+      setText(
+        "maximumCars",
+        maximumCarsRecord ? maximumCarsRecord.totalCarros : 0
+      );
+
+      setText(
+        "maximumCarsTime",
+        maximumCarsRecord
+          ? "A las " + formatHour(maximumCarsRecord.hora)
+          : "Sin información"
+      );
+
+      setText(
+        "maximumMotorcycles",
+        maximumMotorcyclesRecord
+          ? maximumMotorcyclesRecord.totalMotos
+          : 0
+      );
+
+      setText(
+        "maximumMotorcyclesTime",
+        maximumMotorcyclesRecord
+          ? "A las " + formatHour(maximumMotorcyclesRecord.hora)
+          : "Sin información"
+      );
+
+      setText("dailyRecords", records.length);
+      setText("latestHour", formatHour(latestRecord.hora));
+      setText(
+        "latestTimestamp",
+        "Ingresado: " + latestRecord.timestamp
+      );
+
+      renderOccupancyChart(records);
+      renderMovementsChart(records);
+      renderTable(records);
+    }
+
+    function renderEmptyDashboard() {
+      [
+        "currentCars",
+        "currentMotorcycles",
+        "dailyEntries",
+        "dailyExits",
+        "maximumCars",
+        "maximumMotorcycles",
+        "dailyRecords",
+        "latestHour"
+      ].forEach(id => setText(id, "—"));
+
+      document.getElementById("recordsTable").innerHTML =
+        '<tr><td colspan="8" class="empty-message">' +
+        "No existen registros para esta fecha" +
+        "</td></tr>";
+    }
+
+    function renderOccupancyChart(records) {
+      const labels = records.map(record => formatHour(record.hora));
+      const cars = records.map(record => record.totalCarros);
+      const motorcycles = records.map(record => record.totalMotos);
+
+      if (occupancyChart) {
+        occupancyChart.destroy();
+      }
+
+      occupancyChart = new Chart(
+        document.getElementById("occupancyChart"),
+        {
+          type: "line",
+          data: {
+            labels,
+            datasets: [
+              {
+                label: "Carros",
+                data: cars,
+                borderColor: "#667eea",
+                backgroundColor: "rgba(102, 126, 234, 0.12)",
+                fill: true,
+                tension: 0.3,
+                pointRadius: 4,
+                pointHoverRadius: 6
+              },
+              {
+                label: "Motos",
+                data: motorcycles,
+                borderColor: "#f59e0b",
+                backgroundColor: "rgba(245, 158, 11, 0.10)",
+                fill: true,
+                tension: 0.3,
+                pointRadius: 4,
+                pointHoverRadius: 6
+              }
+            ]
+          },
+          options: {
+            responsive: true,
+            maintainAspectRatio: false,
+            interaction: {
+              mode: "index",
+              intersect: false
+            },
+            plugins: {
+              legend: {
+                position: "bottom"
+              }
+            },
+            scales: {
+              y: {
+                beginAtZero: true,
+                ticks: {
+                  precision: 0
+                },
+                grid: {
+                  color: "rgba(0, 0, 0, 0.05)"
+                }
+              },
+              x: {
+                grid: {
+                  display: false
+                }
+              }
+            }
+          }
+        }
+      );
+    }
+
+    function renderMovementsChart(records) {
+      const labels = records.map(record => formatHour(record.hora));
+
+      const entries = records.map(
+        record => record.entradaCarros + record.entradaMotos
+      );
+
+      const exits = records.map(
+        record => record.salidaCarros + record.salidaMotos
+      );
+
+      if (movementsChart) {
+        movementsChart.destroy();
+      }
+
+      movementsChart = new Chart(
+        document.getElementById("movementsChart"),
+        {
+          type: "bar",
+          data: {
+            labels,
+            datasets: [
+              {
+                label: "Entradas",
+                data: entries,
+                backgroundColor: "rgba(24, 134, 75, 0.72)",
+                borderRadius: 5
+              },
+              {
+                label: "Salidas",
+                data: exits,
+                backgroundColor: "rgba(214, 69, 69, 0.72)",
+                borderRadius: 5
+              }
+            ]
+          },
+          options: {
+            responsive: true,
+            maintainAspectRatio: false,
+            interaction: {
+              mode: "index",
+              intersect: false
+            },
+            plugins: {
+              legend: {
+                position: "bottom"
+              }
+            },
+            scales: {
+              y: {
+                beginAtZero: true,
+                ticks: {
+                  precision: 0
+                },
+                grid: {
+                  color: "rgba(0, 0, 0, 0.05)"
+                }
+              },
+              x: {
+                grid: {
+                  display: false
+                }
+              }
+            }
+          }
+        }
+      );
+    }
+
+    function renderTable(records) {
+      const tableBody = document.getElementById("recordsTable");
+
+      tableBody.innerHTML = records.map(record => `
+        <tr>
+          <td><strong>${escapeHtml(formatHour(record.hora))}</strong></td>
+          <td>${escapeHtml(record.timestamp)}</td>
+          <td>${record.entradaCarros}</td>
+          <td>${record.entradaMotos}</td>
+          <td>${record.salidaCarros}</td>
+          <td>${record.salidaMotos}</td>
+          <td><strong>${record.totalCarros}</strong></td>
+          <td><strong>${record.totalMotos}</strong></td>
+        </tr>
+      `).join("");
+    }
+
+    function escapeHtml(value) {
+      return String(value)
+        .replaceAll("&", "&amp;")
+        .replaceAll("<", "&lt;")
+        .replaceAll(">", "&gt;")
+        .replaceAll('"', "&quot;")
+        .replaceAll("'", "&#039;");
+    }
+
+    function setText(id, text) {
+      document.getElementById(id).textContent = text;
+    }
+
+    function setLoadingStatus() {
+      statusIndicator.className = "status-indicator loading";
+      setText("connectionStatus", "Actualizando información...");
+    }
+
+    function setSuccessStatus(updatedAt) {
+      statusIndicator.className = "status-indicator";
+      setText("connectionStatus", "Conectado con Google Sheets");
+      setText(
+        "updatedAt",
+        "Última consulta: " +
+        (updatedAt || new Date().toLocaleString("es-GT"))
+      );
+    }
+
+    function setErrorStatus() {
+      statusIndicator.className = "status-indicator error";
+      setText("connectionStatus", "No se pudo conectar");
+      setText("updatedAt", "Revisa la conexión o la API");
+    }
+
+    function showError(message) {
+      errorBox.textContent = message;
+      errorBox.style.display = "block";
+    }
+
+    function hideError() {
+      errorBox.style.display = "none";
+    }
+
+    dateFilter.addEventListener("change", event => {
+      selectedDate = event.target.value;
+      renderDashboard();
+    });
+
+    refreshButton.addEventListener("click", () => {
+      loadData(false);
+    });
+
+    loadData(true);
+
+    setInterval(() => {
+      loadData(false);
+    }, AUTO_REFRESH_MS);
+  </script>
+</body>
+</html>

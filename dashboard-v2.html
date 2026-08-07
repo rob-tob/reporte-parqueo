@@ -1,75 +1,2006 @@
 <!DOCTYPE html>
 <html lang="es">
 <head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-<title>Sistema de Control de Parqueos</title>
+  <title>Sistema de Control de Parqueos | V2.0</title>
 
-<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.7/dist/chart.umd.min.js"></script>
 
-<style>
+  <style>
+    /* =========================================================
+       VARIABLES
+    ========================================================= */
 
-*{
-    margin:0;
-    padding:0;
-    box-sizing:border-box;
-    font-family:Segoe UI,Arial,sans-serif;
-}
+    :root {
+      --primary: #4f7df5;
+      --primary-dark: #315ec9;
+      --secondary: #7654c5;
 
-body{
-    background:#f4f6fb;
-    color:#222;
-}
+      --success: #22a55b;
+      --warning: #e3a008;
+      --danger: #dc4c4c;
+      --info: #2585dc;
 
-header{
+      --background: #f3f6fb;
+      --surface: #ffffff;
+      --surface-soft: #f8faff;
 
-    background:linear-gradient(90deg,#4f7df5,#7d56c2);
-    color:white;
-    padding:24px 40px;
+      --text: #1e293b;
+      --text-soft: #64748b;
+      --text-light: #94a3b8;
 
-}
+      --border: #e2e8f0;
 
-header h1{
+      --shadow: 0 8px 24px rgba(15, 23, 42, 0.07);
 
-    font-size:38px;
+      --radius: 16px;
+      --radius-small: 10px;
+    }
 
-}
+    /* =========================================================
+       RESET
+    ========================================================= */
 
-header p{
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
 
-    margin-top:8px;
-    opacity:.9;
+    html {
+      scroll-behavior: smooth;
+    }
 
-}
+    body {
+      font-family:
+        -apple-system,
+        BlinkMacSystemFont,
+        "Segoe UI",
+        Roboto,
+        Arial,
+        sans-serif;
 
-main{
+      background: var(--background);
+      color: var(--text);
 
-    max-width:1600px;
-    margin:auto;
-    padding:30px;
+      min-height: 100vh;
+    }
 
-}
+    button,
+    input,
+    select {
+      font: inherit;
+    }
 
-</style>
+    button {
+      cursor: pointer;
+    }
 
+    /* =========================================================
+       HEADER
+    ========================================================= */
+
+    .app-header {
+      background:
+        linear-gradient(
+          120deg,
+          var(--primary) 0%,
+          var(--secondary) 100%
+        );
+
+      color: white;
+      padding: 22px 30px;
+    }
+
+    .header-inner {
+      max-width: 1500px;
+      margin: auto;
+
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+
+      gap: 25px;
+    }
+
+    .brand h1 {
+      font-size: 26px;
+      line-height: 1.15;
+      font-weight: 750;
+    }
+
+    .brand p {
+      margin-top: 5px;
+      font-size: 14px;
+      opacity: 0.88;
+    }
+
+    .header-status {
+      display: flex;
+      gap: 24px;
+      align-items: center;
+    }
+
+    .sync-status {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+    }
+
+    .status-dot {
+      width: 11px;
+      height: 11px;
+
+      border-radius: 50%;
+      background: #61e28d;
+
+      box-shadow: 0 0 0 5px rgba(97, 226, 141, 0.13);
+    }
+
+    .sync-main {
+      font-weight: 650;
+      font-size: 14px;
+    }
+
+    .sync-sub {
+      margin-top: 2px;
+      font-size: 12px;
+      opacity: 0.8;
+    }
+
+    .last-sync {
+      border-left: 1px solid rgba(255,255,255,.24);
+      padding-left: 24px;
+    }
+
+    .last-sync-label {
+      font-size: 11px;
+      opacity: 0.75;
+      text-transform: uppercase;
+      letter-spacing: .6px;
+    }
+
+    .last-sync-value {
+      font-size: 14px;
+      font-weight: 650;
+      margin-top: 4px;
+    }
+
+    .refresh-btn {
+      border: 1px solid rgba(255,255,255,.34);
+      background: rgba(255,255,255,.12);
+      color: white;
+
+      width: 42px;
+      height: 42px;
+      border-radius: 11px;
+
+      font-size: 20px;
+
+      transition: .2s;
+    }
+
+    .refresh-btn:hover {
+      background: rgba(255,255,255,.2);
+    }
+
+    /* =========================================================
+       MAIN
+    ========================================================= */
+
+    .dashboard {
+      max-width: 1500px;
+      margin: auto;
+      padding: 24px;
+    }
+
+    /* =========================================================
+       VIEW CONTROLS
+    ========================================================= */
+
+    .controls-card {
+      background: var(--surface);
+      box-shadow: var(--shadow);
+
+      border-radius: var(--radius);
+
+      padding: 14px;
+
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+
+      gap: 20px;
+
+      margin-bottom: 18px;
+    }
+
+    .view-tabs {
+      display: inline-grid;
+      grid-template-columns: repeat(3, 1fr);
+
+      background: #edf2f9;
+
+      border-radius: 11px;
+      padding: 4px;
+
+      min-width: 360px;
+    }
+
+    .view-tab {
+      border: none;
+      background: transparent;
+
+      border-radius: 8px;
+
+      padding: 10px 24px;
+
+      color: var(--text-soft);
+
+      font-weight: 650;
+      font-size: 14px;
+
+      transition: .2s;
+    }
+
+    .view-tab.active {
+      background: var(--primary);
+      color: white;
+
+      box-shadow:
+        0 5px 13px rgba(79,125,245,.22);
+    }
+
+    .period-control {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+    }
+
+    .period-control label {
+      color: var(--text-soft);
+      font-size: 13px;
+      font-weight: 650;
+    }
+
+    .period-control input,
+    .period-control select {
+      border: 1px solid var(--border);
+      background: white;
+      color: var(--text);
+
+      padding: 9px 12px;
+
+      border-radius: 9px;
+    }
+
+    /* =========================================================
+       DATA QUALITY
+    ========================================================= */
+
+    .quality-strip {
+      background: var(--surface);
+      box-shadow: var(--shadow);
+
+      border-radius: var(--radius);
+
+      padding: 16px 18px;
+
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+
+      gap: 20px;
+
+      margin-bottom: 18px;
+    }
+
+    .quality-title {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+    }
+
+    .quality-icon {
+      width: 40px;
+      height: 40px;
+
+      border-radius: 50%;
+
+      display: grid;
+      place-items: center;
+
+      color: var(--success);
+      background: rgba(34,165,91,.12);
+
+      font-size: 20px;
+      font-weight: bold;
+    }
+
+    .quality-main {
+      font-weight: 750;
+      font-size: 15px;
+    }
+
+    .quality-sub {
+      color: var(--text-soft);
+      font-size: 12px;
+      margin-top: 3px;
+    }
+
+    .quality-items {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 8px;
+      justify-content: flex-end;
+    }
+
+    .quality-chip {
+      padding: 7px 11px;
+
+      border-radius: 999px;
+
+      background: #f1f7f3;
+
+      color: #28714a;
+
+      font-size: 12px;
+      font-weight: 650;
+
+      white-space: nowrap;
+    }
+
+    /* =========================================================
+       KPI CARDS
+    ========================================================= */
+
+    .kpi-grid {
+      display: grid;
+
+      grid-template-columns:
+        repeat(4, minmax(0, 1fr));
+
+      gap: 16px;
+
+      margin-bottom: 18px;
+    }
+
+    .kpi-card {
+      background: var(--surface);
+      box-shadow: var(--shadow);
+
+      border-radius: var(--radius);
+
+      padding: 19px;
+
+      min-height: 155px;
+
+      position: relative;
+      overflow: hidden;
+    }
+
+    .kpi-card::before {
+      content: "";
+
+      position: absolute;
+
+      top: 0;
+      left: 0;
+
+      width: 4px;
+      height: 100%;
+
+      background: var(--primary);
+    }
+
+    .kpi-label {
+      color: var(--text-soft);
+
+      font-size: 12px;
+      font-weight: 700;
+
+      margin-bottom: 9px;
+
+      text-transform: uppercase;
+      letter-spacing: .4px;
+    }
+
+    .kpi-number-row {
+      display: flex;
+      align-items: baseline;
+      gap: 7px;
+    }
+
+    .kpi-number {
+      font-size: 31px;
+      line-height: 1;
+
+      font-weight: 780;
+      color: var(--text);
+    }
+
+    .kpi-capacity {
+      color: var(--text-light);
+      font-size: 17px;
+      font-weight: 600;
+    }
+
+    .kpi-sub {
+      color: var(--text-soft);
+      font-size: 12px;
+      margin-top: 9px;
+    }
+
+    .progress {
+      width: 100%;
+      height: 7px;
+
+      border-radius: 20px;
+      background: #e8edf5;
+
+      overflow: hidden;
+
+      margin-top: 15px;
+    }
+
+    .progress-bar {
+      height: 100%;
+
+      background:
+        linear-gradient(
+          90deg,
+          var(--primary),
+          var(--secondary)
+        );
+
+      border-radius: inherit;
+    }
+
+    .progress-meta {
+      margin-top: 7px;
+
+      display: flex;
+      justify-content: space-between;
+
+      font-size: 11px;
+      color: var(--text-soft);
+    }
+
+    .kpi-highlight-success {
+      color: var(--success);
+    }
+
+    .kpi-highlight-warning {
+      color: var(--warning);
+    }
+
+    .kpi-highlight-danger {
+      color: var(--danger);
+    }
+
+    /* =========================================================
+       SECONDARY KPIS
+    ========================================================= */
+
+    .secondary-grid {
+      display: grid;
+
+      grid-template-columns:
+        repeat(5, minmax(0, 1fr));
+
+      gap: 16px;
+
+      margin-bottom: 18px;
+    }
+
+    .mini-card {
+      background: var(--surface);
+      box-shadow: var(--shadow);
+
+      border-radius: var(--radius);
+
+      padding: 18px;
+
+      min-height: 135px;
+    }
+
+    .mini-label {
+      color: var(--text-soft);
+
+      font-size: 12px;
+      font-weight: 700;
+
+      text-transform: uppercase;
+      letter-spacing: .4px;
+    }
+
+    .mini-value {
+      margin-top: 11px;
+
+      font-size: 27px;
+      font-weight: 770;
+
+      line-height: 1;
+    }
+
+    .mini-detail {
+      margin-top: 11px;
+
+      color: var(--text-soft);
+
+      font-size: 12px;
+      line-height: 1.45;
+    }
+
+    /* =========================================================
+       REPORT STATUS
+    ========================================================= */
+
+    .report-card {
+      background:
+        linear-gradient(
+          135deg,
+          #ffffff,
+          #f8faff
+        );
+
+      border: 1px solid #e2e8f5;
+
+      box-shadow: var(--shadow);
+
+      border-radius: var(--radius);
+
+      padding: 18px;
+    }
+
+    .report-card-title {
+      font-size: 13px;
+      font-weight: 750;
+      margin-bottom: 14px;
+    }
+
+    .report-details {
+      display: grid;
+
+      grid-template-columns:
+        repeat(4, minmax(0, 1fr));
+
+      gap: 20px;
+    }
+
+    .report-detail-label {
+      color: var(--text-light);
+
+      font-size: 11px;
+      text-transform: uppercase;
+      letter-spacing: .4px;
+    }
+
+    .report-detail-value {
+      margin-top: 4px;
+
+      font-size: 14px;
+      font-weight: 680;
+    }
+
+    /* =========================================================
+       CHARTS
+    ========================================================= */
+
+    .charts-grid {
+      display: grid;
+
+      grid-template-columns:
+        minmax(0, 1.65fr)
+        minmax(0, 1fr);
+
+      gap: 18px;
+
+      margin-top: 18px;
+    }
+
+    .chart-card {
+      background: var(--surface);
+      box-shadow: var(--shadow);
+
+      border-radius: var(--radius);
+
+      padding: 19px;
+    }
+
+    .chart-title {
+      font-size: 16px;
+      font-weight: 750;
+    }
+
+    .chart-subtitle {
+      margin-top: 3px;
+
+      color: var(--text-soft);
+      font-size: 12px;
+    }
+
+    .chart-box {
+      position: relative;
+      height: 335px;
+
+      margin-top: 18px;
+    }
+
+    .full-chart {
+      margin-top: 18px;
+    }
+
+    /* =========================================================
+       PERIOD SUMMARY
+    ========================================================= */
+
+    .period-summary {
+      margin-top: 18px;
+
+      display: grid;
+
+      grid-template-columns:
+        1fr 1fr 1fr;
+
+      gap: 16px;
+    }
+
+    .summary-card {
+      background: var(--surface);
+      box-shadow: var(--shadow);
+
+      border-radius: var(--radius);
+
+      padding: 18px;
+    }
+
+    .summary-title {
+      color: var(--text-soft);
+
+      font-size: 12px;
+      font-weight: 700;
+
+      text-transform: uppercase;
+    }
+
+    .summary-value {
+      margin-top: 8px;
+
+      font-size: 24px;
+      font-weight: 760;
+    }
+
+    .summary-description {
+      margin-top: 7px;
+
+      font-size: 12px;
+      color: var(--text-soft);
+    }
+
+    /* =========================================================
+       FOOTER
+    ========================================================= */
+
+    footer {
+      max-width: 1500px;
+
+      margin: 24px auto 0;
+
+      padding: 20px 24px 30px;
+    }
+
+    .footer-inner {
+      border-top: 1px solid var(--border);
+
+      padding-top: 18px;
+
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+
+      gap: 20px;
+
+      color: var(--text-soft);
+      font-size: 12px;
+    }
+
+    .footer-center {
+      text-align: center;
+    }
+
+    /* =========================================================
+       RESPONSIVE
+    ========================================================= */
+
+    @media (max-width: 1150px) {
+
+      .kpi-grid {
+        grid-template-columns:
+          repeat(2, minmax(0, 1fr));
+      }
+
+      .secondary-grid {
+        grid-template-columns:
+          repeat(3, minmax(0, 1fr));
+      }
+
+      .charts-grid {
+        grid-template-columns: 1fr;
+      }
+
+    }
+
+    @media (max-width: 800px) {
+
+      .app-header {
+        padding: 20px;
+      }
+
+      .header-inner {
+        align-items: flex-start;
+        flex-direction: column;
+      }
+
+      .header-status {
+        width: 100%;
+
+        justify-content: space-between;
+      }
+
+      .dashboard {
+        padding: 15px;
+      }
+
+      .controls-card {
+        flex-direction: column;
+        align-items: stretch;
+      }
+
+      .view-tabs {
+        width: 100%;
+        min-width: unset;
+      }
+
+      .period-control {
+        justify-content: space-between;
+      }
+
+      .quality-strip {
+        flex-direction: column;
+        align-items: flex-start;
+      }
+
+      .quality-items {
+        justify-content: flex-start;
+      }
+
+      .secondary-grid {
+        grid-template-columns:
+          repeat(2, minmax(0, 1fr));
+      }
+
+      .report-details {
+        grid-template-columns:
+          repeat(2, minmax(0, 1fr));
+      }
+
+      .period-summary {
+        grid-template-columns: 1fr;
+      }
+
+    }
+
+    @media (max-width: 520px) {
+
+      .brand h1 {
+        font-size: 21px;
+      }
+
+      .last-sync {
+        display: none;
+      }
+
+      .view-tab {
+        padding: 10px 8px;
+      }
+
+      .kpi-grid {
+        grid-template-columns: 1fr;
+      }
+
+      .secondary-grid {
+        grid-template-columns: 1fr;
+      }
+
+      .report-details {
+        grid-template-columns: 1fr;
+      }
+
+      .chart-box {
+        height: 280px;
+      }
+
+      .footer-inner {
+        flex-direction: column;
+        text-align: center;
+      }
+
+    }
+
+  </style>
 </head>
 
 <body>
 
-<header>
+  <!-- =======================================================
+       HEADER
+  ======================================================== -->
 
-<h1>Sistema de Control de Parqueos</h1>
+  <header class="app-header">
 
-<p>
-Dashboard Operativo
-</p>
+    <div class="header-inner">
 
-</header>
+      <div class="brand">
+        <h1>Sistema de Control de Parqueos</h1>
+        <p>Dashboard Operativo</p>
+      </div>
 
-<main>
+      <div class="header-status">
 
-</main>
+        <div class="sync-status">
+
+          <span class="status-dot"></span>
+
+          <div>
+            <div class="sync-main">Datos actualizados</div>
+            <div class="sync-sub">Actualización automática cada 60 segundos</div>
+          </div>
+
+        </div>
+
+        <div class="last-sync">
+          <div class="last-sync-label">Última sincronización</div>
+          <div class="last-sync-value" id="lastSync">
+            07/08/2026 · 08:46 a. m.
+          </div>
+        </div>
+
+        <button
+          class="refresh-btn"
+          id="refreshButton"
+          title="Actualizar datos"
+          type="button"
+        >
+          ↻
+        </button>
+
+      </div>
+
+    </div>
+
+  </header>
+
+  <!-- =======================================================
+       DASHBOARD
+  ======================================================== -->
+
+  <main class="dashboard">
+
+    <!-- CONTROLES -->
+
+    <section class="controls-card">
+
+      <div class="view-tabs">
+
+        <button
+          class="view-tab active"
+          data-view="day"
+        >
+          Día
+        </button>
+
+        <button
+          class="view-tab"
+          data-view="week"
+        >
+          Semana
+        </button>
+
+        <button
+          class="view-tab"
+          data-view="month"
+        >
+          Mes
+        </button>
+
+      </div>
+
+      <div class="period-control">
+
+        <label id="periodLabel">
+          Fecha
+        </label>
+
+        <input
+          type="date"
+          id="dateSelector"
+          value="2026-08-06"
+        >
+
+      </div>
+
+    </section>
+
+    <!-- CALIDAD DE DATOS -->
+
+    <section class="quality-strip">
+
+      <div class="quality-title">
+
+        <div class="quality-icon">
+          ✓
+        </div>
+
+        <div>
+
+          <div class="quality-main">
+            Calidad de datos: Sin incidencias
+          </div>
+
+          <div class="quality-sub">
+            Información validada para el período seleccionado
+          </div>
+
+        </div>
+
+      </div>
+
+      <div class="quality-items">
+
+        <span class="quality-chip">
+          ✓ Sin duplicados
+        </span>
+
+        <span class="quality-chip">
+          ✓ Sin horarios faltantes
+        </span>
+
+        <span class="quality-chip">
+          ✓ Dentro de capacidad
+        </span>
+
+        <span class="quality-chip">
+          ✓ 10 de 10 registros
+        </span>
+
+      </div>
+
+    </section>
+
+    <!-- KPIS PRINCIPALES -->
+
+    <section class="kpi-grid">
+
+      <!-- CARROS -->
+
+      <article class="kpi-card">
+
+        <div class="kpi-label">
+          Carros estacionados
+        </div>
+
+        <div class="kpi-number-row">
+
+          <span class="kpi-number">
+            29
+          </span>
+
+          <span class="kpi-capacity">
+            / 420
+          </span>
+
+        </div>
+
+        <div class="progress">
+
+          <div
+            class="progress-bar"
+            style="width:6.9%"
+          ></div>
+
+        </div>
+
+        <div class="progress-meta">
+
+          <span>
+            391 disponibles
+          </span>
+
+          <strong>
+            6.9%
+          </strong>
+
+        </div>
+
+      </article>
+
+      <!-- MOTOS -->
+
+      <article class="kpi-card">
+
+        <div class="kpi-label">
+          Motos estacionadas
+        </div>
+
+        <div class="kpi-number-row">
+
+          <span class="kpi-number">
+            9
+          </span>
+
+          <span class="kpi-capacity">
+            / 80
+          </span>
+
+        </div>
+
+        <div class="progress">
+
+          <div
+            class="progress-bar"
+            style="width:11.3%"
+          ></div>
+
+        </div>
+
+        <div class="progress-meta">
+
+          <span>
+            71 disponibles
+          </span>
+
+          <strong>
+            11.3%
+          </strong>
+
+        </div>
+
+      </article>
+
+      <!-- TOTAL -->
+
+      <article class="kpi-card">
+
+        <div class="kpi-label">
+          Ocupación total
+        </div>
+
+        <div class="kpi-number-row">
+
+          <span class="kpi-number">
+            38
+          </span>
+
+          <span class="kpi-capacity">
+            / 500
+          </span>
+
+        </div>
+
+        <div class="progress">
+
+          <div
+            class="progress-bar"
+            style="width:7.6%"
+          ></div>
+
+        </div>
+
+        <div class="progress-meta">
+
+          <span>
+            462 espacios disponibles
+          </span>
+
+          <strong>
+            7.6%
+          </strong>
+
+        </div>
+
+      </article>
+
+      <!-- ESTADO -->
+
+      <article class="kpi-card">
+
+        <div class="kpi-label">
+          Estado del parqueo
+        </div>
+
+        <div
+          class="kpi-number kpi-highlight-success"
+          style="font-size:27px"
+        >
+          Disponible
+        </div>
+
+        <div class="kpi-sub">
+          Nivel de ocupación normal
+        </div>
+
+        <div class="kpi-sub">
+          462 espacios disponibles
+        </div>
+
+      </article>
+
+    </section>
+
+    <!-- KPIS OPERATIVOS -->
+
+    <section class="secondary-grid">
+
+      <article class="mini-card">
+
+        <div class="mini-label">
+          Entradas del día
+        </div>
+
+        <div
+          class="mini-value"
+          style="color:var(--success)"
+        >
+          550
+        </div>
+
+        <div class="mini-detail">
+          411 carros<br>
+          139 motos
+        </div>
+
+      </article>
+
+      <article class="mini-card">
+
+        <div class="mini-label">
+          Salidas del día
+        </div>
+
+        <div
+          class="mini-value"
+          style="color:var(--danger)"
+        >
+          588
+        </div>
+
+        <div class="mini-detail">
+          443 carros<br>
+          145 motos
+        </div>
+
+      </article>
+
+      <article class="mini-card">
+
+        <div class="mini-label">
+          Máxima ocupación
+        </div>
+
+        <div class="mini-value">
+          330
+        </div>
+
+        <div class="mini-detail">
+          Carros<br>
+          112 motos
+        </div>
+
+      </article>
+
+      <article class="mini-card">
+
+        <div class="mini-label">
+          Hora pico
+        </div>
+
+        <div
+          class="mini-value"
+          style="color:var(--warning)"
+        >
+          01:00 p. m.
+        </div>
+
+        <div class="mini-detail">
+          Mayor ocupación del período
+        </div>
+
+      </article>
+
+      <article class="mini-card">
+
+        <div class="mini-label">
+          Registros recibidos
+        </div>
+
+        <div class="mini-value">
+          10 / 10
+        </div>
+
+        <div class="mini-detail">
+          Cobertura del día: 100%
+        </div>
+
+      </article>
+
+    </section>
+
+    <!-- ÚLTIMO REPORTE -->
+
+    <section class="report-card">
+
+      <div class="report-card-title">
+        Último reporte operativo
+      </div>
+
+      <div class="report-details">
+
+        <div>
+
+          <div class="report-detail-label">
+            Fecha operativa
+          </div>
+
+          <div class="report-detail-value">
+            06/08/2026
+          </div>
+
+        </div>
+
+        <div>
+
+          <div class="report-detail-label">
+            Hora reportada
+          </div>
+
+          <div class="report-detail-value">
+            10:00 p. m.
+          </div>
+
+        </div>
+
+        <div>
+
+          <div class="report-detail-label">
+            Recibido por el sistema
+          </div>
+
+          <div class="report-detail-value">
+            06/08/2026
+          </div>
+
+        </div>
+
+        <div>
+
+          <div class="report-detail-label">
+            Timestamp
+          </div>
+
+          <div class="report-detail-value">
+            11:15:51 p. m.
+          </div>
+
+        </div>
+
+      </div>
+
+    </section>
+
+    <!-- GRÁFICAS -->
+
+    <section class="charts-grid">
+
+      <!-- OCUPACIÓN -->
+
+      <article class="chart-card">
+
+        <div class="chart-title">
+          Ocupación durante el día
+        </div>
+
+        <div class="chart-subtitle">
+          Total de vehículos estacionados por bloque horario
+        </div>
+
+        <div class="chart-box">
+
+          <canvas
+            id="occupancyChart"
+          ></canvas>
+
+        </div>
+
+      </article>
+
+      <!-- MOVIMIENTOS -->
+
+      <article class="chart-card">
+
+        <div class="chart-title">
+          Movimientos por hora
+        </div>
+
+        <div class="chart-subtitle">
+          Entradas y salidas combinadas
+        </div>
+
+        <div class="chart-box">
+
+          <canvas
+            id="movementsChart"
+          ></canvas>
+
+        </div>
+
+      </article>
+
+    </section>
+
+    <!-- OCUPACIÓN PORCENTUAL -->
+
+    <section class="chart-card full-chart">
+
+      <div class="chart-title">
+        Porcentaje de ocupación
+      </div>
+
+      <div class="chart-subtitle">
+        Utilización total de la capacidad disponible
+      </div>
+
+      <div class="chart-box">
+
+        <canvas
+          id="percentageChart"
+        ></canvas>
+
+      </div>
+
+    </section>
+
+    <!-- RESUMEN -->
+
+    <section class="period-summary">
+
+      <article class="summary-card">
+
+        <div class="summary-title">
+          Período mostrado
+        </div>
+
+        <div class="summary-value">
+          06/08/2026
+        </div>
+
+        <div class="summary-description">
+          Vista diaria
+        </div>
+
+      </article>
+
+      <article class="summary-card">
+
+        <div class="summary-title">
+          Cobertura
+        </div>
+
+        <div class="summary-value">
+          100%
+        </div>
+
+        <div class="summary-description">
+          10 de 10 bloques horarios recibidos
+        </div>
+
+      </article>
+
+      <article class="summary-card">
+
+        <div class="summary-title">
+          Capacidad total
+        </div>
+
+        <div class="summary-value">
+          500
+        </div>
+
+        <div class="summary-description">
+          420 carros · 80 motos
+        </div>
+
+      </article>
+
+    </section>
+
+  </main>
+
+  <!-- =======================================================
+       FOOTER
+  ======================================================== -->
+
+  <footer>
+
+    <div class="footer-inner">
+
+      <div>
+        Sistema de Control de Parqueos
+      </div>
+
+      <div class="footer-center">
+        Facilities Management - RT
+      </div>
+
+      <div>
+        Versión 2.0
+      </div>
+
+    </div>
+
+  </footer>
+
+  <!-- =======================================================
+       JAVASCRIPT VISUAL
+  ======================================================== -->
+
+  <script>
+
+    /* =======================================================
+       VISTAS
+    ======================================================== */
+
+    const tabs =
+      document.querySelectorAll(".view-tab");
+
+    const periodLabel =
+      document.getElementById("periodLabel");
+
+    const dateSelector =
+      document.getElementById("dateSelector");
+
+
+    tabs.forEach(tab => {
+
+      tab.addEventListener("click", () => {
+
+        tabs.forEach(item =>
+          item.classList.remove("active")
+        );
+
+        tab.classList.add("active");
+
+        const view =
+          tab.dataset.view;
+
+        if (view === "day") {
+
+          periodLabel.textContent =
+            "Fecha";
+
+          dateSelector.type =
+            "date";
+
+        }
+
+        if (view === "week") {
+
+          periodLabel.textContent =
+            "Semana";
+
+          dateSelector.type =
+            "week";
+
+        }
+
+        if (view === "month") {
+
+          periodLabel.textContent =
+            "Mes";
+
+          dateSelector.type =
+            "month";
+
+        }
+
+      });
+
+    });
+
+
+    /* =======================================================
+       BOTÓN ACTUALIZAR
+    ======================================================== */
+
+    document
+      .getElementById("refreshButton")
+      .addEventListener(
+        "click",
+        function() {
+
+          this.textContent = "⟳";
+
+          const now =
+            new Date();
+
+          document
+            .getElementById("lastSync")
+            .textContent =
+              now.toLocaleString(
+                "es-GT"
+              );
+
+          setTimeout(() => {
+
+            this.textContent = "↻";
+
+          }, 500);
+
+        }
+      );
+
+
+    /* =======================================================
+       DATOS VISUALES DE PRUEBA
+    ======================================================== */
+
+    const labels = [
+
+      "12:00 a. m.",
+      "04:00 a. m.",
+      "06:00 a. m.",
+      "08:00 a. m.",
+      "10:00 a. m.",
+      "01:00 p. m.",
+      "03:00 p. m.",
+      "05:00 p. m.",
+      "08:00 p. m.",
+      "10:00 p. m."
+
+    ];
+
+
+    const cars = [
+
+      43,
+      54,
+      242,
+      274,
+      311,
+      330,
+      275,
+      170,
+      77,
+      29
+
+    ];
+
+
+    const motorcycles = [
+
+      8,
+      6,
+      60,
+      76,
+      94,
+      112,
+      102,
+      78,
+      31,
+      9
+
+    ];
+
+
+    const entries = [
+
+      6,
+      21,
+      270,
+      64,
+      63,
+      64,
+      21,
+      6,
+      13,
+      15
+
+    ];
+
+
+    const exits = [
+
+      31,
+      30,
+      11,
+      19,
+      6,
+      28,
+      84,
+      135,
+      153,
+      83
+
+    ];
+
+
+    const percentage = cars.map(
+      (value, index) => {
+
+        const total =
+          value +
+          motorcycles[index];
+
+        return Number(
+          (
+            (total / 500) * 100
+          ).toFixed(1)
+        );
+
+      }
+    );
+
+
+    /* =======================================================
+       CONFIGURACIÓN GENERAL CHART.JS
+    ======================================================== */
+
+    Chart.defaults.font.family =
+      '-apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Arial, sans-serif';
+
+    Chart.defaults.color =
+      "#64748b";
+
+
+    /* =======================================================
+       GRÁFICA OCUPACIÓN
+    ======================================================== */
+
+    new Chart(
+      document.getElementById(
+        "occupancyChart"
+      ),
+      {
+
+        type: "line",
+
+        data: {
+
+          labels: labels,
+
+          datasets: [
+
+            {
+
+              label: "Carros",
+
+              data: cars,
+
+              borderColor:
+                "#4f7df5",
+
+              backgroundColor:
+                "rgba(79,125,245,.10)",
+
+              fill: true,
+
+              tension: .35,
+
+              borderWidth: 3,
+
+              pointRadius: 3,
+
+              pointHoverRadius: 6
+
+            },
+
+            {
+
+              label: "Motos",
+
+              data: motorcycles,
+
+              borderColor:
+                "#e3a008",
+
+              backgroundColor:
+                "rgba(227,160,8,.08)",
+
+              fill: true,
+
+              tension: .35,
+
+              borderWidth: 3,
+
+              pointRadius: 3,
+
+              pointHoverRadius: 6
+
+            }
+
+          ]
+
+        },
+
+        options: {
+
+          responsive: true,
+
+          maintainAspectRatio: false,
+
+          interaction: {
+
+            mode: "index",
+            intersect: false
+
+          },
+
+          plugins: {
+
+            legend: {
+
+              position: "bottom"
+
+            }
+
+          },
+
+          scales: {
+
+            y: {
+
+              beginAtZero: true,
+
+              suggestedMax: 450,
+
+              grid: {
+
+                color:
+                  "rgba(15,23,42,.05)"
+
+              }
+
+            },
+
+            x: {
+
+              grid: {
+
+                display: false
+
+              }
+
+            }
+
+          }
+
+        }
+
+      }
+    );
+
+
+    /* =======================================================
+       GRÁFICA MOVIMIENTOS
+    ======================================================== */
+
+    new Chart(
+      document.getElementById(
+        "movementsChart"
+      ),
+      {
+
+        type: "bar",
+
+        data: {
+
+          labels: labels,
+
+          datasets: [
+
+            {
+
+              label: "Entradas",
+
+              data: entries,
+
+              backgroundColor:
+                "rgba(34,165,91,.72)",
+
+              borderRadius: 5
+
+            },
+
+            {
+
+              label: "Salidas",
+
+              data: exits,
+
+              backgroundColor:
+                "rgba(220,76,76,.72)",
+
+              borderRadius: 5
+
+            }
+
+          ]
+
+        },
+
+        options: {
+
+          responsive: true,
+
+          maintainAspectRatio: false,
+
+          interaction: {
+
+            mode: "index",
+            intersect: false
+
+          },
+
+          plugins: {
+
+            legend: {
+
+              position: "bottom"
+
+            }
+
+          },
+
+          scales: {
+
+            y: {
+
+              beginAtZero: true,
+
+              grid: {
+
+                color:
+                  "rgba(15,23,42,.05)"
+
+              }
+
+            },
+
+            x: {
+
+              grid: {
+
+                display: false
+
+              }
+
+            }
+
+          }
+
+        }
+
+      }
+    );
+
+
+    /* =======================================================
+       GRÁFICA PORCENTAJE
+    ======================================================== */
+
+    new Chart(
+      document.getElementById(
+        "percentageChart"
+      ),
+      {
+
+        type: "line",
+
+        data: {
+
+          labels: labels,
+
+          datasets: [
+
+            {
+
+              label:
+                "Ocupación total",
+
+              data:
+                percentage,
+
+              borderColor:
+                "#7654c5",
+
+              backgroundColor:
+                "rgba(118,84,197,.10)",
+
+              fill: true,
+
+              tension: .35,
+
+              borderWidth: 3,
+
+              pointRadius: 3
+
+            }
+
+          ]
+
+        },
+
+        options: {
+
+          responsive: true,
+
+          maintainAspectRatio: false,
+
+          plugins: {
+
+            legend: {
+
+              position: "bottom"
+
+            }
+
+          },
+
+          scales: {
+
+            y: {
+
+              beginAtZero: true,
+
+              max: 100,
+
+              ticks: {
+
+                callback:
+                  value =>
+                    value + "%"
+
+              },
+
+              grid: {
+
+                color:
+                  "rgba(15,23,42,.05)"
+
+              }
+
+            },
+
+            x: {
+
+              grid: {
+
+                display: false
+
+              }
+
+            }
+
+          }
+
+        }
+
+      }
+    );
+
+  </script>
 
 </body>
 </html>

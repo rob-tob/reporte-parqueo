@@ -12,22 +12,16 @@
     :root {
       --primary: #4f7df5;
       --secondary: #7654c5;
-
       --success: #22a55b;
       --warning: #e3a008;
       --danger: #dc4c4c;
-
       --background: #f3f6fb;
       --surface: #ffffff;
-
       --text: #1e293b;
       --text-soft: #64748b;
       --text-light: #94a3b8;
-
       --border: #e2e8f0;
-
       --shadow: 0 8px 24px rgba(15,23,42,.07);
-
       --radius: 16px;
     }
 
@@ -48,7 +42,6 @@
 
       background: var(--background);
       color: var(--text);
-
       min-height: 100vh;
     }
 
@@ -61,8 +54,6 @@
       cursor: pointer;
     }
 
-    /* HEADER */
-
     .app-header {
       background:
         linear-gradient(
@@ -72,13 +63,11 @@
         );
 
       color: white;
-
       padding: 22px 30px;
     }
 
     .header-inner {
       max-width: 1500px;
-
       margin: auto;
 
       display: flex;
@@ -95,7 +84,6 @@
 
     .brand p {
       margin-top: 5px;
-
       font-size: 14px;
       opacity: .88;
     }
@@ -103,14 +91,12 @@
     .header-status {
       display: flex;
       align-items: center;
-
       gap: 24px;
     }
 
     .sync-status {
       display: flex;
       align-items: center;
-
       gap: 10px;
     }
 
@@ -129,18 +115,10 @@
 
     .status-dot.ok {
       background: #61e28d;
-
-      box-shadow:
-        0 0 0 5px
-        rgba(97,226,141,.13);
     }
 
     .status-dot.error {
       background: #ff7676;
-
-      box-shadow:
-        0 0 0 5px
-        rgba(255,118,118,.14);
     }
 
     .sync-main {
@@ -150,7 +128,6 @@
 
     .sync-sub {
       margin-top: 2px;
-
       font-size: 12px;
       opacity: .84;
     }
@@ -166,13 +143,11 @@
     .last-sync-label {
       font-size: 11px;
       opacity: .75;
-
       text-transform: uppercase;
     }
 
     .last-sync-value {
       margin-top: 4px;
-
       font-size: 14px;
       font-weight: 650;
     }
@@ -191,17 +166,12 @@
         rgba(255,255,255,.12);
 
       color: white;
-
       font-size: 20px;
     }
 
-    /* GENERAL */
-
     .dashboard {
       max-width: 1500px;
-
       margin: auto;
-
       padding: 24px;
     }
 
@@ -213,13 +183,9 @@
     .chart-card,
     .summary-card {
       background: var(--surface);
-
       box-shadow: var(--shadow);
-
       border-radius: var(--radius);
     }
-
-    /* CONTROLES */
 
     .controls-card {
       padding: 14px;
@@ -237,24 +203,19 @@
       min-width: 360px;
 
       display: inline-grid;
-
-      grid-template-columns:
-        repeat(3,1fr);
+      grid-template-columns: repeat(3,1fr);
 
       background: #edf2f9;
 
       border-radius: 11px;
-
       padding: 4px;
     }
 
     .view-tab {
       border: none;
-
       background: transparent;
 
       border-radius: 8px;
-
       padding: 10px 24px;
 
       color: var(--text-soft);
@@ -270,30 +231,22 @@
     .period-control {
       display: flex;
       align-items: center;
-
       gap: 12px;
     }
 
     .period-control label {
       color: var(--text-soft);
-
       font-size: 13px;
       font-weight: 650;
     }
 
     .period-control input {
-      border:
-        1px solid
-        var(--border);
-
+      border: 1px solid var(--border);
       background: white;
 
       padding: 9px 12px;
-
       border-radius: 9px;
     }
-
-    /* CALIDAD */
 
     .quality-strip {
       padding: 16px 18px;
@@ -310,7 +263,6 @@
     .quality-title {
       display: flex;
       align-items: center;
-
       gap: 12px;
     }
 
@@ -329,16 +281,12 @@
 
     .quality-icon.ok {
       color: var(--success);
-
-      background:
-        rgba(34,165,91,.12);
+      background: rgba(34,165,91,.12);
     }
 
     .quality-icon.warn {
       color: var(--warning);
-
-      background:
-        rgba(227,160,8,.14);
+      background: rgba(227,160,8,.14);
     }
 
     .quality-main {
@@ -357,7 +305,6 @@
     .quality-items {
       display: flex;
       flex-wrap: wrap;
-
       gap: 8px;
     }
 
@@ -380,22 +327,16 @@
       color: #946200;
     }
 
-    /* KPIs */
-
     .kpi-grid {
       display: grid;
-
-      grid-template-columns:
-        repeat(4,1fr);
+      grid-template-columns: repeat(4,1fr);
 
       gap: 16px;
-
       margin-bottom: 18px;
     }
 
     .kpi-card {
       padding: 19px;
-
       min-height: 155px;
     }
 
@@ -413,9 +354,7 @@
     .kpi-number-row {
       display: flex;
       align-items: baseline;
-
       gap: 7px;
-
       margin-top: 9px;
     }
 
@@ -426,15 +365,12 @@
 
     .kpi-capacity {
       color: var(--text-light);
-
       font-size: 17px;
     }
 
     .kpi-sub {
       margin-top: 9px;
-
       color: var(--text-soft);
-
       font-size: 12px;
     }
 
@@ -453,7 +389,6 @@
 
     .progress-bar {
       height: 100%;
-
       border-radius: 20px;
 
       background:
@@ -471,46 +406,35 @@
       justify-content: space-between;
 
       color: var(--text-soft);
-
       font-size: 11px;
     }
 
-    /* KPIs SECUNDARIOS */
-
     .secondary-grid {
       display: grid;
-
-      grid-template-columns:
-        repeat(5,1fr);
+      grid-template-columns: repeat(5,1fr);
 
       gap: 16px;
-
       margin-bottom: 18px;
     }
 
     .mini-card {
       padding: 18px;
-
       min-height: 135px;
     }
 
     .mini-value {
       margin-top: 11px;
-
       font-size: 27px;
       font-weight: 770;
     }
 
     .mini-detail {
       margin-top: 11px;
-
       color: var(--text-soft);
 
       font-size: 12px;
       line-height: 1.45;
     }
-
-    /* ÚLTIMO REPORTE */
 
     .report-card {
       padding: 18px;
@@ -522,17 +446,13 @@
 
     .report-card-title {
       margin-bottom: 14px;
-
       font-size: 13px;
       font-weight: 750;
     }
 
     .report-details {
       display: grid;
-
-      grid-template-columns:
-        repeat(4,1fr);
-
+      grid-template-columns: repeat(4,1fr);
       gap: 20px;
     }
 
@@ -540,26 +460,20 @@
       color: var(--text-light);
 
       font-size: 11px;
-
       text-transform: uppercase;
     }
 
     .report-detail-value {
       margin-top: 4px;
-
       font-size: 14px;
       font-weight: 680;
     }
-
-    /* GRÁFICAS */
 
     .charts-grid {
       margin-top: 18px;
 
       display: grid;
-
-      grid-template-columns:
-        1.65fr 1fr;
+      grid-template-columns: 1.65fr 1fr;
 
       gap: 18px;
     }
@@ -575,17 +489,13 @@
 
     .chart-subtitle {
       margin-top: 3px;
-
       color: var(--text-soft);
-
       font-size: 12px;
     }
 
     .chart-box {
       position: relative;
-
       height: 335px;
-
       margin-top: 18px;
     }
 
@@ -593,15 +503,11 @@
       margin-top: 18px;
     }
 
-    /* RESUMEN */
-
     .period-summary {
       margin-top: 18px;
 
       display: grid;
-
-      grid-template-columns:
-        repeat(3,1fr);
+      grid-template-columns: repeat(3,1fr);
 
       gap: 16px;
     }
@@ -612,35 +518,26 @@
 
     .summary-value {
       margin-top: 8px;
-
       font-size: 24px;
       font-weight: 760;
     }
 
     .summary-description {
       margin-top: 7px;
-
       color: var(--text-soft);
-
       font-size: 12px;
     }
-
-    /* FOOTER */
 
     footer {
       max-width: 1500px;
 
-      margin:
-        24px auto 0;
+      margin: 24px auto 0;
 
-      padding:
-        20px 24px 30px;
+      padding: 20px 24px 30px;
     }
 
     .footer-inner {
-      border-top:
-        1px solid
-        var(--border);
+      border-top: 1px solid var(--border);
 
       padding-top: 18px;
 
@@ -648,22 +545,16 @@
       justify-content: space-between;
 
       color: var(--text-soft);
-
       font-size: 12px;
     }
 
-    /* RESPONSIVE */
-
     @media(max-width:1000px) {
-
       .kpi-grid {
-        grid-template-columns:
-          repeat(2,1fr);
+        grid-template-columns: repeat(2,1fr);
       }
 
       .secondary-grid {
-        grid-template-columns:
-          repeat(2,1fr);
+        grid-template-columns: repeat(2,1fr);
       }
 
       .charts-grid {
@@ -672,7 +563,6 @@
     }
 
     @media(max-width:600px) {
-
       .header-inner {
         flex-direction: column;
         align-items: flex-start;
@@ -680,9 +570,7 @@
 
       .header-status {
         width: 100%;
-
-        justify-content:
-          space-between;
+        justify-content: space-between;
       }
 
       .last-sync {
@@ -795,8 +683,6 @@
 
 <main class="dashboard">
 
-  <!-- CONTROLES -->
-
   <section class="controls-card">
 
     <div class="view-tabs">
@@ -844,8 +730,6 @@
   </section>
 
 
-  <!-- CALIDAD -->
-
   <section class="quality-strip">
 
     <div class="quality-title">
@@ -887,8 +771,6 @@
 
   </section>
 
-
-  <!-- KPIs PRINCIPALES -->
 
   <section class="kpi-grid">
 
@@ -955,7 +837,7 @@
         </span>
 
         <span class="kpi-capacity">
-          / 80
+          / 125
         </span>
 
       </div>
@@ -1001,7 +883,7 @@
         </span>
 
         <span class="kpi-capacity">
-          / 500
+          / 545
         </span>
 
       </div>
@@ -1032,12 +914,16 @@
 
     <article class="kpi-card">
 
-      <div class="kpi-label">
+      <div
+        id="dynamicCardLabel"
+        class="kpi-label">
+
         Estado del parqueo
+
       </div>
 
       <div
-        id="parkingState"
+        id="dynamicCardValue"
         class="kpi-number"
         style="
           font-size:27px;
@@ -1049,7 +935,7 @@
       </div>
 
       <div
-        id="parkingStateSub"
+        id="dynamicCardSub"
         class="kpi-sub">
 
         —
@@ -1057,7 +943,7 @@
       </div>
 
       <div
-        id="parkingSpacesSub"
+        id="dynamicCardExtra"
         class="kpi-sub">
 
         —
@@ -1068,8 +954,6 @@
 
   </section>
 
-
-  <!-- KPIs SECUNDARIOS -->
 
   <section class="secondary-grid">
 
@@ -1211,8 +1095,6 @@
   </section>
 
 
-  <!-- ÚLTIMO REPORTE -->
-
   <section class="report-card">
 
     <div class="report-card-title">
@@ -1294,8 +1176,6 @@
 
   </section>
 
-
-  <!-- GRÁFICAS -->
 
   <section class="charts-grid">
 
@@ -1384,8 +1264,6 @@
   </section>
 
 
-  <!-- RESUMEN -->
-
   <section class="period-summary">
 
     <article class="summary-card">
@@ -1445,11 +1323,11 @@
       </div>
 
       <div class="summary-value">
-        500
+        545
       </div>
 
       <div class="summary-description">
-        420 carros · 80 motos
+        420 carros · 125 motos
       </div>
 
     </article>
@@ -1489,24 +1367,16 @@
 const API_URL =
   "https://script.google.com/macros/s/AKfycbwMErK_ZakrjehkOH1WRNI-wo3iAOWoght6QxuerL-Ss3dVvsksTOwjIGJZp6At_qgS/exec";
 
-const CAR_CAPACITY =
-  420;
-
-const MOTO_CAPACITY =
-  80;
-
-const TOTAL_CAPACITY =
-  500;
-
+const CAR_CAPACITY = 420;
+const MOTO_CAPACITY = 125;
+const TOTAL_CAPACITY = 545;
 
 const EXPECTED_HOURS = [
-
   "12:00am",
   "04:00am",
   "06:00am",
   "08:00am",
   "10:00am",
-
   "01:00pm",
   "03:00pm",
   "05:00pm",
@@ -1514,26 +1384,17 @@ const EXPECTED_HOURS = [
   "10:00pm"
 ];
 
-
 const AUTO_REFRESH_MS =
   60000;
-
 
 let allRecords = [];
 
 let currentView =
   "day";
 
-
-let occupancyChart =
-  null;
-
-let movementsChart =
-  null;
-
-let percentageChart =
-  null;
-
+let occupancyChart = null;
+let movementsChart = null;
+let percentageChart = null;
 
 const $ =
   id =>
@@ -1574,17 +1435,12 @@ function parseDMY(value) {
       /^(\d{1,2})\/(\d{1,2})\/(\d{4})$/
     );
 
-
   if (!match)
     return null;
 
-
   return new Date(
-
     Number(match[3]),
-
     Number(match[2]) - 1,
-
     Number(match[1])
   );
 }
@@ -1593,13 +1449,10 @@ function parseDMY(value) {
 function formatDMY(date) {
 
   return (
-
     pad(date.getDate()) +
     "/" +
-
     pad(date.getMonth()+1) +
     "/" +
-
     date.getFullYear()
   );
 }
@@ -1608,13 +1461,10 @@ function formatDMY(date) {
 function formatISO(date) {
 
   return (
-
     date.getFullYear() +
     "-" +
-
     pad(date.getMonth()+1) +
     "-" +
-
     pad(date.getDate())
   );
 }
@@ -1639,40 +1489,31 @@ function hourMinutes(value) {
       /^(\d{1,2}):(\d{2})(am|pm)$/
     );
 
-
   if (!match)
     return 0;
-
 
   let hour =
     Number(match[1]);
 
-
   const minutes =
     Number(match[2]);
 
-
   const period =
     match[3];
-
 
   if (
     period === "am" &&
     hour === 12
   ) {
-
     hour = 0;
   }
-
 
   if (
     period === "pm" &&
     hour !== 12
   ) {
-
     hour += 12;
   }
-
 
   return (
     hour * 60 +
@@ -1740,15 +1581,11 @@ function recordDateTime(record) {
       record.fecha
     );
 
-
   if (!date)
     return 0;
 
-
   return (
-
     date.getTime() +
-
     hourMinutes(
       record.hora
     ) * 60000
@@ -1760,7 +1597,6 @@ function latestRecord(records) {
 
   if (!records.length)
     return null;
-
 
   return [...records]
     .sort(
@@ -1776,10 +1612,8 @@ function sum(records,key) {
 
   return records.reduce(
     (total,record) =>
-
     total +
     number(record[key]),
-
     0
   );
 }
@@ -1790,15 +1624,10 @@ function percentage(value,max) {
   if (!max)
     return 0;
 
-
   return Math.max(
-
     0,
-
     Math.min(
-
       100,
-
       (value/max)*100
     )
   );
@@ -1821,24 +1650,19 @@ function startOfWeek(date) {
   const result =
     new Date(date);
 
-
   const day =
     (
       result.getDay() + 6
     ) % 7;
 
-
   result.setDate(
-
     result.getDate() -
     day
   );
 
-
   result.setHours(
     0,0,0,0
   );
-
 
   return result;
 }
@@ -1849,24 +1673,21 @@ function endOfWeek(date) {
   const result =
     startOfWeek(date);
 
-
   result.setDate(
     result.getDate() +
     6
   );
 
-
   result.setHours(
     23,59,59,999
   );
-
 
   return result;
 }
 
 
 /* ==========================================================
-   RANGO ACTUAL
+   RANGO
 ========================================================== */
 
 function selectedRange() {
@@ -1878,10 +1699,8 @@ function selectedRange() {
     const value =
       $("periodSelector").value;
 
-
     if (!value)
       return null;
-
 
     const start =
       new Date(
@@ -1889,15 +1708,12 @@ function selectedRange() {
         "T00:00:00"
       );
 
-
     const end =
       new Date(start);
-
 
     end.setHours(
       23,59,59,999
     );
-
 
     return [
       start,
@@ -1915,9 +1731,7 @@ function selectedRange() {
   ) {
 
     return [
-
       startOfWeek(today),
-
       endOfWeek(today)
     ];
   }
@@ -1926,26 +1740,103 @@ function selectedRange() {
   return [
 
     new Date(
-
       today.getFullYear(),
-
       today.getMonth(),
-
       1
     ),
 
-
     new Date(
-
       today.getFullYear(),
-
       today.getMonth()+1,
-
       0,
-
       23,59,59,999
     )
   ];
+}
+
+
+/* ==========================================================
+   HORARIOS ESPERADOS PARA UNA FECHA
+========================================================== */
+
+function expectedHoursForDate(dateText) {
+
+  const date =
+    parseDMY(
+      dateText
+    );
+
+  if (!date)
+    return [];
+
+
+  const today =
+    new Date();
+
+
+  const cleanToday =
+    new Date(
+      today.getFullYear(),
+      today.getMonth(),
+      today.getDate()
+    );
+
+
+  const cleanDate =
+    new Date(
+      date.getFullYear(),
+      date.getMonth(),
+      date.getDate()
+    );
+
+
+  /*
+    Fecha anterior:
+    se esperan los 10.
+  */
+
+  if (
+    cleanDate <
+    cleanToday
+  ) {
+
+    return [
+      ...EXPECTED_HOURS
+    ];
+  }
+
+
+  /*
+    Fecha futura:
+    no se espera ninguno.
+  */
+
+  if (
+    cleanDate >
+    cleanToday
+  ) {
+
+    return [];
+  }
+
+
+  /*
+    Hoy:
+    solo horarios que ya pasaron.
+  */
+
+  const nowMinutes =
+    today.getHours() * 60 +
+    today.getMinutes();
+
+
+  return EXPECTED_HOURS
+    .filter(
+      hour =>
+
+      hourMinutes(hour) <=
+      nowMinutes
+    );
 }
 
 
@@ -1958,16 +1849,10 @@ function expectedDatesForCurrentView() {
   const today =
     new Date();
 
-
   today.setHours(
     0,0,0,0
   );
 
-
-  /*
-    DÍA:
-    solo la fecha seleccionada.
-  */
 
   if (
     currentView === "day"
@@ -1976,17 +1861,14 @@ function expectedDatesForCurrentView() {
     const value =
       $("periodSelector").value;
 
-
     if (!value)
       return [];
-
 
     const date =
       new Date(
         value +
         "T00:00:00"
       );
-
 
     return [
       formatDMY(date)
@@ -1996,12 +1878,6 @@ function expectedDatesForCurrentView() {
 
   const dates = [];
 
-
-  /*
-    SEMANA:
-    desde lunes hasta HOY.
-    No contamos días futuros.
-  */
 
   if (
     currentView === "week"
@@ -2025,8 +1901,7 @@ function expectedDatesForCurrentView() {
 
 
       next.setDate(
-        next.getDate() +
-        1
+        next.getDate()+1
       );
 
 
@@ -2039,19 +1914,10 @@ function expectedDatesForCurrentView() {
   }
 
 
-  /*
-    MES:
-    desde día 1 hasta HOY.
-    No contamos días futuros.
-  */
-
   let date =
     new Date(
-
       today.getFullYear(),
-
       today.getMonth(),
-
       1
     );
 
@@ -2070,8 +1936,7 @@ function expectedDatesForCurrentView() {
 
 
     next.setDate(
-      next.getDate() +
-      1
+      next.getDate()+1
     );
 
 
@@ -2093,7 +1958,6 @@ function recordsForCurrentView() {
   const range =
     selectedRange();
 
-
   if (!range)
     return [];
 
@@ -2101,7 +1965,8 @@ function recordsForCurrentView() {
   const [
     start,
     end
-  ] = range;
+  ] =
+    range;
 
 
   return allRecords
@@ -2128,7 +1993,7 @@ function recordsForCurrentView() {
 
 
 /* ==========================================================
-   ESTADO DEL SISTEMA
+   ESTADO GLOBAL
 ========================================================== */
 
 function updateSystemStatus(updatedAt) {
@@ -2139,9 +2004,7 @@ function updateSystemStatus(updatedAt) {
     updatedAt ||
 
     new Date()
-      .toLocaleString(
-        "es-GT"
-      )
+      .toLocaleString("es-GT")
   );
 
 
@@ -2281,7 +2144,7 @@ function updateSystemStatus(updatedAt) {
 
 
 /* ==========================================================
-   CALIDAD DE DATOS
+   CALIDAD
 ========================================================== */
 
 function getQuality(records) {
@@ -2298,15 +2161,9 @@ function getQuality(records) {
     0;
 
 
-  /*
-    VALIDACIONES SOBRE
-    LOS REGISTROS EXISTENTES
-  */
-
   records.forEach(record => {
 
     const key =
-
       record.fecha +
       "|" +
       record.hora;
@@ -2324,16 +2181,10 @@ function getQuality(records) {
 
 
     /*
-      CAPACIDAD:
-
-      SOLO aplica a ocupación.
-
-      NO aplica a entradas
-      ni salidas acumuladas.
+      Solo ocupación.
     */
 
     if (
-
       record.totalCarros >
       CAR_CAPACITY
 
@@ -2350,26 +2201,19 @@ function getQuality(records) {
     const values = [
 
       record.entradaCarros,
-
       record.entradaMotos,
-
       record.salidaCarros,
-
       record.salidaMotos,
-
       record.totalCarros,
-
       record.totalMotos
     ];
 
 
     if (
-
       values.some(
         value =>
         value < 0
       )
-
     ) {
 
       negativeValues++;
@@ -2380,14 +2224,11 @@ function getQuality(records) {
   const duplicates =
 
     [...duplicateMap.values()]
-
     .filter(
       value =>
       value > 1
     )
-
     .reduce(
-
       (total,value) =>
 
       total +
@@ -2399,13 +2240,6 @@ function getQuality(records) {
     );
 
 
-  /*
-    HORARIOS FALTANTES
-
-    Evalúa también días
-    que no tienen NINGÚN registro.
-  */
-
   const expectedDates =
     expectedDatesForCurrentView();
 
@@ -2414,25 +2248,36 @@ function getQuality(records) {
     0;
 
 
-  const missingByDate =
-    [];
+  let incompleteDays =
+    0;
+
+
+  let expectedRecords =
+    0;
 
 
   expectedDates
     .forEach(date => {
 
-      const recordsForDate =
-
-        records.filter(
-          record =>
-          record.fecha === date
+      const expectedHours =
+        expectedHoursForDate(
+          date
         );
+
+
+      expectedRecords +=
+        expectedHours.length;
 
 
       const receivedHours =
         new Set(
 
-          recordsForDate.map(
+          records
+          .filter(
+            record =>
+            record.fecha === date
+          )
+          .map(
             record =>
             record.hora
           )
@@ -2440,34 +2285,23 @@ function getQuality(records) {
 
 
       const missing =
-        EXPECTED_HOURS
+        expectedHours
         .filter(
           hour =>
           !receivedHours.has(hour)
         );
 
 
-      missingHours +=
-        missing.length;
-
-
       if (
         missing.length > 0
       ) {
 
-        missingByDate.push({
-
-          date,
-
-          received:
-            receivedHours.size,
-
-          expected:
-            EXPECTED_HOURS.length,
-
-          missing
-        });
+        incompleteDays++;
       }
+
+
+      missingHours +=
+        missing.length;
     });
 
 
@@ -2481,20 +2315,18 @@ function getQuality(records) {
 
     missingHours,
 
-    missingByDate,
+    incompleteDays,
+
+    expectedRecords,
 
     expectedDates:
-      expectedDates.length,
-
-    expectedRecords:
-      expectedDates.length *
-      EXPECTED_HOURS.length
+      expectedDates.length
   };
 }
 
 
 /* ==========================================================
-   MOSTRAR CALIDAD
+   CALIDAD VISUAL
 ========================================================== */
 
 function renderQuality(records) {
@@ -2557,13 +2389,60 @@ function renderQuality(records) {
     );
 
 
-    setText(
-      "qualitySub",
+    if (
+      currentView === "day"
+    ) {
 
-      issues +
-      " incidencia(s) detectada(s)"
-    );
+      setText(
+        "qualitySub",
+
+        quality.missingHours > 0
+
+        ? quality.missingHours +
+          " horario(s) faltante(s)"
+
+        : issues +
+          " incidencia(s) detectada(s)"
+      );
+
+    } else {
+
+      setText(
+        "qualitySub",
+
+        quality.incompleteDays > 0
+
+        ? quality.incompleteDays +
+          " día(s) incompleto(s)"
+
+        : issues +
+          " incidencia(s) detectada(s)"
+      );
+    }
   }
+
+
+  const missingText =
+
+    currentView === "day"
+
+    ? (
+        quality.missingHours === 0
+
+        ? "Sin horarios faltantes"
+
+        : quality.missingHours +
+          " horario(s) faltante(s)"
+      )
+
+    : (
+        quality.incompleteDays === 0
+
+        ? "Sin días incompletos"
+
+        : quality.incompleteDays +
+          " día(s) incompleto(s)"
+      );
 
 
   const chips = [
@@ -2580,7 +2459,7 @@ function renderQuality(records) {
         ? "Sin duplicados"
 
         : quality.duplicates +
-          " registro(s) duplicado(s)"
+          " duplicado(s)"
     },
 
 
@@ -2590,13 +2469,7 @@ function renderQuality(records) {
         quality.missingHours === 0,
 
       text:
-
-        quality.missingHours === 0
-
-        ? "Sin horarios faltantes"
-
-        : quality.missingHours +
-          " horario(s) faltante(s)"
+        missingText
     },
 
 
@@ -2628,7 +2501,7 @@ function renderQuality(records) {
         ? "Sin valores negativos"
 
         : quality.negativeValues +
-          " registro(s) con valores negativos"
+          " registro(s) negativos"
     }
   ];
 
@@ -2666,10 +2539,6 @@ function renderQuality(records) {
     .join("");
 
 
-  /*
-    COBERTURA
-  */
-
   const expected =
     quality.expectedRecords;
 
@@ -2690,7 +2559,7 @@ function renderQuality(records) {
         ) * 100
       )
 
-    : 0;
+    : 100;
 
 
   setText(
@@ -2705,8 +2574,12 @@ function renderQuality(records) {
   setText(
     "recordsDetail",
 
-    quality.expectedDates +
-    " día(s) evaluados"
+    currentView === "day"
+
+    ? "Registros esperados hasta esta hora"
+
+    : quality.expectedDates +
+      " día(s) evaluados"
   );
 
 
@@ -2749,8 +2622,7 @@ function aggregateByDay(records) {
 
       groups[
         record.fecha
-      ] =
-        [];
+      ] = [];
     }
 
 
@@ -2762,7 +2634,6 @@ function aggregateByDay(records) {
 
   return Object
     .entries(groups)
-
     .map(
       ([fecha,rows]) => {
 
@@ -2780,22 +2651,18 @@ function aggregateByDay(records) {
             (max,record) => {
 
               const current =
-
                 record.totalCarros +
                 record.totalMotos;
 
 
               const maximum =
-
                 max.totalCarros +
                 max.totalMotos;
 
 
               return (
-
                 current >
                 maximum
-
               )
 
               ? record
@@ -2847,9 +2714,7 @@ function aggregateByDay(records) {
               rows,
               "entradaCarros"
             )
-
             +
-
             sum(
               rows,
               "entradaMotos"
@@ -2861,9 +2726,7 @@ function aggregateByDay(records) {
               rows,
               "salidaCarros"
             )
-
             +
-
             sum(
               rows,
               "salidaMotos"
@@ -2871,7 +2734,6 @@ function aggregateByDay(records) {
         };
       }
     )
-
     .sort(
       (a,b) =>
       a.date -
@@ -2881,7 +2743,7 @@ function aggregateByDay(records) {
 
 
 /* ==========================================================
-   ESTADO PARQUEO
+   ESTADO DEL PARQUEO
 ========================================================== */
 
 function parkingState(value) {
@@ -3007,19 +2869,19 @@ function clearDashboard() {
 
 
   setText(
-    "parkingState",
+    "dynamicCardValue",
     "Sin datos"
   );
 
 
   setText(
-    "parkingStateSub",
+    "dynamicCardSub",
     "No existen registros"
   );
 
 
   setText(
-    "parkingSpacesSub",
+    "dynamicCardExtra",
     "—"
   );
 
@@ -3029,7 +2891,140 @@ function clearDashboard() {
 
 
 /* ==========================================================
-   DASHBOARD
+   TARJETA DINÁMICA
+========================================================== */
+
+function renderDynamicCard(records,totalPct) {
+
+  if (
+    currentView === "day"
+  ) {
+
+    const state =
+      parkingState(
+        totalPct
+      );
+
+
+    setText(
+      "dynamicCardLabel",
+      "Estado del parqueo"
+    );
+
+
+    setText(
+      "dynamicCardValue",
+      state[0]
+    );
+
+
+    setText(
+      "dynamicCardSub",
+      state[1]
+    );
+
+
+    const latest =
+      latestRecord(
+        records
+      );
+
+
+    const available =
+
+      TOTAL_CAPACITY -
+
+      (
+        latest.totalCarros +
+        latest.totalMotos
+      );
+
+
+    setText(
+      "dynamicCardExtra",
+
+      Math.max(
+        0,
+        available
+      ) +
+
+      " espacios disponibles"
+    );
+
+
+    return;
+  }
+
+
+  /*
+    Semana / Mes:
+    promedio de ocupación.
+  */
+
+  const occupancyValues =
+    records.map(
+      record =>
+
+      percentage(
+
+        record.totalCarros +
+        record.totalMotos,
+
+        TOTAL_CAPACITY
+      )
+    );
+
+
+  const average =
+
+    occupancyValues.length
+
+    ? occupancyValues.reduce(
+        (a,b) =>
+        a+b,
+        0
+      ) /
+      occupancyValues.length
+
+    : 0;
+
+
+  setText(
+    "dynamicCardLabel",
+    "Promedio de ocupación"
+  );
+
+
+  setText(
+    "dynamicCardValue",
+
+    average.toFixed(1) +
+    "%"
+  );
+
+
+  setText(
+    "dynamicCardSub",
+
+    currentView === "week"
+
+    ? "Promedio de la semana en curso"
+
+    : "Promedio del mes en curso"
+  );
+
+
+  setText(
+    "dynamicCardExtra",
+
+    records.length +
+    " registros analizados"
+  );
+}
+
+
+/* ==========================================================
+   RENDER DASHBOARD
 ========================================================== */
 
 function renderDashboard() {
@@ -3037,12 +3032,6 @@ function renderDashboard() {
   const records =
     recordsForCurrentView();
 
-
-  /*
-    Calidad y cobertura
-    se calculan incluso si
-    el día no tiene datos.
-  */
 
   renderQuality(
     records
@@ -3063,7 +3052,9 @@ function renderDashboard() {
 
 
   const latest =
-    latestRecord(records);
+    latestRecord(
+      records
+    );
 
 
   const cars =
@@ -3119,6 +3110,7 @@ function renderDashboard() {
 
   setText(
     "carsPct",
+
     carsPct.toFixed(1) +
     "%"
   );
@@ -3126,6 +3118,7 @@ function renderDashboard() {
 
   setText(
     "motosPct",
+
     motosPct.toFixed(1) +
     "%"
   );
@@ -3133,6 +3126,7 @@ function renderDashboard() {
 
   setText(
     "totalPct",
+
     totalPct.toFixed(1) +
     "%"
   );
@@ -3140,20 +3134,17 @@ function renderDashboard() {
 
   $("carsBar")
     .style.width =
-    carsPct +
-    "%";
+    carsPct + "%";
 
 
   $("motosBar")
     .style.width =
-    motosPct +
-    "%";
+    motosPct + "%";
 
 
   $("totalBar")
     .style.width =
-    totalPct +
-    "%";
+    totalPct + "%";
 
 
   setText(
@@ -3195,41 +3186,15 @@ function renderDashboard() {
   );
 
 
-  const state =
-    parkingState(
-      totalPct
-    );
-
-
-  setText(
-    "parkingState",
-    state[0]
-  );
-
-
-  setText(
-    "parkingStateSub",
-    state[1]
-  );
-
-
-  setText(
-    "parkingSpacesSub",
-
-    Math.max(
-      0,
-      TOTAL_CAPACITY -
-      total
-    ) +
-
-    " espacios disponibles"
+  renderDynamicCard(
+    records,
+    totalPct
   );
 
 
   /*
-    ENTRADAS / SALIDAS
-
-    NO tienen límite de capacidad.
+    ENTRADAS Y SALIDAS
+    NO usan capacidad.
   */
 
   const entryCars =
@@ -3320,10 +3285,6 @@ function renderDashboard() {
   );
 
 
-  /*
-    PICO
-  */
-
   const peak =
 
     records.reduce(
@@ -3331,13 +3292,11 @@ function renderDashboard() {
       (max,record) => {
 
         const current =
-
           record.totalCarros +
           record.totalMotos;
 
 
         const maximum =
-
           max.totalCarros +
           max.totalMotos;
 
@@ -3558,15 +3517,10 @@ function renderCharts(records) {
 
 
   let labels = [];
-
   let cars = [];
-
   let motos = [];
-
   let entries = [];
-
   let exits = [];
-
   let percentages = [];
 
 
@@ -4085,11 +4039,6 @@ async function loadData() {
       );
 
 
-    /*
-      Día abre con la última
-      fecha disponible.
-    */
-
     if (
       !$("periodSelector").value
     ) {
@@ -4177,13 +4126,6 @@ document
       currentView =
         tab.dataset.view;
 
-
-      /*
-        Día muestra selector.
-
-        Semana y Mes son siempre
-        los períodos en curso.
-      */
 
       $("periodControl")
         .style.display =

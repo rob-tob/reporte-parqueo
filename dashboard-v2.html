@@ -1,1364 +1,1453 @@
 <!DOCTYPE html>
 <html lang="es">
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-
-  <title>Sistema de Control de Parqueos | V2.0</title>
-
-  <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.7/dist/chart.umd.min.js"></script>
-
-  <style>
-    :root {
-      --primary:#4f7df5;
-      --secondary:#7654c5;
-      --success:#22a55b;
-      --warning:#e3a008;
-      --danger:#dc4c4c;
-      --background:#f3f6fb;
-      --surface:#ffffff;
-      --text:#1e293b;
-      --text-soft:#64748b;
-      --text-light:#94a3b8;
-      --border:#e2e8f0;
-      --shadow:0 8px 24px rgba(15,23,42,.07);
-      --radius:16px;
-    }
-
-    * {
-      margin:0;
-      padding:0;
-      box-sizing:border-box;
-    }
-
-    body {
-      font-family:
-        -apple-system,
-        BlinkMacSystemFont,
-        "Segoe UI",
-        Roboto,
-        Arial,
-        sans-serif;
-
-      background:var(--background);
-      color:var(--text);
-      min-height:100vh;
-    }
-
-    button,
-    input {
-      font:inherit;
-    }
-
-    button {
-      cursor:pointer;
-    }
-
-    .app-header {
-      background:
-        linear-gradient(
-          120deg,
-          var(--primary),
-          var(--secondary)
-        );
-
-      color:white;
-      padding:22px 30px;
-    }
-
-    .header-inner {
-      max-width:1500px;
-      margin:auto;
-
-      display:flex;
-      justify-content:space-between;
-      align-items:center;
-
-      gap:25px;
-    }
-
-    .brand h1 {
-      font-size:26px;
-      font-weight:750;
-    }
-
-    .brand p {
-      margin-top:5px;
-      font-size:14px;
-      opacity:.88;
-    }
-
-    .header-status {
-      display:flex;
-      align-items:center;
-      gap:24px;
-    }
-
-    .sync-status {
-      display:flex;
-      align-items:center;
-      gap:10px;
-    }
-
-    .status-dot {
-      width:11px;
-      height:11px;
-
-      border-radius:50%;
-      background:var(--warning);
-
-      box-shadow:
-        0 0 0 5px
-        rgba(227,160,8,.15);
-    }
-
-    .status-dot.ok {
-      background:#61e28d;
-    }
-
-    .status-dot.error {
-      background:#ff7676;
-    }
-
-    .sync-main {
-      font-weight:650;
-      font-size:14px;
-    }
-
-    .sync-sub {
-      margin-top:2px;
-      font-size:12px;
-      opacity:.84;
-    }
-
-    .last-sync {
-      border-left:
-        1px solid
-        rgba(255,255,255,.24);
-
-      padding-left:24px;
-    }
-
-    .last-sync-label {
-      font-size:11px;
-      opacity:.75;
-      text-transform:uppercase;
-    }
-
-    .last-sync-value {
-      margin-top:4px;
-      font-size:14px;
-      font-weight:650;
-    }
-
-    .refresh-btn {
-      width:42px;
-      height:42px;
-
-      border:
-        1px solid
-        rgba(255,255,255,.34);
-
-      border-radius:11px;
-
-      background:
-        rgba(255,255,255,.12);
-
-      color:white;
-      font-size:20px;
-    }
-
-    .dashboard {
-      max-width:1500px;
-      margin:auto;
-      padding:24px;
-    }
-
-    .controls-card,
-    .quality-strip,
-    .kpi-card,
-    .mini-card,
-    .report-card,
-    .chart-card,
-    .summary-card {
-      background:var(--surface);
-      box-shadow:var(--shadow);
-      border-radius:var(--radius);
-    }
-
-    .controls-card {
-      padding:14px;
-
-      display:flex;
-      justify-content:space-between;
-      align-items:center;
-
-      gap:20px;
-      margin-bottom:18px;
-    }
-
-    .view-tabs {
-      min-width:360px;
-
-      display:inline-grid;
-      grid-template-columns:repeat(3,1fr);
-
-      background:#edf2f9;
-
-      border-radius:11px;
-      padding:4px;
-    }
-
-    .view-tab {
-      border:none;
-      background:transparent;
-
-      border-radius:8px;
-      padding:10px 24px;
-
-      color:var(--text-soft);
-      font-weight:650;
-    }
-
-    .view-tab.active {
-      background:var(--primary);
-      color:white;
-    }
-
-    .period-control {
-      display:flex;
-      align-items:center;
-      gap:12px;
-    }
-
-    .period-control label {
-      color:var(--text-soft);
-      font-size:13px;
-      font-weight:650;
-    }
-
-    .period-control input {
-      border:1px solid var(--border);
-      background:white;
-
-      padding:9px 12px;
-      border-radius:9px;
-    }
-
-    .quality-strip {
-      padding:16px 18px;
-
-      display:flex;
-      justify-content:space-between;
-      align-items:center;
-
-      gap:20px;
-      margin-bottom:18px;
-    }
-
-    .quality-title {
-      display:flex;
-      align-items:center;
-      gap:12px;
-    }
-
-    .quality-icon {
-      width:40px;
-      height:40px;
-
-      border-radius:50%;
-
-      display:grid;
-      place-items:center;
-
-      font-size:20px;
-      font-weight:bold;
-    }
-
-    .quality-icon.ok {
-      color:var(--success);
-      background:rgba(34,165,91,.12);
-    }
-
-    .quality-icon.warn {
-      color:var(--warning);
-      background:rgba(227,160,8,.14);
-    }
-
-    .quality-main {
-      font-weight:750;
-      font-size:15px;
-    }
-
-    .quality-sub {
-      margin-top:3px;
-      color:var(--text-soft);
-      font-size:12px;
-    }
-
-    .quality-items {
-      display:flex;
-      flex-wrap:wrap;
-      gap:8px;
-    }
-
-    .quality-chip {
-      padding:7px 11px;
-
-      border-radius:999px;
-
-      font-size:12px;
-      font-weight:650;
-    }
-
-    .quality-chip.ok {
-      background:#f1f7f3;
-      color:#28714a;
-    }
-
-    .quality-chip.warn {
-      background:#fff8e6;
-      color:#946200;
-    }
-
-    .kpi-grid {
-      display:grid;
-      grid-template-columns:repeat(4,1fr);
-
-      gap:16px;
-      margin-bottom:18px;
-    }
-
-    .kpi-card {
-      padding:19px;
-      min-height:155px;
-    }
-
-    .kpi-label,
-    .mini-label,
-    .summary-title {
-      color:var(--text-soft);
-
-      font-size:12px;
-      font-weight:700;
-      text-transform:uppercase;
-    }
-
-    .kpi-number-row {
-      display:flex;
-      align-items:baseline;
-
-      gap:7px;
-      margin-top:9px;
-    }
-
-    .kpi-number {
-      font-size:31px;
-      font-weight:780;
-    }
-
-    .kpi-capacity {
-      color:var(--text-light);
-      font-size:17px;
-    }
-
-    .kpi-sub {
-      margin-top:9px;
-      color:var(--text-soft);
-      font-size:12px;
-    }
-
-    .progress {
-      width:100%;
-      height:7px;
-
-      margin-top:15px;
-
-      overflow:hidden;
-
-      border-radius:20px;
-      background:#e8edf5;
-    }
-
-    .progress-bar {
-      height:100%;
-      border-radius:20px;
-
-      background:
-        linear-gradient(
-          90deg,
-          var(--primary),
-          var(--secondary)
-        );
-    }
-
-    .progress-meta {
-      margin-top:7px;
-
-      display:flex;
-      justify-content:space-between;
-
-      color:var(--text-soft);
-      font-size:11px;
-    }
-
-    .secondary-grid {
-      display:grid;
-      grid-template-columns:repeat(4,1fr);
-
-      gap:16px;
-      margin-bottom:18px;
-    }
-
-    .mini-card {
-      padding:18px;
-      min-height:135px;
-    }
-
-    .mini-value {
-      margin-top:11px;
-
-      font-size:27px;
-      font-weight:770;
-    }
-
-    .mini-detail {
-      margin-top:11px;
-
-      color:var(--text-soft);
-
-      font-size:12px;
-      line-height:1.45;
-    }
-
-    .report-card {
-      padding:18px;
-
-      border:
-        1px solid
-        #e2e8f5;
-    }
-
-    .report-card-title {
-      margin-bottom:14px;
-
-      font-size:13px;
-      font-weight:750;
-    }
-
-    .report-details {
-      display:grid;
-      grid-template-columns:repeat(4,1fr);
-      gap:20px;
-    }
-
-    .report-detail-label {
-      color:var(--text-light);
-
-      font-size:11px;
-      text-transform:uppercase;
-    }
-
-    .report-detail-value {
-      margin-top:4px;
-
-      font-size:14px;
-      font-weight:680;
-    }
-
-    .charts-grid {
-      margin-top:18px;
-
-      display:grid;
-      grid-template-columns:1.65fr 1fr;
-
-      gap:18px;
-    }
-
-    .chart-card {
-      padding:19px;
-    }
-
-    .chart-title {
-      font-size:16px;
-      font-weight:750;
-    }
-
-    .chart-subtitle {
-      margin-top:3px;
-
-      color:var(--text-soft);
-      font-size:12px;
-    }
-
-    .chart-box {
-      position:relative;
-
-      height:335px;
-      margin-top:18px;
-    }
-
-    .full-chart {
-      margin-top:18px;
-    }
-
-    .period-summary {
-      margin-top:18px;
-
-      display:grid;
-      grid-template-columns:repeat(3,1fr);
-
-      gap:16px;
-    }
-
-    .summary-card {
-      padding:18px;
-    }
-
-    .summary-value {
-      margin-top:8px;
-
-      font-size:24px;
-      font-weight:760;
-    }
-
-    .summary-description {
-      margin-top:7px;
-
-      color:var(--text-soft);
-      font-size:12px;
-    }
-
-    footer {
-      max-width:1500px;
-
-      margin:24px auto 0;
-
-      padding:20px 24px 30px;
-    }
-
-    .footer-inner {
-      border-top:
-        1px solid
-        var(--border);
-
-      padding-top:18px;
-
-      display:flex;
-      justify-content:space-between;
-
-      color:var(--text-soft);
-      font-size:12px;
-    }
-
-    @media(max-width:1000px) {
-      .kpi-grid,
-      .secondary-grid {
-        grid-template-columns:repeat(2,1fr);
-      }
-
-      .charts-grid {
-        grid-template-columns:1fr;
-      }
-    }
-
-    @media(max-width:600px) {
-      .header-inner {
-        flex-direction:column;
-        align-items:flex-start;
-      }
-
-      .header-status {
-        width:100%;
-        justify-content:space-between;
-      }
-
-      .last-sync {
-        display:none;
-      }
-
-      .dashboard {
-        padding:15px;
-      }
-
-      .controls-card {
-        flex-direction:column;
-        align-items:stretch;
-      }
-
-      .view-tabs {
-        width:100%;
-        min-width:0;
-      }
-
-      .kpi-grid,
-      .secondary-grid,
-      .report-details,
-      .period-summary {
-        grid-template-columns:1fr;
-      }
-    }
-  </style>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+<title>Sistema de Control de Parqueos | V2.0</title>
+
+<script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.7/dist/chart.umd.min.js"></script>
+
+<style>
+:root{
+  --primary:#4f7df5;
+  --secondary:#7654c5;
+  --success:#22a55b;
+  --warning:#e3a008;
+  --danger:#dc4c4c;
+
+  --background:#f3f6fb;
+  --surface:#ffffff;
+
+  --text:#1e293b;
+  --text-soft:#64748b;
+  --text-light:#94a3b8;
+
+  --border:#e2e8f0;
+
+  --shadow:0 8px 24px rgba(15,23,42,.07);
+  --radius:16px;
+}
+
+*{
+  margin:0;
+  padding:0;
+  box-sizing:border-box;
+}
+
+body{
+  font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,Arial,sans-serif;
+  background:var(--background);
+  color:var(--text);
+  min-height:100vh;
+}
+
+button,
+input{
+  font:inherit;
+}
+
+button{
+  cursor:pointer;
+}
+
+/* ================================
+   HEADER
+================================ */
+
+.app-header{
+  background:linear-gradient(120deg,var(--primary),var(--secondary));
+  color:white;
+  padding:22px 30px;
+}
+
+.header-inner{
+  max-width:1500px;
+  margin:auto;
+
+  display:flex;
+  justify-content:space-between;
+  align-items:center;
+  gap:25px;
+}
+
+.brand h1{
+  font-size:26px;
+  font-weight:750;
+}
+
+.brand p{
+  margin-top:5px;
+  font-size:14px;
+  opacity:.88;
+}
+
+.header-status{
+  display:flex;
+  align-items:center;
+  gap:22px;
+}
+
+.sync-status{
+  display:flex;
+  align-items:center;
+  gap:10px;
+}
+
+.status-dot{
+  width:11px;
+  height:11px;
+  border-radius:50%;
+  background:var(--warning);
+  box-shadow:0 0 0 5px rgba(227,160,8,.15);
+}
+
+.status-dot.ok{
+  background:#61e28d;
+  box-shadow:0 0 0 5px rgba(97,226,141,.13);
+}
+
+.status-dot.error{
+  background:#ff7676;
+  box-shadow:0 0 0 5px rgba(255,118,118,.14);
+}
+
+.sync-main{
+  font-weight:650;
+  font-size:14px;
+}
+
+.sync-sub{
+  margin-top:2px;
+  font-size:12px;
+  opacity:.84;
+}
+
+.header-meta{
+  border-left:1px solid rgba(255,255,255,.25);
+  padding-left:22px;
+}
+
+.header-meta-label{
+  font-size:10px;
+  opacity:.72;
+  text-transform:uppercase;
+  letter-spacing:.5px;
+}
+
+.header-meta-value{
+  margin-top:3px;
+  font-size:14px;
+  font-weight:650;
+}
+
+.refresh-btn{
+  width:42px;
+  height:42px;
+
+  border:1px solid rgba(255,255,255,.34);
+  border-radius:11px;
+
+  background:rgba(255,255,255,.12);
+  color:white;
+
+  font-size:20px;
+}
+
+/* ================================
+   GENERAL
+================================ */
+
+.dashboard{
+  max-width:1500px;
+  margin:auto;
+  padding:24px;
+}
+
+.controls-card,
+.quality-strip,
+.kpi-card,
+.mini-card,
+.report-card,
+.chart-card,
+.summary-card{
+  background:var(--surface);
+  box-shadow:var(--shadow);
+  border-radius:var(--radius);
+}
+
+/* ================================
+   CONTROLES
+================================ */
+
+.controls-card{
+  padding:14px;
+
+  display:flex;
+  justify-content:space-between;
+  align-items:center;
+
+  gap:20px;
+  margin-bottom:18px;
+}
+
+.view-tabs{
+  min-width:360px;
+
+  display:inline-grid;
+  grid-template-columns:repeat(3,1fr);
+
+  background:#edf2f9;
+
+  border-radius:11px;
+  padding:4px;
+}
+
+.view-tab{
+  border:none;
+  background:transparent;
+
+  border-radius:8px;
+  padding:10px 24px;
+
+  color:var(--text-soft);
+  font-weight:650;
+}
+
+.view-tab.active{
+  background:var(--primary);
+  color:white;
+}
+
+.period-control{
+  display:flex;
+  align-items:center;
+  gap:12px;
+}
+
+.period-control label{
+  color:var(--text-soft);
+  font-size:13px;
+  font-weight:650;
+}
+
+.period-control input{
+  border:1px solid var(--border);
+  border-radius:9px;
+
+  background:white;
+
+  padding:9px 12px;
+}
+
+/* ================================
+   CALIDAD
+================================ */
+
+.quality-strip{
+  padding:16px 18px;
+
+  display:flex;
+  justify-content:space-between;
+  align-items:center;
+
+  gap:20px;
+  margin-bottom:18px;
+}
+
+.quality-title{
+  display:flex;
+  align-items:center;
+  gap:12px;
+}
+
+.quality-icon{
+  width:40px;
+  height:40px;
+
+  border-radius:50%;
+
+  display:grid;
+  place-items:center;
+
+  font-size:20px;
+  font-weight:bold;
+}
+
+.quality-icon.ok{
+  color:var(--success);
+  background:rgba(34,165,91,.12);
+}
+
+.quality-icon.warn{
+  color:var(--warning);
+  background:rgba(227,160,8,.14);
+}
+
+.quality-main{
+  font-weight:750;
+  font-size:15px;
+}
+
+.quality-sub{
+  margin-top:3px;
+  color:var(--text-soft);
+  font-size:12px;
+}
+
+.quality-items{
+  display:flex;
+  flex-wrap:wrap;
+  justify-content:flex-end;
+  gap:8px;
+}
+
+.quality-chip{
+  padding:7px 11px;
+  border-radius:999px;
+  font-size:12px;
+  font-weight:650;
+}
+
+.quality-chip.ok{
+  background:#f1f7f3;
+  color:#28714a;
+}
+
+.quality-chip.warn{
+  background:#fff8e6;
+  color:#946200;
+}
+
+/* ================================
+   KPI PRINCIPALES
+================================ */
+
+.kpi-grid{
+  display:grid;
+  grid-template-columns:repeat(4,1fr);
+
+  gap:16px;
+  margin-bottom:18px;
+}
+
+.kpi-card{
+  padding:19px;
+  min-height:155px;
+}
+
+.kpi-label,
+.mini-label,
+.summary-title{
+  color:var(--text-soft);
+
+  font-size:12px;
+  font-weight:700;
+
+  text-transform:uppercase;
+  letter-spacing:.3px;
+}
+
+.kpi-number-row{
+  display:flex;
+  align-items:baseline;
+  gap:7px;
+  margin-top:9px;
+}
+
+.kpi-number{
+  font-size:31px;
+  font-weight:780;
+}
+
+.kpi-capacity{
+  color:var(--text-light);
+  font-size:17px;
+}
+
+.kpi-sub{
+  margin-top:9px;
+  color:var(--text-soft);
+  font-size:12px;
+}
+
+.progress{
+  width:100%;
+  height:7px;
+
+  margin-top:15px;
+
+  overflow:hidden;
+  border-radius:20px;
+
+  background:#e8edf5;
+}
+
+.progress-bar{
+  height:100%;
+  border-radius:20px;
+
+  background:linear-gradient(90deg,var(--primary),var(--secondary));
+}
+
+.progress-meta{
+  margin-top:7px;
+
+  display:flex;
+  justify-content:space-between;
+
+  color:var(--text-soft);
+  font-size:11px;
+}
+
+/* ================================
+   KPI SECUNDARIOS
+================================ */
+
+.secondary-grid{
+  display:grid;
+  grid-template-columns:repeat(4,1fr);
+
+  gap:16px;
+  margin-bottom:18px;
+}
+
+.mini-card{
+  padding:18px;
+  min-height:135px;
+}
+
+.mini-value{
+  margin-top:11px;
+
+  font-size:27px;
+  font-weight:770;
+}
+
+.mini-detail{
+  margin-top:11px;
+
+  color:var(--text-soft);
+
+  font-size:12px;
+  line-height:1.45;
+}
+
+/* ================================
+   ÚLTIMO REPORTE
+================================ */
+
+.report-card{
+  padding:18px;
+  border:1px solid #e2e8f5;
+}
+
+.report-card-title{
+  margin-bottom:14px;
+
+  font-size:13px;
+  font-weight:750;
+}
+
+.report-details{
+  display:grid;
+  grid-template-columns:repeat(4,1fr);
+  gap:20px;
+}
+
+.report-detail-label{
+  color:var(--text-light);
+
+  font-size:11px;
+  text-transform:uppercase;
+}
+
+.report-detail-value{
+  margin-top:4px;
+
+  font-size:14px;
+  font-weight:680;
+}
+
+/* ================================
+   GRÁFICAS
+================================ */
+
+.charts-grid{
+  margin-top:18px;
+
+  display:grid;
+  grid-template-columns:1.65fr 1fr;
+
+  gap:18px;
+}
+
+.chart-card{
+  padding:19px;
+}
+
+.chart-title{
+  font-size:16px;
+  font-weight:750;
+}
+
+.chart-subtitle{
+  margin-top:3px;
+
+  color:var(--text-soft);
+  font-size:12px;
+}
+
+.chart-box{
+  position:relative;
+
+  height:335px;
+  margin-top:18px;
+}
+
+.full-chart{
+  margin-top:18px;
+}
+
+/* ================================
+   RESUMEN
+================================ */
+
+.period-summary{
+  margin-top:18px;
+
+  display:grid;
+  grid-template-columns:repeat(3,1fr);
+
+  gap:16px;
+}
+
+.summary-card{
+  padding:18px;
+}
+
+.summary-value{
+  margin-top:8px;
+
+  font-size:24px;
+  font-weight:760;
+}
+
+.summary-description{
+  margin-top:7px;
+
+  color:var(--text-soft);
+  font-size:12px;
+}
+
+/* ================================
+   FOOTER
+================================ */
+
+footer{
+  max-width:1500px;
+
+  margin:24px auto 0;
+  padding:20px 24px 30px;
+}
+
+.footer-inner{
+  border-top:1px solid var(--border);
+  padding-top:18px;
+
+  display:flex;
+  justify-content:space-between;
+
+  color:var(--text-soft);
+  font-size:12px;
+}
+
+/* ================================
+   RESPONSIVE
+================================ */
+
+@media(max-width:1050px){
+
+  .kpi-grid,
+  .secondary-grid{
+    grid-template-columns:repeat(2,1fr);
+  }
+
+  .charts-grid{
+    grid-template-columns:1fr;
+  }
+
+  .header-status{
+    flex-wrap:wrap;
+  }
+}
+
+@media(max-width:650px){
+
+  .app-header{
+    padding:20px;
+  }
+
+  .header-inner{
+    flex-direction:column;
+    align-items:flex-start;
+  }
+
+  .header-status{
+    width:100%;
+  }
+
+  .header-meta{
+    display:none;
+  }
+
+  .dashboard{
+    padding:15px;
+  }
+
+  .controls-card{
+    flex-direction:column;
+    align-items:stretch;
+  }
+
+  .view-tabs{
+    width:100%;
+    min-width:0;
+  }
+
+  .quality-strip{
+    flex-direction:column;
+    align-items:flex-start;
+  }
+
+  .quality-items{
+    justify-content:flex-start;
+  }
+
+  .kpi-grid,
+  .secondary-grid,
+  .report-details,
+  .period-summary{
+    grid-template-columns:1fr;
+  }
+
+  .footer-inner{
+    flex-direction:column;
+    gap:8px;
+    text-align:center;
+  }
+}
+</style>
 </head>
 
 <body>
 
 <header class="app-header">
-  <div class="header-inner">
 
-    <div class="brand">
-      <h1>Sistema de Control de Parqueos</h1>
-      <p>Dashboard Operativo</p>
-    </div>
+<div class="header-inner">
 
-    <div class="header-status">
+  <div class="brand">
 
-      <div class="sync-status">
+    <h1>
+      Sistema de Control de Parqueos
+    </h1>
 
-        <span
-          id="statusDot"
-          class="status-dot">
-        </span>
+    <p>
+      Dashboard Operativo
+    </p>
 
-        <div>
+  </div>
 
-          <div
-            id="statusMain"
-            class="sync-main">
+  <div class="header-status">
 
-            Consultando información…
+    <div class="sync-status">
 
-          </div>
+      <span
+        id="statusDot"
+        class="status-dot">
+      </span>
 
-          <div
-            id="statusSub"
-            class="sync-sub">
+      <div>
 
-            Conectando con Google Sheets
+        <div
+          id="statusMain"
+          class="sync-main">
 
-          </div>
+          Consultando información…
 
-        </div>
-      </div>
-
-      <div class="last-sync">
-
-        <div class="last-sync-label">
-          Última sincronización
         </div>
 
         <div
-          id="lastSync"
-          class="last-sync-value">
+          id="statusSub"
+          class="sync-sub">
 
-          —
+          Conectando con Google Sheets
 
         </div>
 
       </div>
 
-      <button
-        id="refreshButton"
-        class="refresh-btn"
-        title="Actualizar">
+    </div>
 
-        ↻
 
-      </button>
+    <div class="header-meta">
+
+      <div class="header-meta-label">
+        Histórico
+      </div>
+
+      <div
+        id="historyDays"
+        class="header-meta-value">
+
+        — días
+
+      </div>
 
     </div>
+
+
+    <div class="header-meta">
+
+      <div class="header-meta-label">
+        Última sincronización
+      </div>
+
+      <div
+        id="lastSync"
+        class="header-meta-value">
+
+        —
+
+      </div>
+
+    </div>
+
+
+    <button
+      id="refreshButton"
+      class="refresh-btn"
+      title="Actualizar">
+
+      ↻
+
+    </button>
+
   </div>
+
+</div>
+
 </header>
 
 
 <main class="dashboard">
 
-  <!-- VISTAS -->
+<!-- ================================
+     CONTROLES
+================================ -->
 
-  <section class="controls-card">
+<section class="controls-card">
 
-    <div class="view-tabs">
+  <div class="view-tabs">
 
-      <button
-        class="view-tab active"
-        data-view="day">
-        Día
-      </button>
+    <button
+      class="view-tab active"
+      data-view="day">
 
-      <button
-        class="view-tab"
-        data-view="week">
-        Semana
-      </button>
+      Día
 
-      <button
-        class="view-tab"
-        data-view="month">
-        Mes
-      </button>
+    </button>
+
+    <button
+      class="view-tab"
+      data-view="week">
+
+      Semana
+
+    </button>
+
+    <button
+      class="view-tab"
+      data-view="month">
+
+      Mes
+
+    </button>
+
+  </div>
+
+
+  <div
+    id="periodControl"
+    class="period-control">
+
+    <label>
+      Fecha mostrada
+    </label>
+
+    <input
+      type="date"
+      id="periodSelector">
+
+  </div>
+
+</section>
+
+
+<!-- ================================
+     CALIDAD
+================================ -->
+
+<section class="quality-strip">
+
+  <div class="quality-title">
+
+    <div
+      id="qualityIcon"
+      class="quality-icon ok">
+
+      ✓
+
+    </div>
+
+    <div>
+
+      <div
+        id="qualityMain"
+        class="quality-main">
+
+        Calidad de datos
+
+      </div>
+
+      <div
+        id="qualitySub"
+        class="quality-sub">
+
+        Validando información…
+
+      </div>
+
+    </div>
+
+  </div>
+
+
+  <div
+    id="qualityItems"
+    class="quality-items">
+  </div>
+
+</section>
+
+
+<!-- ================================
+     KPI PRINCIPALES
+================================ -->
+
+<section class="kpi-grid">
+
+  <article class="kpi-card">
+
+    <div
+      id="card1Label"
+      class="kpi-label">
+
+      Carros estacionados
+
+    </div>
+
+    <div class="kpi-number-row">
+
+      <span
+        id="card1Value"
+        class="kpi-number">
+
+        —
+
+      </span>
+
+      <span
+        id="card1Capacity"
+        class="kpi-capacity">
+
+        / 440
+
+      </span>
 
     </div>
 
     <div
-      id="periodControl"
-      class="period-control">
+      id="card1Progress"
+      class="progress">
 
-      <label>
-        Fecha mostrada
-      </label>
-
-      <input
-        type="date"
-        id="periodSelector">
+      <div
+        id="card1Bar"
+        class="progress-bar">
+      </div>
 
     </div>
 
-  </section>
+    <div class="progress-meta">
+
+      <span id="card1Sub">
+        —
+      </span>
+
+      <strong id="card1Pct">
+        —
+      </strong>
+
+    </div>
+
+  </article>
 
 
-  <!-- CALIDAD -->
+  <article class="kpi-card">
 
-  <section class="quality-strip">
+    <div
+      id="card2Label"
+      class="kpi-label">
 
-    <div class="quality-title">
+      Motos estacionadas
 
-      <div
-        id="qualityIcon"
-        class="quality-icon ok">
+    </div>
 
-        ✓
+    <div class="kpi-number-row">
 
-      </div>
+      <span
+        id="card2Value"
+        class="kpi-number">
 
-      <div>
+        —
 
-        <div
-          id="qualityMain"
-          class="quality-main">
+      </span>
 
-          Calidad de datos
+      <span
+        id="card2Capacity"
+        class="kpi-capacity">
 
-        </div>
+        / 125
 
-        <div
-          id="qualitySub"
-          class="quality-sub">
-
-          Validando información…
-
-        </div>
-
-      </div>
+      </span>
 
     </div>
 
     <div
-      id="qualityItems"
-      class="quality-items">
-    </div>
-
-  </section>
-
-
-  <!-- TARJETAS PRINCIPALES -->
-
-  <section class="kpi-grid">
-
-    <article class="kpi-card">
+      id="card2Progress"
+      class="progress">
 
       <div
-        id="card1Label"
-        class="kpi-label">
-
-        Carros estacionados
-
-      </div>
-
-      <div class="kpi-number-row">
-
-        <span
-          id="card1Value"
-          class="kpi-number">
-
-          —
-
-        </span>
-
-        <span
-          id="card1Capacity"
-          class="kpi-capacity">
-
-          / 420
-
-        </span>
-
-      </div>
-
-      <div
-        id="card1Progress"
-        class="progress">
-
-        <div
-          id="card1Bar"
-          class="progress-bar">
-        </div>
-
-      </div>
-
-      <div class="progress-meta">
-
-        <span id="card1Sub">
-          —
-        </span>
-
-        <strong id="card1Pct">
-          —
-        </strong>
-
-      </div>
-
-    </article>
-
-
-    <article class="kpi-card">
-
-      <div
-        id="card2Label"
-        class="kpi-label">
-
-        Motos estacionadas
-
-      </div>
-
-      <div class="kpi-number-row">
-
-        <span
-          id="card2Value"
-          class="kpi-number">
-
-          —
-
-        </span>
-
-        <span
-          id="card2Capacity"
-          class="kpi-capacity">
-
-          / 125
-
-        </span>
-
-      </div>
-
-      <div
-        id="card2Progress"
-        class="progress">
-
-        <div
-          id="card2Bar"
-          class="progress-bar">
-        </div>
-
-      </div>
-
-      <div class="progress-meta">
-
-        <span id="card2Sub">
-          —
-        </span>
-
-        <strong id="card2Pct">
-          —
-        </strong>
-
-      </div>
-
-    </article>
-
-
-    <article class="kpi-card">
-
-      <div
-        id="card3Label"
-        class="kpi-label">
-
-        Ocupación total
-
-      </div>
-
-      <div class="kpi-number-row">
-
-        <span
-          id="card3Value"
-          class="kpi-number">
-
-          —
-
-        </span>
-
-        <span
-          id="card3Capacity"
-          class="kpi-capacity">
-
-          / 545
-
-        </span>
-
-      </div>
-
-      <div
-        id="card3Progress"
-        class="progress">
-
-        <div
-          id="card3Bar"
-          class="progress-bar">
-        </div>
-
-      </div>
-
-      <div class="progress-meta">
-
-        <span id="card3Sub">
-          —
-        </span>
-
-        <strong id="card3Pct">
-          —
-        </strong>
-
-      </div>
-
-    </article>
-
-
-    <article class="kpi-card">
-
-      <div
-        id="card4Label"
-        class="kpi-label">
-
-        Estado del parqueo
-
-      </div>
-
-      <div
-        id="card4Value"
-        class="kpi-number"
-        style="
-          font-size:27px;
-          margin-top:9px
-        ">
-
-        —
-
-      </div>
-
-      <div
-        id="card4Sub"
-        class="kpi-sub">
-
-        —
-
-      </div>
-
-      <div
-        id="card4Extra"
-        class="kpi-sub">
-
-        —
-
-      </div>
-
-    </article>
-
-  </section>
-
-
-  <!-- TARJETAS SECUNDARIAS -->
-
-  <section class="secondary-grid">
-
-    <article class="mini-card">
-
-      <div
-        id="secondary1Label"
-        class="mini-label">
-
-        Entradas del día
-
-      </div>
-
-      <div
-        id="secondary1Value"
-        class="mini-value"
-        style="color:var(--success)">
-
-        —
-
-      </div>
-
-      <div
-        id="secondary1Detail"
-        class="mini-detail">
-
-        —
-
-      </div>
-
-    </article>
-
-
-    <article class="mini-card">
-
-      <div
-        id="secondary2Label"
-        class="mini-label">
-
-        Salidas del día
-
-      </div>
-
-      <div
-        id="secondary2Value"
-        class="mini-value"
-        style="color:var(--danger)">
-
-        —
-
-      </div>
-
-      <div
-        id="secondary2Detail"
-        class="mini-detail">
-
-        —
-
-      </div>
-
-    </article>
-
-
-    <article class="mini-card">
-
-      <div
-        id="secondary3Label"
-        class="mini-label">
-
-        Máxima ocupación
-
-      </div>
-
-      <div
-        id="secondary3Value"
-        class="mini-value">
-
-        —
-
-      </div>
-
-      <div
-        id="secondary3Detail"
-        class="mini-detail">
-
-        —
-
-      </div>
-
-    </article>
-
-
-    <article class="mini-card">
-
-      <div
-        id="secondary4Label"
-        class="mini-label">
-
-        Registros recibidos
-
-      </div>
-
-      <div
-        id="secondary4Value"
-        class="mini-value">
-
-        —
-
-      </div>
-
-      <div
-        id="secondary4Detail"
-        class="mini-detail">
-
-        —
-
-      </div>
-
-    </article>
-
-  </section>
-
-
-  <!-- ÚLTIMO REPORTE -->
-
-  <section class="report-card">
-
-    <div class="report-card-title">
-      Último reporte operativo disponible
-    </div>
-
-    <div class="report-details">
-
-      <div>
-
-        <div class="report-detail-label">
-          Fecha operativa
-        </div>
-
-        <div
-          id="latestOperationalDate"
-          class="report-detail-value">
-
-          —
-
-        </div>
-
-      </div>
-
-      <div>
-
-        <div class="report-detail-label">
-          Hora reportada
-        </div>
-
-        <div
-          id="latestOperationalHour"
-          class="report-detail-value">
-
-          —
-
-        </div>
-
-      </div>
-
-      <div>
-
-        <div class="report-detail-label">
-          Timestamp del sistema
-        </div>
-
-        <div
-          id="latestTimestamp"
-          class="report-detail-value">
-
-          —
-
-        </div>
-
-      </div>
-
-      <div>
-
-        <div class="report-detail-label">
-          Estado
-        </div>
-
-        <div
-          id="latestStatus"
-          class="report-detail-value">
-
-          —
-
-        </div>
-
+        id="card2Bar"
+        class="progress-bar">
       </div>
 
     </div>
 
-  </section>
+    <div class="progress-meta">
+
+      <span id="card2Sub">
+        —
+      </span>
+
+      <strong id="card2Pct">
+        —
+      </strong>
+
+    </div>
+
+  </article>
 
 
-  <!-- GRÁFICAS -->
+  <article class="kpi-card">
 
-  <section class="charts-grid">
+    <div
+      id="card3Label"
+      class="kpi-label">
 
-    <article class="chart-card">
+      Ocupación total
 
-      <div
-        id="occupancyTitle"
-        class="chart-title">
+    </div>
 
-        Ocupación durante el día
+    <div class="kpi-number-row">
 
-      </div>
+      <span
+        id="card3Value"
+        class="kpi-number">
 
-      <div
-        id="occupancySubtitle"
-        class="chart-subtitle">
+        —
 
-        Total estacionado por bloque horario
+      </span>
 
-      </div>
+      <span
+        id="card3Capacity"
+        class="kpi-capacity">
 
-      <div class="chart-box">
+        / 565
 
-        <canvas
-          id="occupancyChart">
-        </canvas>
+      </span>
 
-      </div>
-
-    </article>
-
-
-    <article class="chart-card">
-
-      <div
-        id="movementTitle"
-        class="chart-title">
-
-        Movimientos
-
-      </div>
-
-      <div
-        id="movementSubtitle"
-        class="chart-subtitle">
-
-        Entradas y salidas
-
-      </div>
-
-      <div class="chart-box">
-
-        <canvas
-          id="movementsChart">
-        </canvas>
-
-      </div>
-
-    </article>
-
-  </section>
-
-
-  <section class="chart-card full-chart">
-
-    <div class="chart-title">
-      Porcentaje de ocupación
     </div>
 
     <div
-      id="percentageSubtitle"
+      id="card3Progress"
+      class="progress">
+
+      <div
+        id="card3Bar"
+        class="progress-bar">
+      </div>
+
+    </div>
+
+    <div class="progress-meta">
+
+      <span id="card3Sub">
+        —
+      </span>
+
+      <strong id="card3Pct">
+        —
+      </strong>
+
+    </div>
+
+  </article>
+
+
+  <article class="kpi-card">
+
+    <div
+      id="card4Label"
+      class="kpi-label">
+
+      Estado del parqueo
+
+    </div>
+
+    <div
+      id="card4Value"
+      class="kpi-number"
+      style="font-size:27px;margin-top:9px">
+
+      —
+
+    </div>
+
+    <div
+      id="card4Sub"
+      class="kpi-sub">
+
+      —
+
+    </div>
+
+    <div
+      id="card4Extra"
+      class="kpi-sub">
+
+      —
+
+    </div>
+
+  </article>
+
+</section>
+
+
+<!-- ================================
+     KPI SECUNDARIOS
+================================ -->
+
+<section class="secondary-grid">
+
+  <article class="mini-card">
+
+    <div
+      id="secondary1Label"
+      class="mini-label">
+
+      Entradas
+
+    </div>
+
+    <div
+      id="secondary1Value"
+      class="mini-value">
+
+      —
+
+    </div>
+
+    <div
+      id="secondary1Detail"
+      class="mini-detail">
+
+      —
+
+    </div>
+
+  </article>
+
+
+  <article class="mini-card">
+
+    <div
+      id="secondary2Label"
+      class="mini-label">
+
+      Salidas
+
+    </div>
+
+    <div
+      id="secondary2Value"
+      class="mini-value">
+
+      —
+
+    </div>
+
+    <div
+      id="secondary2Detail"
+      class="mini-detail">
+
+      —
+
+    </div>
+
+  </article>
+
+
+  <article class="mini-card">
+
+    <div
+      id="secondary3Label"
+      class="mini-label">
+
+      Pico de ocupación
+
+    </div>
+
+    <div
+      id="secondary3Value"
+      class="mini-value">
+
+      —
+
+    </div>
+
+    <div
+      id="secondary3Detail"
+      class="mini-detail">
+
+      —
+
+    </div>
+
+  </article>
+
+
+  <article class="mini-card">
+
+    <div
+      id="secondary4Label"
+      class="mini-label">
+
+      Cobertura de registros
+
+    </div>
+
+    <div
+      id="secondary4Value"
+      class="mini-value">
+
+      —
+
+    </div>
+
+    <div
+      id="secondary4Detail"
+      class="mini-detail">
+
+      —
+
+    </div>
+
+  </article>
+
+</section>
+
+
+<!-- ================================
+     ÚLTIMO REPORTE
+================================ -->
+
+<section class="report-card">
+
+  <div class="report-card-title">
+    Último reporte operativo disponible
+  </div>
+
+  <div class="report-details">
+
+    <div>
+
+      <div class="report-detail-label">
+        Fecha operativa
+      </div>
+
+      <div
+        id="latestOperationalDate"
+        class="report-detail-value">
+
+        —
+
+      </div>
+
+    </div>
+
+
+    <div>
+
+      <div class="report-detail-label">
+        Hora reportada
+      </div>
+
+      <div
+        id="latestOperationalHour"
+        class="report-detail-value">
+
+        —
+
+      </div>
+
+    </div>
+
+
+    <div>
+
+      <div class="report-detail-label">
+        Timestamp
+      </div>
+
+      <div
+        id="latestTimestamp"
+        class="report-detail-value">
+
+        —
+
+      </div>
+
+    </div>
+
+
+    <div>
+
+      <div class="report-detail-label">
+        Estado
+      </div>
+
+      <div
+        id="latestStatus"
+        class="report-detail-value">
+
+        —
+
+      </div>
+
+    </div>
+
+  </div>
+
+</section>
+
+
+<!-- ================================
+     GRÁFICAS
+================================ -->
+
+<section class="charts-grid">
+
+  <article class="chart-card">
+
+    <div
+      id="occupancyTitle"
+      class="chart-title">
+
+      Ocupación durante el día
+
+    </div>
+
+    <div
+      id="occupancySubtitle"
       class="chart-subtitle">
 
-      Utilización de la capacidad disponible
+      Total estacionado por bloque horario
 
     </div>
 
     <div class="chart-box">
 
       <canvas
-        id="percentageChart">
+        id="occupancyChart">
       </canvas>
 
     </div>
 
-  </section>
+  </article>
 
 
-  <!-- RESUMEN -->
+  <article class="chart-card">
 
-  <section class="period-summary">
+    <div
+      id="movementTitle"
+      class="chart-title">
 
-    <article class="summary-card">
+      Movimientos
 
-      <div class="summary-title">
-        Período mostrado
-      </div>
+    </div>
 
-      <div
-        id="periodShown"
-        class="summary-value">
+    <div
+      id="movementSubtitle"
+      class="chart-subtitle">
 
-        —
+      Entradas y salidas
 
-      </div>
+    </div>
 
-      <div
-        id="viewShown"
-        class="summary-description">
+    <div class="chart-box">
 
-        —
+      <canvas
+        id="movementsChart">
+      </canvas>
 
-      </div>
+    </div>
 
-    </article>
+  </article>
 
-
-    <article class="summary-card">
-
-      <div class="summary-title">
-        Cobertura
-      </div>
-
-      <div
-        id="coverageValue"
-        class="summary-value">
-
-        —
-
-      </div>
-
-      <div
-        id="coverageDetail"
-        class="summary-description">
-
-        —
-
-      </div>
-
-    </article>
+</section>
 
 
-    <article class="summary-card">
+<section class="chart-card full-chart">
 
-      <div class="summary-title">
-        Capacidad total
-      </div>
+  <div class="chart-title">
+    Porcentaje de ocupación
+  </div>
 
-      <div class="summary-value">
-        545
-      </div>
+  <div
+    id="percentageSubtitle"
+    class="chart-subtitle">
 
-      <div class="summary-description">
-        420 carros · 125 motos
-      </div>
+    Utilización de la capacidad disponible
 
-    </article>
+  </div>
 
-  </section>
+  <div class="chart-box">
+
+    <canvas
+      id="percentageChart">
+    </canvas>
+
+  </div>
+
+</section>
+
+
+<!-- ================================
+     RESUMEN
+================================ -->
+
+<section class="period-summary">
+
+  <article class="summary-card">
+
+    <div class="summary-title">
+      Período mostrado
+    </div>
+
+    <div
+      id="periodShown"
+      class="summary-value">
+
+      —
+
+    </div>
+
+    <div
+      id="viewShown"
+      class="summary-description">
+
+      —
+
+    </div>
+
+  </article>
+
+
+  <article class="summary-card">
+
+    <div class="summary-title">
+      Cobertura
+    </div>
+
+    <div
+      id="coverageValue"
+      class="summary-value">
+
+      —
+
+    </div>
+
+    <div
+      id="coverageDetail"
+      class="summary-description">
+
+      —
+
+    </div>
+
+  </article>
+
+
+  <article class="summary-card">
+
+    <div class="summary-title">
+      Capacidad total
+    </div>
+
+    <div class="summary-value">
+      565
+    </div>
+
+    <div class="summary-description">
+      440 carros · 125 motos
+    </div>
+
+  </article>
+
+</section>
 
 </main>
 
 
 <footer>
 
-  <div class="footer-inner">
+<div class="footer-inner">
 
-    <div>
-      Sistema de Control de Parqueos
-    </div>
-
-    <div>
-      Facilities Management - RT
-    </div>
-
-    <div>
-      Versión 2.0
-    </div>
-
+  <div>
+    Sistema de Control de Parqueos
   </div>
+
+  <div>
+    Facilities Management - RT
+  </div>
+
+  <div>
+    Versión 2.0
+  </div>
+
+</div>
 
 </footer>
 
@@ -1370,11 +1459,11 @@
 ========================================================== */
 
 const API_URL =
-  "https://script.google.com/macros/s/AKfycbwMErK_ZakrjehkOH1WRNI-wo3iAOWoght6QxuerL-Ss3dVvsksTOwjIGJZp6At_qgS/exec";
+"https://script.google.com/macros/s/AKfycbwMErK_ZakrjehkOH1WRNI-wo3iAOWoght6QxuerL-Ss3dVvsksTOwjIGJZp6At_qgS/exec";
 
-const CAR_CAPACITY = 420;
+const CAR_CAPACITY = 440;
 const MOTO_CAPACITY = 125;
-const TOTAL_CAPACITY = 545;
+const TOTAL_CAPACITY = 565;
 
 const EXPECTED_HOURS = [
   "12:00am",
@@ -1399,56 +1488,56 @@ let movementsChart = null;
 let percentageChart = null;
 
 const $ =
-  id =>
-  document.getElementById(id);
+id =>
+document.getElementById(id);
 
 
 /* ==========================================================
    UTILIDADES
 ========================================================== */
 
-function number(value) {
+function number(value){
 
   const result =
-    Number(
-      String(value ?? "")
-      .replace(",",".")
-    );
+  Number(
+    String(value ?? "")
+    .replace(",",".")
+  );
 
   return Number.isFinite(result)
-    ? result
-    : 0;
+  ? result
+  : 0;
 }
 
 
-function pad(value) {
+function pad(value){
 
   return String(value)
-    .padStart(2,"0");
+  .padStart(2,"0");
 }
 
 
-function parseDMY(value) {
+function parseDMY(value){
 
   const match =
-    String(value || "")
-    .trim()
-    .match(
-      /^(\d{1,2})\/(\d{1,2})\/(\d{4})$/
-    );
+  String(value || "")
+  .trim()
+  .match(
+    /^(\d{1,2})\/(\d{1,2})\/(\d{4})$/
+  );
 
-  if (!match)
-    return null;
+  if(!match)
+  return null;
 
   return new Date(
     Number(match[3]),
-    Number(match[2]) - 1,
+    Number(match[2])-1,
     Number(match[1])
   );
 }
 
 
-function formatDMY(date) {
+function formatDMY(date){
 
   return (
     pad(date.getDate()) +
@@ -1460,7 +1549,7 @@ function formatDMY(date) {
 }
 
 
-function formatISO(date) {
+function formatISO(date){
 
   return (
     date.getFullYear() +
@@ -1472,48 +1561,48 @@ function formatISO(date) {
 }
 
 
-function formatHour(value) {
+function formatHour(value){
 
   return String(value || "")
-    .toLowerCase()
-    .replace("am"," a. m.")
-    .replace("pm"," p. m.");
+  .toLowerCase()
+  .replace("am"," a. m.")
+  .replace("pm"," p. m.");
 }
 
 
-function hourMinutes(value) {
+function hourMinutes(value){
 
   const match =
-    String(value || "")
-    .toLowerCase()
-    .replace(/\s/g,"")
-    .match(
-      /^(\d{1,2}):(\d{2})(am|pm)$/
-    );
+  String(value || "")
+  .toLowerCase()
+  .replace(/\s/g,"")
+  .match(
+    /^(\d{1,2}):(\d{2})(am|pm)$/
+  );
 
-  if (!match)
-    return 0;
+  if(!match)
+  return 0;
 
   let hour =
-    Number(match[1]);
+  Number(match[1]);
 
   const minutes =
-    Number(match[2]);
+  Number(match[2]);
 
   const period =
-    match[3];
+  match[3];
 
-  if (
+  if(
     period === "am" &&
     hour === 12
-  ) {
+  ){
     hour = 0;
   }
 
-  if (
+  if(
     period === "pm" &&
     hour !== 12
-  ) {
+  ){
     hour += 12;
   }
 
@@ -1524,67 +1613,67 @@ function hourMinutes(value) {
 }
 
 
-function normalize(record) {
+function normalize(record){
 
   return {
 
     fecha:
-      String(
-        record["Fecha"] || ""
-      ).trim(),
+    String(
+      record["Fecha"] || ""
+    ).trim(),
 
     timestamp:
-      String(
-        record["Timestamp"] || ""
-      ).trim(),
+    String(
+      record["Timestamp"] || ""
+    ).trim(),
 
     hora:
-      String(
-        record["Hora"] || ""
-      ).trim(),
+    String(
+      record["Hora"] || ""
+    ).trim(),
 
     entradaCarros:
-      number(
-        record["Entrada Carros"]
-      ),
+    number(
+      record["Entrada Carros"]
+    ),
 
     entradaMotos:
-      number(
-        record["Entrada Motos"]
-      ),
+    number(
+      record["Entrada Motos"]
+    ),
 
     salidaCarros:
-      number(
-        record["Salida Carros"]
-      ),
+    number(
+      record["Salida Carros"]
+    ),
 
     salidaMotos:
-      number(
-        record["Salida Motos"]
-      ),
+    number(
+      record["Salida Motos"]
+    ),
 
     totalCarros:
-      number(
-        record["Total Carros"]
-      ),
+    number(
+      record["Total Carros"]
+    ),
 
     totalMotos:
-      number(
-        record["Total Motos"]
-      )
+    number(
+      record["Total Motos"]
+    )
   };
 }
 
 
-function recordDateTime(record) {
+function recordDateTime(record){
 
   const date =
-    parseDMY(
-      record.fecha
-    );
+  parseDMY(
+    record.fecha
+  );
 
-  if (!date)
-    return 0;
+  if(!date)
+  return 0;
 
   return (
     date.getTime() +
@@ -1595,22 +1684,22 @@ function recordDateTime(record) {
 }
 
 
-function latestRecord(records) {
+function latestRecord(records){
 
-  if (!records.length)
-    return null;
+  if(!records.length)
+  return null;
 
   return [...records]
-    .sort(
-      (a,b) =>
-      recordDateTime(a) -
-      recordDateTime(b)
-    )
-    .at(-1);
+  .sort(
+    (a,b) =>
+    recordDateTime(a) -
+    recordDateTime(b)
+  )
+  .at(-1);
 }
 
 
-function sum(records,key) {
+function sum(records,key){
 
   return records.reduce(
     (total,record) =>
@@ -1621,27 +1710,10 @@ function sum(records,key) {
 }
 
 
-function average(values) {
+function percentage(value,max){
 
-  if (!values.length)
-    return 0;
-
-  return (
-    values.reduce(
-      (total,value) =>
-      total + value,
-      0
-    )
-    /
-    values.length
-  );
-}
-
-
-function percentage(value,max) {
-
-  if (!max)
-    return 0;
+  if(!max)
+  return 0;
 
   return Math.max(
     0,
@@ -1653,10 +1725,38 @@ function percentage(value,max) {
 }
 
 
-function setText(id,value) {
+function setText(id,value){
 
   $(id).textContent =
-    value;
+  value;
+}
+
+
+/* ==========================================================
+   HISTÓRICO
+========================================================== */
+
+function updateHistory(){
+
+  const days =
+  new Set(
+    allRecords
+    .map(
+      record =>
+      record.fecha
+    )
+    .filter(Boolean)
+  ).size;
+
+  setText(
+    "historyDays",
+    days +
+    (
+      days === 1
+      ? " día"
+      : " días"
+    )
+  );
 }
 
 
@@ -1664,15 +1764,15 @@ function setText(id,value) {
    SEMANA
 ========================================================== */
 
-function startOfWeek(date) {
+function startOfWeek(date){
 
   const result =
-    new Date(date);
+  new Date(date);
 
   const day =
-    (
-      result.getDay() + 6
-    ) % 7;
+  (
+    result.getDay()+6
+  ) % 7;
 
   result.setDate(
     result.getDate() -
@@ -1687,13 +1787,13 @@ function startOfWeek(date) {
 }
 
 
-function endOfWeek(date) {
+function endOfWeek(date){
 
   const result =
-    startOfWeek(date);
+  startOfWeek(date);
 
   result.setDate(
-    result.getDate() + 6
+    result.getDate()+6
   );
 
   result.setHours(
@@ -1708,26 +1808,26 @@ function endOfWeek(date) {
    RANGO
 ========================================================== */
 
-function selectedRange() {
+function selectedRange(){
 
-  if (
+  if(
     currentView === "day"
-  ) {
+  ){
 
     const value =
-      $("periodSelector").value;
+    $("periodSelector").value;
 
-    if (!value)
-      return null;
+    if(!value)
+    return null;
 
     const start =
-      new Date(
-        value +
-        "T00:00:00"
-      );
+    new Date(
+      value +
+      "T00:00:00"
+    );
 
     const end =
-      new Date(start);
+    new Date(start);
 
     end.setHours(
       23,59,59,999
@@ -1741,12 +1841,12 @@ function selectedRange() {
 
 
   const today =
-    new Date();
+  new Date();
 
 
-  if (
+  if(
     currentView === "week"
-  ) {
+  ){
 
     return [
       startOfWeek(today),
@@ -1774,48 +1874,49 @@ function selectedRange() {
 
 
 /* ==========================================================
-   HORAS ESPERADAS
+   HORARIOS ESPERADOS
 ========================================================== */
 
-function expectedHoursForDate(dateText) {
+function expectedHoursForDate(dateText){
 
   const date =
-    parseDMY(
-      dateText
-    );
+  parseDMY(
+    dateText
+  );
 
-  if (!date)
-    return [];
+  if(!date)
+  return [];
 
 
   const now =
-    new Date();
+  new Date();
 
 
   const today =
-    new Date(
-      now.getFullYear(),
-      now.getMonth(),
-      now.getDate()
-    );
+  new Date(
+    now.getFullYear(),
+    now.getMonth(),
+    now.getDate()
+  );
 
 
   const targetDate =
-    new Date(
-      date.getFullYear(),
-      date.getMonth(),
-      date.getDate()
-    );
+  new Date(
+    date.getFullYear(),
+    date.getMonth(),
+    date.getDate()
+  );
 
 
   /*
-    DÍA ANTERIOR
+    FECHA ANTERIOR:
+    deben existir los 10 bloques.
   */
 
-  if (
+  if(
     targetDate <
     today
-  ) {
+  ){
 
     return [
       ...EXPECTED_HOURS
@@ -1824,13 +1925,14 @@ function expectedHoursForDate(dateText) {
 
 
   /*
-    DÍA FUTURO
+    FECHA FUTURA:
+    no se espera nada.
   */
 
-  if (
+  if(
     targetDate >
     today
-  ) {
+  ){
 
     return [];
   }
@@ -1838,21 +1940,22 @@ function expectedHoursForDate(dateText) {
 
   /*
     HOY:
-    solo horarios que ya pasaron
+    solo se evalúan horarios
+    cuya hora ya pasó.
   */
 
   const currentMinutes =
-    now.getHours() * 60 +
-    now.getMinutes();
+  now.getHours() * 60 +
+  now.getMinutes();
 
 
   return EXPECTED_HOURS
-    .filter(
-      hour =>
-      hourMinutes(hour)
-      <=
-      currentMinutes
-    );
+  .filter(
+    hour =>
+    hourMinutes(hour)
+    <=
+    currentMinutes
+  );
 }
 
 
@@ -1860,29 +1963,29 @@ function expectedHoursForDate(dateText) {
    FECHAS ESPERADAS
 ========================================================== */
 
-function expectedDatesForCurrentView() {
+function expectedDatesForCurrentView(){
 
   const now =
-    new Date();
+  new Date();
 
 
   const today =
-    new Date(
-      now.getFullYear(),
-      now.getMonth(),
-      now.getDate()
-    );
+  new Date(
+    now.getFullYear(),
+    now.getMonth(),
+    now.getDate()
+  );
 
 
-  if (
+  if(
     currentView === "day"
-  ) {
+  ){
 
     const value =
-      $("periodSelector").value;
+    $("periodSelector").value;
 
-    if (!value)
-      return [];
+    if(!value)
+    return [];
 
     return [
       formatDMY(
@@ -1895,20 +1998,21 @@ function expectedDatesForCurrentView() {
   }
 
 
-  const dates = [];
+  const dates =
+  [];
 
 
-  if (
+  if(
     currentView === "week"
-  ) {
+  ){
 
     let date =
-      startOfWeek(today);
+    startOfWeek(today);
 
 
-    while (
+    while(
       date <= today
-    ) {
+    ){
 
       dates.push(
         formatDMY(date)
@@ -1916,7 +2020,7 @@ function expectedDatesForCurrentView() {
 
 
       const next =
-        new Date(date);
+      new Date(date);
 
 
       next.setDate(
@@ -1925,7 +2029,7 @@ function expectedDatesForCurrentView() {
 
 
       date =
-        next;
+      next;
     }
 
 
@@ -1934,16 +2038,16 @@ function expectedDatesForCurrentView() {
 
 
   let date =
-    new Date(
-      today.getFullYear(),
-      today.getMonth(),
-      1
-    );
+  new Date(
+    today.getFullYear(),
+    today.getMonth(),
+    1
+  );
 
 
-  while (
+  while(
     date <= today
-  ) {
+  ){
 
     dates.push(
       formatDMY(date)
@@ -1951,7 +2055,7 @@ function expectedDatesForCurrentView() {
 
 
     const next =
-      new Date(date);
+    new Date(date);
 
 
     next.setDate(
@@ -1960,7 +2064,7 @@ function expectedDatesForCurrentView() {
 
 
     date =
-      next;
+    next;
   }
 
 
@@ -1969,47 +2073,47 @@ function expectedDatesForCurrentView() {
 
 
 /* ==========================================================
-   REGISTROS DE LA VISTA
+   REGISTROS VISTA ACTUAL
 ========================================================== */
 
-function recordsForCurrentView() {
+function recordsForCurrentView(){
 
   const range =
-    selectedRange();
+  selectedRange();
 
-  if (!range)
-    return [];
+  if(!range)
+  return [];
 
 
   const [
     start,
     end
   ] =
-    range;
+  range;
 
 
   return allRecords
-    .filter(
-      record => {
+  .filter(
+    record => {
 
-        const date =
-          parseDMY(
-            record.fecha
-          );
+      const date =
+      parseDMY(
+        record.fecha
+      );
 
 
-        return (
-          date &&
-          date >= start &&
-          date <= end
-        );
-      }
-    )
-    .sort(
-      (a,b) =>
-      recordDateTime(a) -
-      recordDateTime(b)
-    );
+      return (
+        date &&
+        date >= start &&
+        date <= end
+      );
+    }
+  )
+  .sort(
+    (a,b) =>
+    recordDateTime(a) -
+    recordDateTime(b)
+  );
 }
 
 
@@ -2017,29 +2121,29 @@ function recordsForCurrentView() {
    ESTADO GLOBAL
 ========================================================== */
 
-function updateSystemStatus(updatedAt) {
+function updateSystemStatus(updatedAt){
 
   setText(
     "lastSync",
-
     updatedAt ||
-
     new Date()
-      .toLocaleString("es-GT")
+    .toLocaleString(
+      "es-GT"
+    )
   );
 
 
   const latest =
-    latestRecord(
-      allRecords
-    );
+  latestRecord(
+    allRecords
+  );
 
 
-  if (!latest) {
+  if(!latest){
 
     $("statusDot")
-      .className =
-      "status-dot error";
+    .className =
+    "status-dot error";
 
 
     setText(
@@ -2053,19 +2157,18 @@ function updateSystemStatus(updatedAt) {
       "No existen registros"
     );
 
-
     return;
   }
 
 
   const latestDate =
-    parseDMY(
-      latest.fecha
-    );
+  parseDMY(
+    latest.fecha
+  );
 
 
   const today =
-    new Date();
+  new Date();
 
 
   today.setHours(
@@ -2078,14 +2181,14 @@ function updateSystemStatus(updatedAt) {
   );
 
 
-  if (
+  if(
     latestDate.getTime() ===
     today.getTime()
-  ) {
+  ){
 
     $("statusDot")
-      .className =
-      "status-dot ok";
+    .className =
+    "status-dot ok";
 
 
     setText(
@@ -2096,7 +2199,6 @@ function updateSystemStatus(updatedAt) {
 
     setText(
       "statusSub",
-
       "Último reporte: " +
       latest.fecha +
       " · " +
@@ -2111,11 +2213,11 @@ function updateSystemStatus(updatedAt) {
       "Información de hoy"
     );
 
-  } else {
+  }else{
 
     $("statusDot")
-      .className =
-      "status-dot";
+    .className =
+    "status-dot";
 
 
     setText(
@@ -2126,7 +2228,6 @@ function updateSystemStatus(updatedAt) {
 
     setText(
       "statusSub",
-
       "Último reporte: " +
       latest.fecha +
       " · " +
@@ -2151,7 +2252,6 @@ function updateSystemStatus(updatedAt) {
 
   setText(
     "latestOperationalHour",
-
     formatHour(
       latest.hora
     )
@@ -2160,7 +2260,6 @@ function updateSystemStatus(updatedAt) {
 
   setText(
     "latestTimestamp",
-
     latest.timestamp ||
     "—"
   );
@@ -2168,36 +2267,34 @@ function updateSystemStatus(updatedAt) {
 
 
 /* ==========================================================
-   CALIDAD DE DATOS
+   CALIDAD
 ========================================================== */
 
-function getQuality(records) {
+function getQuality(records){
 
   const duplicateMap =
-    new Map();
+  new Map();
 
 
   let overCapacity =
-    0;
+  0;
 
 
   let negativeValues =
-    0;
+  0;
 
 
   records.forEach(
     record => {
 
       const key =
-        record.fecha +
-        "|" +
-        record.hora;
+      record.fecha +
+      "|" +
+      record.hora;
 
 
       duplicateMap.set(
-
         key,
-
         (
           duplicateMap.get(key) ||
           0
@@ -2206,11 +2303,11 @@ function getQuality(records) {
 
 
       /*
-        CAPACIDAD SOLO SE VALIDA
-        CONTRA OCUPACIÓN.
+        CAPACIDAD:
+        SOLO OCUPACIÓN.
       */
 
-      if (
+      if(
         record.totalCarros >
         CAR_CAPACITY
 
@@ -2218,7 +2315,7 @@ function getQuality(records) {
 
         record.totalMotos >
         MOTO_CAPACITY
-      ) {
+      ){
 
         overCapacity++;
       }
@@ -2237,12 +2334,12 @@ function getQuality(records) {
       ];
 
 
-      if (
+      if(
         values.some(
           value =>
           value < 0
         )
-      ) {
+      ){
 
         negativeValues++;
       }
@@ -2252,88 +2349,103 @@ function getQuality(records) {
 
   const duplicates =
 
-    [...duplicateMap.values()]
-    .filter(
-      value =>
-      value > 1
-    )
-    .reduce(
-      (total,value) =>
+  [...duplicateMap.values()]
 
-      total +
-      (
-        value - 1
-      ),
+  .filter(
+    value =>
+    value > 1
+  )
 
-      0
-    );
+  .reduce(
+    (total,value) =>
+    total +
+    (
+      value - 1
+    ),
+    0
+  );
 
 
   const expectedDates =
-    expectedDatesForCurrentView();
+  expectedDatesForCurrentView();
 
 
   let missingHours =
-    0;
+  0;
 
 
   let incompleteDays =
-    0;
+  0;
 
 
   let expectedRecords =
-    0;
+  0;
 
 
-  expectedDates
-    .forEach(
-      date => {
-
-        const expectedHours =
-          expectedHoursForDate(
-            date
-          );
+  let receivedExpectedRecords =
+  0;
 
 
-        expectedRecords +=
-          expectedHours.length;
+  expectedDates.forEach(
+    date => {
+
+      const expectedHours =
+      expectedHoursForDate(
+        date
+      );
 
 
-        const receivedHours =
-          new Set(
-
-            records
-            .filter(
-              record =>
-              record.fecha === date
-            )
-            .map(
-              record =>
-              record.hora
-            )
-          );
+      expectedRecords +=
+      expectedHours.length;
 
 
-        const missing =
-          expectedHours
-          .filter(
-            hour =>
-            !receivedHours.has(hour)
-          );
+      const receivedHours =
+      new Set(
+
+        records
+
+        .filter(
+          record =>
+          record.fecha === date
+        )
+
+        .map(
+          record =>
+          record.hora
+        )
+      );
 
 
-        missingHours +=
-          missing.length;
+      const missing =
+      expectedHours.filter(
+        hour =>
+        !receivedHours.has(hour)
+      );
 
 
-        if (
-          missing.length > 0
-        ) {
+      const validReceived =
+      expectedHours.filter(
+        hour =>
+        receivedHours.has(hour)
+      ).length;
 
-          incompleteDays++;
-        }
+
+      receivedExpectedRecords +=
+      validReceived;
+
+
+      missingHours +=
+      missing.length;
+
+
+      if(
+        missing.length > 0
+      ){
+
+        incompleteDays++;
       }
-    );
+    }
+  );
 
 
   return {
@@ -2346,9 +2458,11 @@ function getQuality(records) {
     incompleteDays,
 
     expectedDates:
-      expectedDates.length,
+    expectedDates.length,
 
-    expectedRecords
+    expectedRecords,
+
+    receivedExpectedRecords
   };
 }
 
@@ -2357,33 +2471,35 @@ function getQuality(records) {
    CALIDAD VISUAL
 ========================================================== */
 
-function renderQuality(records) {
+function renderQuality(records){
 
   const quality =
-    getQuality(records);
+  getQuality(
+    records
+  );
 
 
   const issues =
-    quality.duplicates +
-    quality.overCapacity +
-    quality.negativeValues +
-    quality.missingHours;
+  quality.duplicates +
+  quality.overCapacity +
+  quality.negativeValues +
+  quality.missingHours;
 
 
   const icon =
-    $("qualityIcon");
+  $("qualityIcon");
 
 
-  if (
+  if(
     issues === 0
-  ) {
+  ){
 
     icon.className =
-      "quality-icon ok";
+    "quality-icon ok";
 
 
     icon.textContent =
-      "✓";
+    "✓";
 
 
     setText(
@@ -2397,14 +2513,14 @@ function renderQuality(records) {
       "Información validada"
     );
 
-  } else {
+  }else{
 
     icon.className =
-      "quality-icon warn";
+    "quality-icon warn";
 
 
     icon.textContent =
-      "!";
+    "!";
 
 
     setText(
@@ -2413,9 +2529,9 @@ function renderQuality(records) {
     );
 
 
-    if (
+    if(
       currentView === "day"
-    ) {
+    ){
 
       setText(
         "qualitySub",
@@ -2429,7 +2545,7 @@ function renderQuality(records) {
           " incidencia(s) detectada(s)"
       );
 
-    } else {
+    }else{
 
       setText(
         "qualitySub",
@@ -2448,25 +2564,25 @@ function renderQuality(records) {
 
   const missingText =
 
-    currentView === "day"
+  currentView === "day"
 
-    ? (
-        quality.missingHours === 0
+  ? (
+      quality.missingHours === 0
 
-        ? "Sin horarios faltantes"
+      ? "Sin horarios faltantes"
 
-        : quality.missingHours +
-          " horario(s) pendiente(s)"
-      )
+      : quality.missingHours +
+        " horario(s) pendiente(s)"
+    )
 
-    : (
-        quality.incompleteDays === 0
+  : (
+      quality.incompleteDays === 0
 
-        ? "Sin días incompletos"
+      ? "Sin días incompletos"
 
-        : quality.incompleteDays +
-          " día(s) incompleto(s)"
-      );
+      : quality.incompleteDays +
+        " día(s) incompleto(s)"
+    );
 
 
   const chips = [
@@ -2474,122 +2590,109 @@ function renderQuality(records) {
     {
 
       ok:
-        quality.duplicates === 0,
+      quality.duplicates === 0,
 
       text:
+      quality.duplicates === 0
 
-        quality.duplicates === 0
+      ? "Sin duplicados"
 
-        ? "Sin duplicados"
-
-        : quality.duplicates +
-          " duplicado(s)"
+      : quality.duplicates +
+        " duplicado(s)"
     },
 
 
     {
 
       ok:
-        quality.missingHours === 0,
+      quality.missingHours === 0,
 
       text:
-        missingText
+      missingText
     },
 
 
     {
 
       ok:
-        quality.overCapacity === 0,
+      quality.overCapacity === 0,
 
       text:
+      quality.overCapacity === 0
 
-        quality.overCapacity === 0
+      ? "Ocupación dentro de capacidad"
 
-        ? "Ocupación dentro de capacidad"
-
-        : quality.overCapacity +
-          " registro(s) exceden capacidad"
+      : quality.overCapacity +
+        " registro(s) superan capacidad"
     },
 
 
     {
 
       ok:
-        quality.negativeValues === 0,
+      quality.negativeValues === 0,
 
       text:
+      quality.negativeValues === 0
 
-        quality.negativeValues === 0
+      ? "Sin valores negativos"
 
-        ? "Sin valores negativos"
-
-        : quality.negativeValues +
-          " registro(s) negativos"
+      : quality.negativeValues +
+        " registro(s) negativos"
     }
   ];
 
 
   $("qualityItems")
-    .innerHTML =
+  .innerHTML =
 
-    chips
-    .map(
-      item => {
+  chips
 
-        return (
+  .map(
+    item => {
 
-          '<span class="quality-chip ' +
+      return (
 
-          (
-            item.ok
-            ? "ok"
-            : "warn"
-          ) +
+        '<span class="quality-chip ' +
 
-          '">' +
+        (
+          item.ok
+          ? "ok"
+          : "warn"
+        ) +
 
-          (
-            item.ok
-            ? "✓ "
-            : "! "
-          ) +
+        '">' +
 
-          item.text +
+        (
+          item.ok
+          ? "✓ "
+          : "! "
+        ) +
 
-          "</span>"
-        );
-      }
-    )
-    .join("");
+        item.text +
 
+        "</span>"
+      );
+    }
+  )
 
-  const expected =
-    quality.expectedRecords;
-
-
-  const received =
-    records.length;
+  .join("");
 
 
   const coverage =
 
-    expected > 0
+  quality.expectedRecords > 0
 
-    ? Math.min(
-        100,
-        (
-          received /
-          expected
-        ) * 100
-      )
+  ? (
+      quality.receivedExpectedRecords /
+      quality.expectedRecords
+    ) * 100
 
-    : 100;
+  : 100;
 
 
   setText(
     "coverageValue",
-
     coverage.toFixed(0) +
     "%"
   );
@@ -2598,14 +2701,17 @@ function renderQuality(records) {
   setText(
     "coverageDetail",
 
-    received +
+    quality.receivedExpectedRecords +
     " de " +
-    expected +
+    quality.expectedRecords +
     " registros esperados"
   );
 
 
-  return quality;
+  return {
+    ...quality,
+    coverage
+  };
 }
 
 
@@ -2613,20 +2719,20 @@ function renderQuality(records) {
    AGRUPAR POR DÍA
 ========================================================== */
 
-function aggregateByDay(records) {
+function aggregateByDay(records){
 
   const groups =
-    {};
+  {};
 
 
   records.forEach(
     record => {
 
-      if (
+      if(
         !groups[
           record.fecha
         ]
-      ) {
+      ){
 
         groups[
           record.fecha
@@ -2642,138 +2748,138 @@ function aggregateByDay(records) {
 
 
   return Object
-    .entries(groups)
-    .map(
-      ([fecha,rows]) => {
 
-        rows.sort(
-          (a,b) =>
-          hourMinutes(a.hora) -
-          hourMinutes(b.hora)
-        );
+  .entries(groups)
+
+  .map(
+    ([fecha,rows]) => {
 
 
-        const peak =
-
-          rows.reduce(
-
-            (max,record) => {
-
-              const current =
-                record.totalCarros +
-                record.totalMotos;
+      rows.sort(
+        (a,b) =>
+        hourMinutes(a.hora) -
+        hourMinutes(b.hora)
+      );
 
 
-              const maximum =
-                max.totalCarros +
-                max.totalMotos;
+      const peakRecord =
+
+      rows.reduce(
+
+        (max,record) => {
+
+          const current =
+          record.totalCarros +
+          record.totalMotos;
 
 
-              return (
-                current >
-                maximum
-              )
-
-              ? record
-
-              : max;
-
-            },
-
-            rows[0]
-          );
+          const maximum =
+          max.totalCarros +
+          max.totalMotos;
 
 
-        return {
+          return (
+            current >
+            maximum
+          )
 
-          fecha,
+          ? record
 
-          date:
-            parseDMY(fecha),
+          : max;
 
-          label:
-            fecha.slice(0,5),
+        },
 
+        rows[0]
+      );
+
+
+      return {
+
+        fecha,
+
+        date:
+        parseDMY(
+          fecha
+        ),
+
+        label:
+        fecha.slice(
+          0,
+          5
+        ),
+
+        rows,
+
+        peakRecord,
+
+        peakTotal:
+        peakRecord.totalCarros +
+        peakRecord.totalMotos,
+
+        peakCars:
+        Math.max(
+          ...rows.map(
+            record =>
+            record.totalCarros
+          )
+        ),
+
+        peakMotos:
+        Math.max(
+          ...rows.map(
+            record =>
+            record.totalMotos
+          )
+        ),
+
+        entries:
+
+        sum(
           rows,
+          "entradaCarros"
+        )
 
-          averageCars:
-            average(
-              rows.map(
-                record =>
-                record.totalCarros
-              )
-            ),
+        +
 
-          averageMotos:
-            average(
-              rows.map(
-                record =>
-                record.totalMotos
-              )
-            ),
+        sum(
+          rows,
+          "entradaMotos"
+        ),
 
-          averageTotal:
-            average(
-              rows.map(
-                record =>
-                record.totalCarros +
-                record.totalMotos
-              )
-            ),
+        exits:
 
-          peak,
+        sum(
+          rows,
+          "salidaCarros"
+        )
 
-          peakTotal:
-            peak.totalCarros +
-            peak.totalMotos,
+        +
 
-          entries:
+        sum(
+          rows,
+          "salidaMotos"
+        )
+      };
+    }
+  )
 
-            sum(
-              rows,
-              "entradaCarros"
-            )
-
-            +
-
-            sum(
-              rows,
-              "entradaMotos"
-            ),
-
-          exits:
-
-            sum(
-              rows,
-              "salidaCarros"
-            )
-
-            +
-
-            sum(
-              rows,
-              "salidaMotos"
-            )
-        };
-      }
-    )
-    .sort(
-      (a,b) =>
-      a.date -
-      b.date
-    );
+  .sort(
+    (a,b) =>
+    a.date -
+    b.date
+  );
 }
 
 
 /* ==========================================================
-   ESTADO DEL PARQUEO
+   ESTADO PARQUEO
 ========================================================== */
 
-function parkingState(value) {
+function parkingState(value){
 
-  if (
+  if(
     value >= 100
-  ) {
+  ){
 
     return [
       "Completo",
@@ -2782,9 +2888,9 @@ function parkingState(value) {
   }
 
 
-  if (
+  if(
     value >= 90
-  ) {
+  ){
 
     return [
       "Muy alta ocupación",
@@ -2793,9 +2899,9 @@ function parkingState(value) {
   }
 
 
-  if (
+  if(
     value >= 70
-  ) {
+  ){
 
     return [
       "Alta ocupación",
@@ -2812,29 +2918,44 @@ function parkingState(value) {
 
 
 /* ==========================================================
-   TARJETAS DÍA
+   DÍA
 ========================================================== */
 
-function renderDayCards(records,quality) {
+function renderDayCards(records,quality){
 
   const latest =
-    latestRecord(records);
+  latestRecord(
+    records
+  );
 
 
-  if (!latest) {
+  if(!latest){
 
     clearCards();
+
+
+    setText(
+      "secondary4Label",
+      "Cobertura de registros"
+    );
+
 
     setText(
       "secondary4Value",
 
-      "0 / " +
-      quality.expectedRecords
+      quality.coverage
+      .toFixed(0) +
+      "%"
     );
+
 
     setText(
       "secondary4Detail",
-      "Registros esperados hasta esta hora"
+
+      quality.receivedExpectedRecords +
+      " de " +
+      quality.expectedRecords +
+      " esperados"
     );
 
     return;
@@ -2842,62 +2963,68 @@ function renderDayCards(records,quality) {
 
 
   const cars =
-    latest.totalCarros;
+  latest.totalCarros;
 
 
   const motos =
-    latest.totalMotos;
+  latest.totalMotos;
 
 
   const total =
-    cars + motos;
+  cars + motos;
 
 
   const carsPct =
-    percentage(
-      cars,
-      CAR_CAPACITY
-    );
+  percentage(
+    cars,
+    CAR_CAPACITY
+  );
 
 
   const motosPct =
-    percentage(
-      motos,
-      MOTO_CAPACITY
-    );
+  percentage(
+    motos,
+    MOTO_CAPACITY
+  );
 
 
   const totalPct =
-    percentage(
-      total,
-      TOTAL_CAPACITY
-    );
+  percentage(
+    total,
+    TOTAL_CAPACITY
+  );
 
 
-  /* TARJETA 1 */
+  /* CARROS */
 
   setText(
     "card1Label",
     "Carros estacionados"
   );
 
+
   setText(
     "card1Value",
     cars
   );
 
+
   setText(
     "card1Capacity",
-    "/ 420"
+    "/ 440"
   );
 
+
   $("card1Progress")
-    .style.display =
-    "block";
+  .style.display =
+  "block";
+
 
   $("card1Bar")
-    .style.width =
-    carsPct + "%";
+  .style.width =
+  carsPct +
+  "%";
+
 
   setText(
     "card1Sub",
@@ -2910,6 +3037,7 @@ function renderDayCards(records,quality) {
     " disponibles"
   );
 
+
   setText(
     "card1Pct",
 
@@ -2918,30 +3046,36 @@ function renderDayCards(records,quality) {
   );
 
 
-  /* TARJETA 2 */
+  /* MOTOS */
 
   setText(
     "card2Label",
     "Motos estacionadas"
   );
 
+
   setText(
     "card2Value",
     motos
   );
+
 
   setText(
     "card2Capacity",
     "/ 125"
   );
 
+
   $("card2Progress")
-    .style.display =
-    "block";
+  .style.display =
+  "block";
+
 
   $("card2Bar")
-    .style.width =
-    motosPct + "%";
+  .style.width =
+  motosPct +
+  "%";
+
 
   setText(
     "card2Sub",
@@ -2954,6 +3088,7 @@ function renderDayCards(records,quality) {
     " disponibles"
   );
 
+
   setText(
     "card2Pct",
 
@@ -2962,30 +3097,36 @@ function renderDayCards(records,quality) {
   );
 
 
-  /* TARJETA 3 */
+  /* TOTAL */
 
   setText(
     "card3Label",
     "Ocupación total"
   );
 
+
   setText(
     "card3Value",
     total
   );
 
+
   setText(
     "card3Capacity",
-    "/ 545"
+    "/ 565"
   );
 
+
   $("card3Progress")
-    .style.display =
-    "block";
+  .style.display =
+  "block";
+
 
   $("card3Bar")
-    .style.width =
-    totalPct + "%";
+  .style.width =
+  totalPct +
+  "%";
+
 
   setText(
     "card3Sub",
@@ -2998,6 +3139,7 @@ function renderDayCards(records,quality) {
     " espacios disponibles"
   );
 
+
   setText(
     "card3Pct",
 
@@ -3006,12 +3148,12 @@ function renderDayCards(records,quality) {
   );
 
 
-  /* TARJETA 4 */
+  /* ESTADO */
 
   const state =
-    parkingState(
-      totalPct
-    );
+  parkingState(
+    totalPct
+  );
 
 
   setText(
@@ -3044,20 +3186,20 @@ function renderDayCards(records,quality) {
   );
 
 
-  /* SECUNDARIA 1 */
+  /* ENTRADAS */
 
   const entryCars =
-    sum(
-      records,
-      "entradaCarros"
-    );
+  sum(
+    records,
+    "entradaCarros"
+  );
 
 
   const entryMotos =
-    sum(
-      records,
-      "entradaMotos"
-    );
+  sum(
+    records,
+    "entradaMotos"
+  );
 
 
   setText(
@@ -3084,20 +3226,20 @@ function renderDayCards(records,quality) {
   );
 
 
-  /* SECUNDARIA 2 */
+  /* SALIDAS */
 
   const exitCars =
-    sum(
-      records,
-      "salidaCarros"
-    );
+  sum(
+    records,
+    "salidaCarros"
+  );
 
 
   const exitMotos =
-    sum(
-      records,
-      "salidaMotos"
-    );
+  sum(
+    records,
+    "salidaMotos"
+  );
 
 
   setText(
@@ -3124,42 +3266,42 @@ function renderDayCards(records,quality) {
   );
 
 
-  /* MÁXIMA OCUPACIÓN */
+  /* PICO */
 
   const peak =
 
-    records.reduce(
+  records.reduce(
 
-      (max,record) => {
+    (max,record) => {
 
-        const current =
-          record.totalCarros +
-          record.totalMotos;
-
-
-        const maximum =
-          max.totalCarros +
-          max.totalMotos;
+      const current =
+      record.totalCarros +
+      record.totalMotos;
 
 
-        return (
-          current >
-          maximum
-        )
+      const maximum =
+      max.totalCarros +
+      max.totalMotos;
 
-        ? record
 
-        : max;
+      return (
+        current >
+        maximum
+      )
 
-      },
+      ? record
 
-      records[0]
-    );
+      : max;
+
+    },
+
+    records[0]
+  );
 
 
   setText(
     "secondary3Label",
-    "Máxima ocupación"
+    "Pico de ocupación"
   );
 
 
@@ -3185,169 +3327,235 @@ function renderDayCards(records,quality) {
   );
 
 
-  /* REGISTROS */
+  /* COBERTURA */
 
   setText(
     "secondary4Label",
-    "Registros recibidos"
+    "Cobertura de registros"
   );
 
 
   setText(
     "secondary4Value",
 
-    records.length +
-    " / " +
-    quality.expectedRecords
+    quality.coverage
+    .toFixed(0) +
+    "%"
   );
 
 
   setText(
     "secondary4Detail",
-    "Registros esperados hasta esta hora"
+
+    quality.receivedExpectedRecords +
+    " de " +
+    quality.expectedRecords +
+    " registros esperados"
   );
 }
 
 
 /* ==========================================================
-   TARJETAS SEMANA / MES
+   SEMANA / MES
 ========================================================== */
 
-function renderPeriodCards(records,quality) {
+function renderPeriodCards(records,quality){
 
   const days =
-    aggregateByDay(
-      records
-    );
+  aggregateByDay(
+    records
+  );
 
 
-  const avgCars =
-    average(
-      days.map(
-        day =>
-        day.averageCars
-      )
-    );
+  if(!records.length){
+
+    clearCards();
+    return;
+  }
 
 
-  const avgMotos =
-    average(
-      days.map(
-        day =>
-        day.averageMotos
-      )
-    );
+  /*
+    PICO DE CARROS
+  */
 
+  const peakCarsRecord =
 
-  const avgTotal =
-    average(
-      days.map(
-        day =>
-        day.averageTotal
-      )
-    );
+  records.reduce(
+    (max,record) =>
 
+    record.totalCarros >
+    max.totalCarros
 
-  const avgOccupancyPct =
-    percentage(
-      avgTotal,
-      TOTAL_CAPACITY
-    );
+    ? record
+    : max,
 
+    records[0]
+  );
 
-  /* TARJETA 1 */
 
   setText(
     "card1Label",
-    "Promedio diario de carros"
+    "Pico de ocupación de carros"
   );
 
 
   setText(
     "card1Value",
-
-    Math.round(
-      avgCars
-    )
+    peakCarsRecord.totalCarros
   );
 
 
   setText(
     "card1Capacity",
-    ""
+    "/ 440"
   );
 
 
   $("card1Progress")
-    .style.display =
-    "none";
+  .style.display =
+  "block";
+
+
+  const peakCarsPct =
+  percentage(
+    peakCarsRecord.totalCarros,
+    CAR_CAPACITY
+  );
+
+
+  $("card1Bar")
+  .style.width =
+  peakCarsPct +
+  "%";
 
 
   setText(
     "card1Sub",
-    "Promedio de ocupación registrada"
-  );
 
-
-  setText(
-    "card1Pct",
-    ""
-  );
-
-
-  /* TARJETA 2 */
-
-  setText(
-    "card2Label",
-    "Promedio diario de motos"
-  );
-
-
-  setText(
-    "card2Value",
-
-    Math.round(
-      avgMotos
+    peakCarsRecord.fecha +
+    " · " +
+    formatHour(
+      peakCarsRecord.hora
     )
   );
 
 
   setText(
+    "card1Pct",
+
+    peakCarsPct.toFixed(1) +
+    "%"
+  );
+
+
+  /*
+    PICO DE MOTOS
+  */
+
+  const peakMotosRecord =
+
+  records.reduce(
+    (max,record) =>
+
+    record.totalMotos >
+    max.totalMotos
+
+    ? record
+    : max,
+
+    records[0]
+  );
+
+
+  setText(
+    "card2Label",
+    "Pico de ocupación de motos"
+  );
+
+
+  setText(
+    "card2Value",
+    peakMotosRecord.totalMotos
+  );
+
+
+  setText(
     "card2Capacity",
-    ""
+    "/ 125"
   );
 
 
   $("card2Progress")
-    .style.display =
-    "none";
+  .style.display =
+  "block";
+
+
+  const peakMotosPct =
+  percentage(
+    peakMotosRecord.totalMotos,
+    MOTO_CAPACITY
+  );
+
+
+  $("card2Bar")
+  .style.width =
+  peakMotosPct +
+  "%";
 
 
   setText(
     "card2Sub",
-    "Promedio de ocupación registrada"
+
+    peakMotosRecord.fecha +
+    " · " +
+    formatHour(
+      peakMotosRecord.hora
+    )
   );
 
 
   setText(
     "card2Pct",
-    ""
+
+    peakMotosPct.toFixed(1) +
+    "%"
   );
 
 
-  /* TARJETA 3 */
+  /*
+    ENTRADAS
+  */
+
+  const entryCars =
+  sum(
+    records,
+    "entradaCarros"
+  );
+
+
+  const entryMotos =
+  sum(
+    records,
+    "entradaMotos"
+  );
+
 
   setText(
     "card3Label",
-    "Promedio de ocupación"
+
+    currentView === "week"
+
+    ? "Entradas de la semana"
+
+    : "Entradas del mes"
   );
 
 
   setText(
     "card3Value",
 
-    avgOccupancyPct.toFixed(1) +
-    "%"
+    entryCars +
+    entryMotos
   );
 
 
@@ -3358,19 +3566,17 @@ function renderPeriodCards(records,quality) {
 
 
   $("card3Progress")
-    .style.display =
-    "block";
-
-
-  $("card3Bar")
-    .style.width =
-    avgOccupancyPct +
-    "%";
+  .style.display =
+  "none";
 
 
   setText(
     "card3Sub",
-    "Promedio del período"
+
+    entryCars +
+    " carros · " +
+    entryMotos +
+    " motos"
   );
 
 
@@ -3380,107 +3586,37 @@ function renderPeriodCards(records,quality) {
   );
 
 
-  /* TARJETA 4 */
+  /*
+    SALIDAS
+  */
+
+  const exitCars =
+  sum(
+    records,
+    "salidaCarros"
+  );
+
+
+  const exitMotos =
+  sum(
+    records,
+    "salidaMotos"
+  );
+
 
   setText(
     "card4Label",
-    "Días reportados"
+
+    currentView === "week"
+
+    ? "Salidas de la semana"
+
+    : "Salidas del mes"
   );
 
 
   setText(
     "card4Value",
-
-    days.length +
-    " / " +
-    quality.expectedDates
-  );
-
-
-  setText(
-    "card4Sub",
-
-    quality.incompleteDays === 0
-
-    ? "Todos los días completos"
-
-    : quality.incompleteDays +
-      " día(s) incompleto(s)"
-  );
-
-
-  setText(
-    "card4Extra",
-
-    records.length +
-    " registros recibidos"
-  );
-
-
-  /* ENTRADAS */
-
-  const entryCars =
-    sum(
-      records,
-      "entradaCarros"
-    );
-
-
-  const entryMotos =
-    sum(
-      records,
-      "entradaMotos"
-    );
-
-
-  setText(
-    "secondary1Label",
-    "Entradas del período"
-  );
-
-
-  setText(
-    "secondary1Value",
-
-    entryCars +
-    entryMotos
-  );
-
-
-  setText(
-    "secondary1Detail",
-
-    entryCars +
-    " carros · " +
-    entryMotos +
-    " motos"
-  );
-
-
-  /* SALIDAS */
-
-  const exitCars =
-    sum(
-      records,
-      "salidaCarros"
-    );
-
-
-  const exitMotos =
-    sum(
-      records,
-      "salidaMotos"
-    );
-
-
-  setText(
-    "secondary2Label",
-    "Salidas del período"
-  );
-
-
-  setText(
-    "secondary2Value",
 
     exitCars +
     exitMotos
@@ -3488,7 +3624,7 @@ function renderPeriodCards(records,quality) {
 
 
   setText(
-    "secondary2Detail",
+    "card4Sub",
 
     exitCars +
     " carros · " +
@@ -3497,120 +3633,165 @@ function renderPeriodCards(records,quality) {
   );
 
 
-  /* MÁXIMA OCUPACIÓN */
-
-  let peakRecord =
-    null;
-
-
-  records.forEach(
-    record => {
-
-      if (
-        !peakRecord
-
-        ||
-
-        (
-          record.totalCarros +
-          record.totalMotos
-        )
-        >
-        (
-          peakRecord.totalCarros +
-          peakRecord.totalMotos
-        )
-      ) {
-
-        peakRecord =
-          record;
-      }
-    }
+  setText(
+    "card4Extra",
+    ""
   );
 
 
-  if (
-    peakRecord
-  ) {
+  /*
+    PICO TOTAL
+  */
 
-    setText(
-      "secondary3Label",
-      "Máxima ocupación"
-    );
+  const peakTotal =
 
+  records.reduce(
 
-    setText(
-      "secondary3Value",
+    (max,record) => {
 
-      peakRecord.totalCarros +
-      peakRecord.totalMotos
-    );
+      const current =
+      record.totalCarros +
+      record.totalMotos;
 
 
-    setText(
-      "secondary3Detail",
-
-      peakRecord.fecha +
-      " · " +
-      formatHour(
-        peakRecord.hora
-      ) +
-      " · " +
-      peakRecord.totalCarros +
-      " carros · " +
-      peakRecord.totalMotos +
-      " motos"
-    );
-  }
+      const maximum =
+      max.totalCarros +
+      max.totalMotos;
 
 
-  /* PROMEDIO DE MOVIMIENTOS */
+      return (
+        current >
+        maximum
+      )
 
-  const totalMovements =
+      ? record
 
-    entryCars +
-    entryMotos +
-    exitCars +
-    exitMotos;
+      : max;
 
+    },
 
-  const averageMovements =
-
-    days.length
-
-    ? totalMovements /
-      days.length
-
-    : 0;
+    records[0]
+  );
 
 
   setText(
+    "secondary1Label",
+    "Pico de ocupación total"
+  );
+
+
+  setText(
+    "secondary1Value",
+
+    peakTotal.totalCarros +
+    peakTotal.totalMotos
+  );
+
+
+  setText(
+    "secondary1Detail",
+
+    peakTotal.fecha +
+    " · " +
+    formatHour(
+      peakTotal.hora
+    )
+  );
+
+
+  /*
+    COBERTURA
+  */
+
+  setText(
+    "secondary2Label",
+    "Cobertura de registros"
+  );
+
+
+  setText(
+    "secondary2Value",
+
+    quality.coverage
+    .toFixed(0) +
+    "%"
+  );
+
+
+  setText(
+    "secondary2Detail",
+
+    quality.receivedExpectedRecords +
+    " de " +
+    quality.expectedRecords +
+    " esperados"
+  );
+
+
+  /*
+    DÍAS REPORTADOS
+  */
+
+  setText(
+    "secondary3Label",
+    "Días reportados"
+  );
+
+
+  setText(
+    "secondary3Value",
+
+    days.length +
+    " / " +
+    quality.expectedDates
+  );
+
+
+  setText(
+    "secondary3Detail",
+
+    quality.incompleteDays === 0
+
+    ? "Todos completos"
+
+    : quality.incompleteDays +
+      " día(s) incompleto(s)"
+  );
+
+
+  /*
+    REGISTROS DEL PERÍODO
+  */
+
+  setText(
     "secondary4Label",
-    "Promedio diario de movimientos"
+    "Registros del período"
   );
 
 
   setText(
     "secondary4Value",
-
-    Math.round(
-      averageMovements
-    )
+    records.length
   );
 
 
   setText(
     "secondary4Detail",
-    "Entradas + salidas por día reportado"
+
+    currentView === "week"
+
+    ? "Semana en curso"
+
+    : "Mes en curso"
   );
 }
 
 
 /* ==========================================================
-   LIMPIAR TARJETAS
+   LIMPIAR
 ========================================================== */
 
-function clearCards() {
+function clearCards(){
 
   [
     "card1Value",
@@ -3633,57 +3814,25 @@ function clearCards() {
   );
 
 
-  setText(
+  [
     "card1Sub",
-    "Sin datos"
-  );
-
-
-  setText(
     "card2Sub",
-    "Sin datos"
-  );
-
-
-  setText(
     "card3Sub",
-    "Sin datos"
-  );
-
-
-  setText(
     "card4Sub",
-    "Sin datos"
-  );
-
-
-  setText(
     "card4Extra",
-    "—"
-  );
 
-
-  setText(
     "secondary1Detail",
-    "—"
-  );
-
-
-  setText(
     "secondary2Detail",
-    "—"
-  );
-
-
-  setText(
     "secondary3Detail",
-    "—"
-  );
+    "secondary4Detail"
+  ]
 
-
-  setText(
-    "secondary4Detail",
-    "—"
+  .forEach(
+    id =>
+    setText(
+      id,
+      "—"
+    )
   );
 
 
@@ -3708,31 +3857,31 @@ function clearCards() {
    RENDER PRINCIPAL
 ========================================================== */
 
-function renderDashboard() {
+function renderDashboard(){
 
   const records =
-    recordsForCurrentView();
+  recordsForCurrentView();
 
 
   const quality =
-    renderQuality(
-      records
-    );
+  renderQuality(
+    records
+  );
 
 
   renderPeriod();
 
 
-  if (
+  if(
     currentView === "day"
-  ) {
+  ){
 
     renderDayCards(
       records,
       quality
     );
 
-  } else {
+  }else{
 
     renderPeriodCards(
       records,
@@ -3741,15 +3890,15 @@ function renderDashboard() {
   }
 
 
-  if (
+  if(
     records.length
-  ) {
+  ){
 
     renderCharts(
       records
     );
 
-  } else {
+  }else{
 
     destroyCharts();
   }
@@ -3757,29 +3906,29 @@ function renderDashboard() {
 
 
 /* ==========================================================
-   PERÍODO MOSTRADO
+   PERÍODO
 ========================================================== */
 
-function renderPeriod() {
+function renderPeriod(){
 
   const range =
-    selectedRange();
+  selectedRange();
 
 
-  if (!range)
-    return;
+  if(!range)
+  return;
 
 
   const [
     start,
     end
   ] =
-    range;
+  range;
 
 
-  if (
+  if(
     currentView === "day"
-  ) {
+  ){
 
     setText(
       "periodShown",
@@ -3794,9 +3943,9 @@ function renderPeriod() {
   }
 
 
-  if (
+  if(
     currentView === "week"
-  ) {
+  ){
 
     setText(
       "periodShown",
@@ -3814,9 +3963,9 @@ function renderPeriod() {
   }
 
 
-  if (
+  if(
     currentView === "month"
-  ) {
+  ){
 
     setText(
       "periodShown",
@@ -3843,116 +3992,99 @@ function renderPeriod() {
    GRÁFICAS
 ========================================================== */
 
-function destroyCharts() {
+function destroyCharts(){
 
-  if (
-    occupancyChart
-  ) {
+  if(occupancyChart)
+  occupancyChart.destroy();
 
-    occupancyChart.destroy();
-  }
+  if(movementsChart)
+  movementsChart.destroy();
 
-
-  if (
-    movementsChart
-  ) {
-
-    movementsChart.destroy();
-  }
-
-
-  if (
-    percentageChart
-  ) {
-
-    percentageChart.destroy();
-  }
+  if(percentageChart)
+  percentageChart.destroy();
 
 
   occupancyChart =
-    null;
-
+  null;
 
   movementsChart =
-    null;
-
+  null;
 
   percentageChart =
-    null;
+  null;
 }
 
 
-function renderCharts(records) {
+function renderCharts(records){
 
   destroyCharts();
 
 
   let labels = [];
-
   let cars = [];
-
   let motos = [];
-
   let entries = [];
-
   let exits = [];
+  let occupancyPercent = [];
 
-  let percentages = [];
 
+  /*
+    DÍA
+  */
 
-  if (
+  if(
     currentView === "day"
-  ) {
+  ){
 
     labels =
-      records.map(
-        record =>
-        formatHour(
-          record.hora
-        )
-      );
+    records.map(
+      record =>
+      formatHour(
+        record.hora
+      )
+    );
 
 
     cars =
-      records.map(
-        record =>
-        record.totalCarros
-      );
+    records.map(
+      record =>
+      record.totalCarros
+    );
 
 
     motos =
-      records.map(
-        record =>
-        record.totalMotos
-      );
+    records.map(
+      record =>
+      record.totalMotos
+    );
 
 
     entries =
-      records.map(
-        record =>
-        record.entradaCarros +
-        record.entradaMotos
-      );
+    records.map(
+      record =>
+      record.entradaCarros +
+      record.entradaMotos
+    );
 
 
     exits =
-      records.map(
-        record =>
-        record.salidaCarros +
-        record.salidaMotos
-      );
+    records.map(
+      record =>
+      record.salidaCarros +
+      record.salidaMotos
+    );
 
 
-    percentages =
-      records.map(
-        record =>
+    occupancyPercent =
+    records.map(
+      record =>
 
-        percentage(
-          record.totalCarros +
-          record.totalMotos,
-          TOTAL_CAPACITY
-        )
-      );
+      percentage(
+        record.totalCarros +
+        record.totalMotos,
+        TOTAL_CAPACITY
+      )
+    );
 
 
     setText(
@@ -3963,7 +4095,7 @@ function renderCharts(records) {
 
     setText(
       "occupancySubtitle",
-      "Total estacionado por bloque horario"
+      "Vehículos estacionados por bloque horario"
     );
 
 
@@ -3981,76 +4113,79 @@ function renderCharts(records) {
 
     setText(
       "percentageSubtitle",
-      "Utilización total por bloque horario"
+      "Utilización de la capacidad por bloque horario"
     );
 
-  } else {
+  }else{
+
+    /*
+      SEMANA / MES
+
+      Usamos PICO DIARIO,
+      no promedio.
+    */
 
     const days =
-      aggregateByDay(
-        records
-      );
+    aggregateByDay(
+      records
+    );
 
 
     labels =
-      days.map(
-        day =>
-        day.label
-      );
+    days.map(
+      day =>
+      day.label
+    );
 
 
     cars =
-      days.map(
-        day =>
-        Math.round(
-          day.averageCars
-        )
-      );
+    days.map(
+      day =>
+      day.peakCars
+    );
 
 
     motos =
-      days.map(
-        day =>
-        Math.round(
-          day.averageMotos
-        )
-      );
+    days.map(
+      day =>
+      day.peakMotos
+    );
 
 
     entries =
-      days.map(
-        day =>
-        day.entries
-      );
+    days.map(
+      day =>
+      day.entries
+    );
 
 
     exits =
-      days.map(
-        day =>
-        day.exits
-      );
+    days.map(
+      day =>
+      day.exits
+    );
 
 
-    percentages =
-      days.map(
-        day =>
+    occupancyPercent =
+    days.map(
+      day =>
 
-        percentage(
-          day.averageTotal,
-          TOTAL_CAPACITY
-        )
-      );
+      percentage(
+        day.peakTotal,
+        TOTAL_CAPACITY
+      )
+    );
 
 
     setText(
       "occupancyTitle",
-      "Ocupación promedio por día"
+      "Pico de ocupación por día"
     );
 
 
     setText(
       "occupancySubtitle",
-      "Promedio registrado durante cada día"
+      "Mayor ocupación registrada en cada día"
     );
 
 
@@ -4068,242 +4203,242 @@ function renderCharts(records) {
 
     setText(
       "percentageSubtitle",
-      "Promedio de utilización por día"
+      "Máxima utilización de capacidad por día"
     );
   }
 
 
   occupancyChart =
-    new Chart(
+  new Chart(
 
-      $("occupancyChart"),
+    $("occupancyChart"),
 
-      {
+    {
 
-        type:"line",
+      type:"line",
 
-        data:{
+      data:{
 
-          labels,
+        labels,
 
-          datasets:[
+        datasets:[
 
-            {
+          {
 
-              label:"Carros",
+            label:"Carros",
 
-              data:cars,
+            data:cars,
 
-              borderColor:"#4f7df5",
+            borderColor:"#4f7df5",
 
-              backgroundColor:
-                "rgba(79,125,245,.10)",
+            backgroundColor:
+            "rgba(79,125,245,.10)",
 
-              fill:true,
+            fill:true,
 
-              tension:.3,
+            tension:.3,
 
-              borderWidth:3
-            },
+            borderWidth:3
+          },
 
-            {
 
-              label:"Motos",
+          {
 
-              data:motos,
+            label:"Motos",
 
-              borderColor:"#e3a008",
+            data:motos,
 
-              backgroundColor:
-                "rgba(227,160,8,.08)",
+            borderColor:"#e3a008",
 
-              fill:true,
+            backgroundColor:
+            "rgba(227,160,8,.08)",
 
-              tension:.3,
+            fill:true,
 
-              borderWidth:3
-            }
-          ]
+            tension:.3,
+
+            borderWidth:3
+          }
+        ]
+      },
+
+
+      options:{
+
+        responsive:true,
+
+        maintainAspectRatio:false,
+
+        interaction:{
+          mode:"index",
+          intersect:false
         },
 
-        options:{
+        plugins:{
+          legend:{
+            position:"bottom"
+          }
+        },
 
-          responsive:true,
+        scales:{
 
-          maintainAspectRatio:false,
-
-          interaction:{
-            mode:"index",
-            intersect:false
+          y:{
+            beginAtZero:true
           },
 
-          plugins:{
-
-            legend:{
-              position:"bottom"
-            }
-          },
-
-          scales:{
-
-            y:{
-              beginAtZero:true
-            },
-
-            x:{
-              grid:{
-                display:false
-              }
+          x:{
+            grid:{
+              display:false
             }
           }
         }
       }
-    );
+    }
+  );
 
 
   movementsChart =
-    new Chart(
+  new Chart(
 
-      $("movementsChart"),
+    $("movementsChart"),
 
-      {
+    {
 
-        type:"bar",
+      type:"bar",
 
-        data:{
+      data:{
 
-          labels,
+        labels,
 
-          datasets:[
+        datasets:[
 
-            {
+          {
 
-              label:"Entradas",
+            label:"Entradas",
 
-              data:entries,
+            data:entries,
 
-              backgroundColor:
-                "rgba(34,165,91,.72)"
-            },
-
-            {
-
-              label:"Salidas",
-
-              data:exits,
-
-              backgroundColor:
-                "rgba(220,76,76,.72)"
-            }
-          ]
-        },
-
-        options:{
-
-          responsive:true,
-
-          maintainAspectRatio:false,
-
-          plugins:{
-
-            legend:{
-              position:"bottom"
-            }
+            backgroundColor:
+            "rgba(34,165,91,.72)"
           },
 
-          scales:{
 
-            y:{
-              beginAtZero:true
-            },
+          {
 
-            x:{
-              grid:{
-                display:false
-              }
+            label:"Salidas",
+
+            data:exits,
+
+            backgroundColor:
+            "rgba(220,76,76,.72)"
+          }
+        ]
+      },
+
+
+      options:{
+
+        responsive:true,
+
+        maintainAspectRatio:false,
+
+        plugins:{
+          legend:{
+            position:"bottom"
+          }
+        },
+
+        scales:{
+
+          y:{
+            beginAtZero:true
+          },
+
+          x:{
+            grid:{
+              display:false
             }
           }
         }
       }
-    );
+    }
+  );
 
 
   percentageChart =
-    new Chart(
+  new Chart(
 
-      $("percentageChart"),
+    $("percentageChart"),
 
-      {
+    {
 
-        type:"line",
+      type:"line",
 
-        data:{
+      data:{
 
-          labels,
+        labels,
 
-          datasets:[
+        datasets:[
 
-            {
+          {
 
-              label:
-                "Ocupación total",
+            label:
+            "Ocupación",
 
-              data:
-                percentages,
+            data:
+            occupancyPercent,
 
-              borderColor:
-                "#7654c5",
+            borderColor:
+            "#7654c5",
 
-              backgroundColor:
-                "rgba(118,84,197,.10)",
+            backgroundColor:
+            "rgba(118,84,197,.10)",
 
-              fill:true,
+            fill:true,
 
-              tension:.3,
+            tension:.3,
 
-              borderWidth:3
-            }
-          ]
+            borderWidth:3
+          }
+        ]
+      },
+
+
+      options:{
+
+        responsive:true,
+
+        maintainAspectRatio:false,
+
+        plugins:{
+          legend:{
+            position:"bottom"
+          }
         },
 
-        options:{
+        scales:{
 
-          responsive:true,
+          y:{
 
-          maintainAspectRatio:false,
+            beginAtZero:true,
+            max:100,
 
-          plugins:{
-
-            legend:{
-              position:"bottom"
+            ticks:{
+              callback:
+              value =>
+              value + "%"
             }
           },
 
-          scales:{
-
-            y:{
-
-              beginAtZero:true,
-
-              max:100,
-
-              ticks:{
-
-                callback:
-                  value =>
-                  value + "%"
-              }
-            },
-
-            x:{
-              grid:{
-                display:false
-              }
+          x:{
+            grid:{
+              display:false
             }
           }
         }
       }
-    );
+    }
+  );
 }
 
 
@@ -4311,13 +4446,13 @@ function renderCharts(records) {
    API
 ========================================================== */
 
-async function loadData() {
+async function loadData(){
 
-  try {
+  try{
 
     $("statusDot")
-      .className =
-      "status-dot";
+    .className =
+    "status-dot";
 
 
     setText(
@@ -4333,21 +4468,19 @@ async function loadData() {
 
 
     const response =
-      await fetch(
+    await fetch(
 
-        API_URL +
-        "?cache=" +
-        Date.now(),
+      API_URL +
+      "?cache=" +
+      Date.now(),
 
-        {
-          cache:"no-store"
-        }
-      );
+      {
+        cache:"no-store"
+      }
+    );
 
 
-    if (
-      !response.ok
-    ) {
+    if(!response.ok){
 
       throw new Error(
         "HTTP " +
@@ -4357,18 +4490,16 @@ async function loadData() {
 
 
     const result =
-      await response.json();
+    await response.json();
 
 
-    if (
+    if(
       result.status !==
       "success"
-    ) {
+    ){
 
       throw new Error(
-
         result.message ||
-
         "Respuesta inválida"
       );
     }
@@ -4376,19 +4507,20 @@ async function loadData() {
 
     allRecords =
 
-      Array.isArray(
-        result.data
+    Array.isArray(
+      result.data
+    )
+
+    ? result.data.map(
+        normalize
       )
 
-      ? result.data
-        .map(normalize)
-
-      : [];
+    : [];
 
 
-    if (
+    if(
       !allRecords.length
-    ) {
+    ){
 
       throw new Error(
         "La hoja no contiene registros"
@@ -4396,33 +4528,45 @@ async function loadData() {
     }
 
 
-    const latest =
-      latestRecord(
-        allRecords
-      );
+    /*
+      HISTÓRICO
+    */
 
-
-    const latestDate =
-      parseDMY(
-        latest.fecha
-      );
+    updateHistory();
 
 
     /*
-      Día abre con el último
+      ÚLTIMO REGISTRO
+    */
+
+    const latest =
+    latestRecord(
+      allRecords
+    );
+
+
+    const latestDate =
+    parseDMY(
+      latest.fecha
+    );
+
+
+    /*
+      Al abrir:
+      Día muestra el último
       día disponible.
     */
 
-    if (
+    if(
       !$("periodSelector").value
-    ) {
+    ){
 
       $("periodSelector")
-        .value =
+      .value =
 
-        formatISO(
-          latestDate
-        );
+      formatISO(
+        latestDate
+      );
     }
 
 
@@ -4433,11 +4577,11 @@ async function loadData() {
 
     renderDashboard();
 
-  } catch(error) {
+  }catch(error){
 
     $("statusDot")
-      .className =
-      "status-dot error";
+    .className =
+    "status-dot error";
 
 
     setText(
@@ -4464,6 +4608,7 @@ async function loadData() {
 ========================================================== */
 
 document
+
 .querySelectorAll(
   ".view-tab"
 )
@@ -4476,6 +4621,7 @@ document
       () => {
 
         document
+
         .querySelectorAll(
           ".view-tab"
         )
@@ -4499,24 +4645,26 @@ document
 
 
         currentView =
-          tab.dataset.view;
+        tab.dataset.view;
 
 
         /*
-          Día tiene selector.
+          Solo Día permite
+          seleccionar fecha.
 
-          Semana y Mes siempre
-          son los períodos actuales.
+          Semana/Mes siempre
+          corresponden al
+          período actual.
         */
 
         $("periodControl")
-          .style.display =
+        .style.display =
 
-          currentView === "day"
+        currentView === "day"
 
-          ? "flex"
+        ? "flex"
 
-          : "none";
+        : "none";
 
 
         renderDashboard();

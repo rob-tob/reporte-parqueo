@@ -3,144 +3,199 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
   <title>Sistema de Control de Parqueos | V2.0</title>
 
   <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.7/dist/chart.umd.min.js"></script>
 
   <style>
     :root {
-      --primary:#4f7df5;
-      --secondary:#7654c5;
-      --success:#22a55b;
-      --warning:#e3a008;
-      --danger:#dc4c4c;
-      --background:#f3f6fb;
-      --surface:#fff;
-      --text:#1e293b;
-      --text-soft:#64748b;
-      --text-light:#94a3b8;
-      --border:#e2e8f0;
-      --shadow:0 8px 24px rgba(15,23,42,.07);
-      --radius:16px;
+      --primary: #4f7df5;
+      --secondary: #7654c5;
+
+      --success: #22a55b;
+      --warning: #e3a008;
+      --danger: #dc4c4c;
+
+      --background: #f3f6fb;
+      --surface: #ffffff;
+
+      --text: #1e293b;
+      --text-soft: #64748b;
+      --text-light: #94a3b8;
+
+      --border: #e2e8f0;
+
+      --shadow: 0 8px 24px rgba(15,23,42,.07);
+
+      --radius: 16px;
     }
 
     * {
-      margin:0;
-      padding:0;
-      box-sizing:border-box;
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
     }
 
     body {
-      font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,Arial,sans-serif;
-      background:var(--background);
-      color:var(--text);
-      min-height:100vh;
+      font-family:
+        -apple-system,
+        BlinkMacSystemFont,
+        "Segoe UI",
+        Roboto,
+        Arial,
+        sans-serif;
+
+      background: var(--background);
+      color: var(--text);
+      min-height: 100vh;
     }
 
-    button,input {
-      font:inherit;
+    button,
+    input {
+      font: inherit;
     }
 
     button {
-      cursor:pointer;
+      cursor: pointer;
     }
 
+    /* HEADER */
+
     .app-header {
-      background:linear-gradient(120deg,var(--primary),var(--secondary));
-      color:#fff;
-      padding:22px 30px;
+      background:
+        linear-gradient(
+          120deg,
+          var(--primary),
+          var(--secondary)
+        );
+
+      color: white;
+      padding: 22px 30px;
     }
 
     .header-inner {
-      max-width:1500px;
-      margin:auto;
-      display:flex;
-      justify-content:space-between;
-      align-items:center;
-      gap:25px;
+      max-width: 1500px;
+      margin: auto;
+
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+
+      gap: 25px;
     }
 
     .brand h1 {
-      font-size:26px;
-      font-weight:750;
+      font-size: 26px;
+      font-weight: 750;
     }
 
     .brand p {
-      margin-top:5px;
-      font-size:14px;
-      opacity:.88;
+      margin-top: 5px;
+      font-size: 14px;
+      opacity: .88;
     }
 
     .header-status {
-      display:flex;
-      gap:24px;
-      align-items:center;
+      display: flex;
+      gap: 24px;
+      align-items: center;
     }
 
     .sync-status {
-      display:flex;
-      align-items:center;
-      gap:10px;
+      display: flex;
+      align-items: center;
+      gap: 10px;
     }
 
     .status-dot {
-      width:11px;
-      height:11px;
-      border-radius:50%;
-      background:var(--warning);
-      box-shadow:0 0 0 5px rgba(227,160,8,.15);
+      width: 11px;
+      height: 11px;
+
+      border-radius: 50%;
+
+      background: var(--warning);
+
+      box-shadow:
+        0 0 0 5px
+        rgba(227,160,8,.15);
     }
 
     .status-dot.ok {
-      background:#61e28d;
+      background: #61e28d;
+
+      box-shadow:
+        0 0 0 5px
+        rgba(97,226,141,.13);
     }
 
     .status-dot.error {
-      background:#ff7676;
+      background: #ff7676;
+
+      box-shadow:
+        0 0 0 5px
+        rgba(255,118,118,.14);
     }
 
     .sync-main {
-      font-weight:650;
-      font-size:14px;
+      font-weight: 650;
+      font-size: 14px;
     }
 
     .sync-sub {
-      margin-top:2px;
-      font-size:12px;
-      opacity:.84;
+      margin-top: 2px;
+
+      font-size: 12px;
+      opacity: .84;
     }
 
     .last-sync {
-      border-left:1px solid rgba(255,255,255,.24);
-      padding-left:24px;
+      border-left:
+        1px solid
+        rgba(255,255,255,.24);
+
+      padding-left: 24px;
     }
 
     .last-sync-label {
-      font-size:11px;
-      opacity:.75;
-      text-transform:uppercase;
+      font-size: 11px;
+      opacity: .75;
+
+      text-transform: uppercase;
     }
 
     .last-sync-value {
-      font-size:14px;
-      font-weight:650;
-      margin-top:4px;
+      font-size: 14px;
+      font-weight: 650;
+
+      margin-top: 4px;
     }
 
     .refresh-btn {
-      border:1px solid rgba(255,255,255,.34);
-      background:rgba(255,255,255,.12);
-      color:#fff;
-      width:42px;
-      height:42px;
-      border-radius:11px;
-      font-size:20px;
+      border:
+        1px solid
+        rgba(255,255,255,.34);
+
+      background:
+        rgba(255,255,255,.12);
+
+      color: white;
+
+      width: 42px;
+      height: 42px;
+
+      border-radius: 11px;
+
+      font-size: 20px;
     }
 
+    /* GENERAL */
+
     .dashboard {
-      max-width:1500px;
-      margin:auto;
-      padding:24px;
+      max-width: 1500px;
+      margin: auto;
+
+      padding: 24px;
     }
 
     .controls-card,
@@ -150,333 +205,502 @@
     .report-card,
     .chart-card,
     .summary-card {
-      background:var(--surface);
-      box-shadow:var(--shadow);
-      border-radius:var(--radius);
+      background: var(--surface);
+
+      box-shadow: var(--shadow);
+
+      border-radius: var(--radius);
     }
 
+    /* CONTROLES */
+
     .controls-card {
-      padding:14px;
-      display:flex;
-      justify-content:space-between;
-      align-items:center;
-      gap:20px;
-      margin-bottom:18px;
+      padding: 14px;
+
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+
+      gap: 20px;
+
+      margin-bottom: 18px;
     }
 
     .view-tabs {
-      display:inline-grid;
-      grid-template-columns:repeat(3,1fr);
-      background:#edf2f9;
-      border-radius:11px;
-      padding:4px;
-      min-width:360px;
+      display: inline-grid;
+
+      grid-template-columns:
+        repeat(3,1fr);
+
+      background: #edf2f9;
+
+      border-radius: 11px;
+      padding: 4px;
+
+      min-width: 360px;
     }
 
     .view-tab {
-      border:none;
-      background:transparent;
-      border-radius:8px;
-      padding:10px 24px;
-      color:var(--text-soft);
-      font-weight:650;
+      border: none;
+
+      background: transparent;
+
+      border-radius: 8px;
+
+      padding: 10px 24px;
+
+      color: var(--text-soft);
+
+      font-weight: 650;
     }
 
     .view-tab.active {
-      background:var(--primary);
-      color:#fff;
+      background: var(--primary);
+      color: white;
     }
 
     .period-control {
-      display:flex;
-      align-items:center;
-      gap:12px;
+      display: flex;
+      align-items: center;
+
+      gap: 12px;
     }
 
     .period-control label {
-      color:var(--text-soft);
-      font-size:13px;
-      font-weight:650;
+      color: var(--text-soft);
+
+      font-size: 13px;
+      font-weight: 650;
     }
 
     .period-control input {
-      border:1px solid var(--border);
-      padding:9px 12px;
-      border-radius:9px;
+      border:
+        1px solid
+        var(--border);
+
+      background: white;
+
+      padding: 9px 12px;
+
+      border-radius: 9px;
     }
 
+    /* CALIDAD */
+
     .quality-strip {
-      padding:16px 18px;
-      display:flex;
-      justify-content:space-between;
-      align-items:center;
-      gap:20px;
-      margin-bottom:18px;
+      padding: 16px 18px;
+
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+
+      gap: 20px;
+
+      margin-bottom: 18px;
     }
 
     .quality-title {
-      display:flex;
-      align-items:center;
-      gap:12px;
+      display: flex;
+      align-items: center;
+
+      gap: 12px;
     }
 
     .quality-icon {
-      width:40px;
-      height:40px;
-      border-radius:50%;
-      display:grid;
-      place-items:center;
-      font-size:20px;
-      font-weight:bold;
+      width: 40px;
+      height: 40px;
+
+      border-radius: 50%;
+
+      display: grid;
+      place-items: center;
+
+      font-size: 20px;
+      font-weight: bold;
     }
 
     .quality-icon.ok {
-      color:var(--success);
-      background:rgba(34,165,91,.12);
+      color: var(--success);
+
+      background:
+        rgba(34,165,91,.12);
     }
 
     .quality-icon.warn {
-      color:var(--warning);
-      background:rgba(227,160,8,.14);
+      color: var(--warning);
+
+      background:
+        rgba(227,160,8,.14);
     }
 
     .quality-main {
-      font-weight:750;
-      font-size:15px;
+      font-weight: 750;
+      font-size: 15px;
     }
 
     .quality-sub {
-      color:var(--text-soft);
-      font-size:12px;
-      margin-top:3px;
+      color: var(--text-soft);
+
+      font-size: 12px;
+
+      margin-top: 3px;
     }
 
     .quality-items {
-      display:flex;
-      flex-wrap:wrap;
-      gap:8px;
+      display: flex;
+      flex-wrap: wrap;
+
+      gap: 8px;
     }
 
     .quality-chip {
-      padding:7px 11px;
-      border-radius:999px;
-      font-size:12px;
-      font-weight:650;
+      padding: 7px 11px;
+
+      border-radius: 999px;
+
+      font-size: 12px;
+      font-weight: 650;
     }
 
     .quality-chip.ok {
-      background:#f1f7f3;
-      color:#28714a;
+      background: #f1f7f3;
+      color: #28714a;
     }
 
     .quality-chip.warn {
-      background:#fff8e6;
-      color:#946200;
+      background: #fff8e6;
+      color: #946200;
     }
 
+    /* KPIs */
+
     .kpi-grid {
-      display:grid;
-      grid-template-columns:repeat(4,1fr);
-      gap:16px;
-      margin-bottom:18px;
+      display: grid;
+
+      grid-template-columns:
+        repeat(4,1fr);
+
+      gap: 16px;
+
+      margin-bottom: 18px;
     }
 
     .kpi-card {
-      padding:19px;
-      min-height:155px;
+      padding: 19px;
+
+      min-height: 155px;
     }
 
     .kpi-label,
     .mini-label,
     .summary-title {
-      color:var(--text-soft);
-      font-size:12px;
-      font-weight:700;
-      text-transform:uppercase;
+      color: var(--text-soft);
+
+      font-size: 12px;
+      font-weight: 700;
+
+      text-transform: uppercase;
     }
 
     .kpi-number-row {
-      display:flex;
-      align-items:baseline;
-      gap:7px;
-      margin-top:9px;
+      display: flex;
+      align-items: baseline;
+
+      gap: 7px;
+
+      margin-top: 9px;
     }
 
     .kpi-number {
-      font-size:31px;
-      font-weight:780;
+      font-size: 31px;
+      font-weight: 780;
     }
 
     .kpi-capacity {
-      color:var(--text-light);
-      font-size:17px;
+      color: var(--text-light);
+
+      font-size: 17px;
     }
 
     .kpi-sub {
-      color:var(--text-soft);
-      font-size:12px;
-      margin-top:9px;
+      color: var(--text-soft);
+
+      font-size: 12px;
+
+      margin-top: 9px;
     }
 
     .progress {
-      width:100%;
-      height:7px;
-      border-radius:20px;
-      background:#e8edf5;
-      overflow:hidden;
-      margin-top:15px;
+      width: 100%;
+      height: 7px;
+
+      border-radius: 20px;
+
+      background: #e8edf5;
+
+      overflow: hidden;
+
+      margin-top: 15px;
     }
 
     .progress-bar {
-      height:100%;
-      background:linear-gradient(90deg,var(--primary),var(--secondary));
+      height: 100%;
+
+      background:
+        linear-gradient(
+          90deg,
+          var(--primary),
+          var(--secondary)
+        );
+
+      border-radius: 20px;
     }
 
     .progress-meta {
-      margin-top:7px;
-      display:flex;
-      justify-content:space-between;
-      font-size:11px;
-      color:var(--text-soft);
+      margin-top: 7px;
+
+      display: flex;
+      justify-content: space-between;
+
+      font-size: 11px;
+
+      color: var(--text-soft);
     }
 
+    /* KPIs SECUNDARIOS */
+
     .secondary-grid {
-      display:grid;
-      grid-template-columns:repeat(5,1fr);
-      gap:16px;
-      margin-bottom:18px;
+      display: grid;
+
+      grid-template-columns:
+        repeat(5,1fr);
+
+      gap: 16px;
+
+      margin-bottom: 18px;
     }
 
     .mini-card {
-      padding:18px;
-      min-height:135px;
+      padding: 18px;
+
+      min-height: 135px;
     }
 
     .mini-value {
-      margin-top:11px;
-      font-size:27px;
-      font-weight:770;
+      margin-top: 11px;
+
+      font-size: 27px;
+      font-weight: 770;
     }
 
     .mini-detail {
-      margin-top:11px;
-      color:var(--text-soft);
-      font-size:12px;
+      margin-top: 11px;
+
+      color: var(--text-soft);
+
+      font-size: 12px;
+      line-height: 1.45;
     }
 
+    /* ÚLTIMO REPORTE */
+
     .report-card {
-      padding:18px;
-      border:1px solid #e2e8f5;
+      padding: 18px;
+
+      border:
+        1px solid
+        #e2e8f5;
     }
 
     .report-card-title {
-      font-size:13px;
-      font-weight:750;
-      margin-bottom:14px;
+      font-size: 13px;
+      font-weight: 750;
+
+      margin-bottom: 14px;
     }
 
     .report-details {
-      display:grid;
-      grid-template-columns:repeat(4,1fr);
-      gap:20px;
+      display: grid;
+
+      grid-template-columns:
+        repeat(4,1fr);
+
+      gap: 20px;
     }
 
     .report-detail-label {
-      color:var(--text-light);
-      font-size:11px;
-      text-transform:uppercase;
+      color: var(--text-light);
+
+      font-size: 11px;
+
+      text-transform: uppercase;
     }
 
     .report-detail-value {
-      margin-top:4px;
-      font-size:14px;
-      font-weight:680;
+      margin-top: 4px;
+
+      font-size: 14px;
+      font-weight: 680;
     }
 
+    /* GRÁFICAS */
+
     .charts-grid {
-      display:grid;
-      grid-template-columns:1.65fr 1fr;
-      gap:18px;
-      margin-top:18px;
+      display: grid;
+
+      grid-template-columns:
+        1.65fr 1fr;
+
+      gap: 18px;
+
+      margin-top: 18px;
     }
 
     .chart-card {
-      padding:19px;
+      padding: 19px;
     }
 
     .chart-title {
-      font-size:16px;
-      font-weight:750;
+      font-size: 16px;
+      font-weight: 750;
     }
 
     .chart-subtitle {
-      margin-top:3px;
-      color:var(--text-soft);
-      font-size:12px;
+      margin-top: 3px;
+
+      color: var(--text-soft);
+
+      font-size: 12px;
     }
 
     .chart-box {
-      position:relative;
-      height:335px;
-      margin-top:18px;
+      position: relative;
+
+      height: 335px;
+
+      margin-top: 18px;
     }
 
     .full-chart {
-      margin-top:18px;
+      margin-top: 18px;
     }
 
+    /* RESUMEN */
+
     .period-summary {
-      margin-top:18px;
-      display:grid;
-      grid-template-columns:repeat(3,1fr);
-      gap:16px;
+      margin-top: 18px;
+
+      display: grid;
+
+      grid-template-columns:
+        repeat(3,1fr);
+
+      gap: 16px;
     }
 
     .summary-card {
-      padding:18px;
+      padding: 18px;
     }
 
     .summary-value {
-      margin-top:8px;
-      font-size:24px;
-      font-weight:760;
+      margin-top: 8px;
+
+      font-size: 24px;
+      font-weight: 760;
     }
 
     .summary-description {
-      margin-top:7px;
-      font-size:12px;
-      color:var(--text-soft);
+      margin-top: 7px;
+
+      font-size: 12px;
+
+      color: var(--text-soft);
     }
 
+    /* FOOTER */
+
     footer {
-      max-width:1500px;
-      margin:24px auto 0;
-      padding:20px 24px 30px;
+      max-width: 1500px;
+
+      margin:
+        24px auto 0;
+
+      padding:
+        20px 24px 30px;
     }
 
     .footer-inner {
-      border-top:1px solid var(--border);
-      padding-top:18px;
-      display:flex;
-      justify-content:space-between;
-      color:var(--text-soft);
-      font-size:12px;
+      border-top:
+        1px solid
+        var(--border);
+
+      padding-top: 18px;
+
+      display: flex;
+      justify-content: space-between;
+
+      color: var(--text-soft);
+
+      font-size: 12px;
     }
 
+    /* RESPONSIVE */
+
     @media(max-width:1000px) {
-      .kpi-grid {grid-template-columns:repeat(2,1fr);}
-      .secondary-grid {grid-template-columns:repeat(2,1fr);}
-      .charts-grid {grid-template-columns:1fr;}
+
+      .kpi-grid {
+        grid-template-columns:
+          repeat(2,1fr);
+      }
+
+      .secondary-grid {
+        grid-template-columns:
+          repeat(2,1fr);
+      }
+
+      .charts-grid {
+        grid-template-columns:1fr;
+      }
     }
 
     @media(max-width:600px) {
-      .header-inner {flex-direction:column;align-items:flex-start;}
-      .header-status {width:100%;justify-content:space-between;}
-      .last-sync {display:none;}
-      .dashboard {padding:15px;}
-      .controls-card {flex-direction:column;align-items:stretch;}
-      .view-tabs {width:100%;min-width:0;}
-      .kpi-grid,.secondary-grid,.report-details,.period-summary {grid-template-columns:1fr;}
+
+      .header-inner {
+        flex-direction:column;
+        align-items:flex-start;
+      }
+
+      .header-status {
+        width:100%;
+
+        justify-content:
+          space-between;
+      }
+
+      .last-sync {
+        display:none;
+      }
+
+      .dashboard {
+        padding:15px;
+      }
+
+      .controls-card {
+        flex-direction:column;
+        align-items:stretch;
+      }
+
+      .view-tabs {
+        width:100%;
+        min-width:0;
+      }
+
+      .kpi-grid,
+      .secondary-grid,
+      .report-details,
+      .period-summary {
+        grid-template-columns:1fr;
+      }
     }
   </style>
 </head>
@@ -484,248 +708,625 @@
 <body>
 
 <header class="app-header">
+
   <div class="header-inner">
 
     <div class="brand">
-      <h1>Sistema de Control de Parqueos</h1>
-      <p>Dashboard Operativo</p>
+
+      <h1>
+        Sistema de Control de Parqueos
+      </h1>
+
+      <p>
+        Dashboard Operativo
+      </p>
+
     </div>
 
     <div class="header-status">
 
       <div class="sync-status">
-        <span id="statusDot" class="status-dot"></span>
+
+        <span
+          id="statusDot"
+          class="status-dot">
+        </span>
 
         <div>
-          <div id="statusMain" class="sync-main">
+
+          <div
+            id="statusMain"
+            class="sync-main">
+
             Consultando información…
+
           </div>
 
-          <div id="statusSub" class="sync-sub">
+          <div
+            id="statusSub"
+            class="sync-sub">
+
             Conectando con Google Sheets
+
           </div>
+
         </div>
+
       </div>
 
       <div class="last-sync">
-        <div class="last-sync-label">Última sincronización</div>
-        <div id="lastSync" class="last-sync-value">—</div>
+
+        <div class="last-sync-label">
+          Última sincronización
+        </div>
+
+        <div
+          id="lastSync"
+          class="last-sync-value">
+
+          —
+
+        </div>
+
       </div>
 
-      <button class="refresh-btn" id="refreshButton">↻</button>
+      <button
+        id="refreshButton"
+        class="refresh-btn">
+
+        ↻
+
+      </button>
 
     </div>
+
   </div>
+
 </header>
 
 <main class="dashboard">
 
+  <!-- VISTAS -->
+
   <section class="controls-card">
 
     <div class="view-tabs">
-      <button class="view-tab active" data-view="day">Día</button>
-      <button class="view-tab" data-view="week">Semana</button>
-      <button class="view-tab" data-view="month">Mes</button>
+
+      <button
+        class="view-tab active"
+        data-view="day">
+
+        Día
+
+      </button>
+
+      <button
+        class="view-tab"
+        data-view="week">
+
+        Semana
+
+      </button>
+
+      <button
+        class="view-tab"
+        data-view="month">
+
+        Mes
+
+      </button>
+
     </div>
 
-    <div class="period-control">
-      <label>Fecha</label>
-      <input type="date" id="periodSelector">
+    <div
+      id="periodControl"
+      class="period-control">
+
+      <label>
+        Fecha mostrada
+      </label>
+
+      <input
+        type="date"
+        id="periodSelector">
+
     </div>
 
   </section>
+
+  <!-- CALIDAD -->
 
   <section class="quality-strip">
 
     <div class="quality-title">
 
-      <div id="qualityIcon" class="quality-icon ok">✓</div>
+      <div
+        id="qualityIcon"
+        class="quality-icon ok">
+
+        ✓
+
+      </div>
 
       <div>
-        <div id="qualityMain" class="quality-main">
+
+        <div
+          id="qualityMain"
+          class="quality-main">
+
           Calidad de datos
+
         </div>
 
-        <div id="qualitySub" class="quality-sub">
+        <div
+          id="qualitySub"
+          class="quality-sub">
+
           Validando información…
+
         </div>
+
       </div>
 
     </div>
 
-    <div id="qualityItems" class="quality-items"></div>
+    <div
+      id="qualityItems"
+      class="quality-items">
+    </div>
 
   </section>
+
+  <!-- KPIs PRINCIPALES -->
 
   <section class="kpi-grid">
 
     <article class="kpi-card">
-      <div class="kpi-label">Carros estacionados</div>
+
+      <div class="kpi-label">
+        Carros estacionados
+      </div>
 
       <div class="kpi-number-row">
-        <span id="carsValue" class="kpi-number">—</span>
-        <span class="kpi-capacity">/ 420</span>
+
+        <span
+          id="carsValue"
+          class="kpi-number">
+
+          —
+
+        </span>
+
+        <span class="kpi-capacity">
+          / 420
+        </span>
+
       </div>
 
       <div class="progress">
-        <div id="carsBar" class="progress-bar"></div>
+
+        <div
+          id="carsBar"
+          class="progress-bar">
+        </div>
+
       </div>
 
       <div class="progress-meta">
-        <span id="carsAvailable">—</span>
-        <strong id="carsPct">—%</strong>
-      </div>
-    </article>
 
-    <article class="kpi-card">
-      <div class="kpi-label">Motos estacionadas</div>
+        <span id="carsAvailable">
+          —
+        </span>
 
-      <div class="kpi-number-row">
-        <span id="motosValue" class="kpi-number">—</span>
-        <span class="kpi-capacity">/ 80</span>
+        <strong id="carsPct">
+          —%
+        </strong>
+
       </div>
 
-      <div class="progress">
-        <div id="motosBar" class="progress-bar"></div>
-      </div>
-
-      <div class="progress-meta">
-        <span id="motosAvailable">—</span>
-        <strong id="motosPct">—%</strong>
-      </div>
-    </article>
-
-    <article class="kpi-card">
-      <div class="kpi-label">Ocupación total</div>
-
-      <div class="kpi-number-row">
-        <span id="totalValue" class="kpi-number">—</span>
-        <span class="kpi-capacity">/ 500</span>
-      </div>
-
-      <div class="progress">
-        <div id="totalBar" class="progress-bar"></div>
-      </div>
-
-      <div class="progress-meta">
-        <span id="totalAvailable">—</span>
-        <strong id="totalPct">—%</strong>
-      </div>
     </article>
 
     <article class="kpi-card">
 
-      <div class="kpi-label">Estado del parqueo</div>
+      <div class="kpi-label">
+        Motos estacionadas
+      </div>
 
-      <div id="parkingState"
-           class="kpi-number"
-           style="font-size:27px;margin-top:9px">
+      <div class="kpi-number-row">
+
+        <span
+          id="motosValue"
+          class="kpi-number">
+
+          —
+
+        </span>
+
+        <span class="kpi-capacity">
+          / 80
+        </span>
+
+      </div>
+
+      <div class="progress">
+
+        <div
+          id="motosBar"
+          class="progress-bar">
+        </div>
+
+      </div>
+
+      <div class="progress-meta">
+
+        <span id="motosAvailable">
+          —
+        </span>
+
+        <strong id="motosPct">
+          —%
+        </strong>
+
+      </div>
+
+    </article>
+
+    <article class="kpi-card">
+
+      <div class="kpi-label">
+        Ocupación total
+      </div>
+
+      <div class="kpi-number-row">
+
+        <span
+          id="totalValue"
+          class="kpi-number">
+
+          —
+
+        </span>
+
+        <span class="kpi-capacity">
+          / 500
+        </span>
+
+      </div>
+
+      <div class="progress">
+
+        <div
+          id="totalBar"
+          class="progress-bar">
+        </div>
+
+      </div>
+
+      <div class="progress-meta">
+
+        <span id="totalAvailable">
+          —
+        </span>
+
+        <strong id="totalPct">
+          —%
+        </strong>
+
+      </div>
+
+    </article>
+
+    <article class="kpi-card">
+
+      <div class="kpi-label">
+        Estado del parqueo
+      </div>
+
+      <div
+        id="parkingState"
+        class="kpi-number"
+        style="
+          font-size:27px;
+          margin-top:9px
+        ">
+
         —
+
       </div>
 
-      <div id="parkingStateSub" class="kpi-sub">—</div>
-      <div id="parkingSpacesSub" class="kpi-sub">—</div>
+      <div
+        id="parkingStateSub"
+        class="kpi-sub">
+
+        —
+
+      </div>
+
+      <div
+        id="parkingSpacesSub"
+        class="kpi-sub">
+
+        —
+
+      </div>
 
     </article>
 
   </section>
+
+  <!-- KPIs SECUNDARIOS -->
 
   <section class="secondary-grid">
 
     <article class="mini-card">
-      <div id="entriesLabel" class="mini-label">Entradas del día</div>
-      <div id="entriesValue" class="mini-value">—</div>
-      <div id="entriesDetail" class="mini-detail">—</div>
+
+      <div
+        id="entriesLabel"
+        class="mini-label">
+
+        Entradas del día
+
+      </div>
+
+      <div
+        id="entriesValue"
+        class="mini-value"
+        style="color:var(--success)">
+
+        —
+
+      </div>
+
+      <div
+        id="entriesDetail"
+        class="mini-detail">
+
+        —
+
+      </div>
+
     </article>
 
     <article class="mini-card">
-      <div id="exitsLabel" class="mini-label">Salidas del día</div>
-      <div id="exitsValue" class="mini-value">—</div>
-      <div id="exitsDetail" class="mini-detail">—</div>
+
+      <div
+        id="exitsLabel"
+        class="mini-label">
+
+        Salidas del día
+
+      </div>
+
+      <div
+        id="exitsValue"
+        class="mini-value"
+        style="color:var(--danger)">
+
+        —
+
+      </div>
+
+      <div
+        id="exitsDetail"
+        class="mini-detail">
+
+        —
+
+      </div>
+
     </article>
 
     <article class="mini-card">
-      <div class="mini-label">Máxima ocupación</div>
-      <div id="maxValue" class="mini-value">—</div>
-      <div id="maxDetail" class="mini-detail">—</div>
+
+      <div class="mini-label">
+        Máxima ocupación
+      </div>
+
+      <div
+        id="maxValue"
+        class="mini-value">
+
+        —
+
+      </div>
+
+      <div
+        id="maxDetail"
+        class="mini-detail">
+
+        —
+
+      </div>
+
     </article>
 
     <article class="mini-card">
-      <div id="peakLabel" class="mini-label">Hora pico</div>
-      <div id="peakValue" class="mini-value">—</div>
-      <div class="mini-detail">Mayor ocupación del período</div>
+
+      <div
+        id="peakLabel"
+        class="mini-label">
+
+        Hora pico
+
+      </div>
+
+      <div
+        id="peakValue"
+        class="mini-value"
+        style="color:var(--warning)">
+
+        —
+
+      </div>
+
+      <div class="mini-detail">
+        Mayor ocupación del período
+      </div>
+
     </article>
 
     <article class="mini-card">
-      <div class="mini-label">Registros recibidos</div>
-      <div id="recordsValue" class="mini-value">—</div>
-      <div id="recordsDetail" class="mini-detail">—</div>
+
+      <div class="mini-label">
+        Registros recibidos
+      </div>
+
+      <div
+        id="recordsValue"
+        class="mini-value">
+
+        —
+
+      </div>
+
+      <div
+        id="recordsDetail"
+        class="mini-detail">
+
+        —
+
+      </div>
+
     </article>
 
   </section>
 
+  <!-- ÚLTIMO REPORTE -->
+
   <section class="report-card">
 
     <div class="report-card-title">
+
       Último reporte operativo disponible
+
     </div>
 
     <div class="report-details">
 
       <div>
-        <div class="report-detail-label">Fecha operativa</div>
-        <div id="latestOperationalDate" class="report-detail-value">—</div>
+
+        <div class="report-detail-label">
+          Fecha operativa
+        </div>
+
+        <div
+          id="latestOperationalDate"
+          class="report-detail-value">
+
+          —
+
+        </div>
+
       </div>
 
       <div>
-        <div class="report-detail-label">Hora reportada</div>
-        <div id="latestOperationalHour" class="report-detail-value">—</div>
+
+        <div class="report-detail-label">
+          Hora reportada
+        </div>
+
+        <div
+          id="latestOperationalHour"
+          class="report-detail-value">
+
+          —
+
+        </div>
+
       </div>
 
       <div>
-        <div class="report-detail-label">Recibido por el sistema</div>
-        <div id="latestReceivedDate" class="report-detail-value">—</div>
+
+        <div class="report-detail-label">
+          Timestamp del sistema
+        </div>
+
+        <div
+          id="latestTimestamp"
+          class="report-detail-value">
+
+          —
+
+        </div>
+
       </div>
 
       <div>
-        <div class="report-detail-label">Timestamp</div>
-        <div id="latestReceivedTime" class="report-detail-value">—</div>
+
+        <div class="report-detail-label">
+          Estado
+        </div>
+
+        <div
+          id="latestStatus"
+          class="report-detail-value">
+
+          —
+
+        </div>
+
       </div>
 
     </div>
 
   </section>
 
+  <!-- GRÁFICAS -->
+
   <section class="charts-grid">
 
     <article class="chart-card">
 
-      <div id="occupancyTitle" class="chart-title">
+      <div
+        id="occupancyTitle"
+        class="chart-title">
+
         Ocupación durante el día
+
       </div>
 
-      <div id="occupancySubtitle" class="chart-subtitle">
+      <div
+        id="occupancySubtitle"
+        class="chart-subtitle">
+
         Total estacionado por bloque horario
+
       </div>
 
       <div class="chart-box">
-        <canvas id="occupancyChart"></canvas>
+
+        <canvas
+          id="occupancyChart">
+        </canvas>
+
       </div>
 
     </article>
 
     <article class="chart-card">
 
-      <div id="movementTitle" class="chart-title">
+      <div
+        id="movementTitle"
+        class="chart-title">
+
         Movimientos
+
       </div>
 
-      <div id="movementSubtitle" class="chart-subtitle">
+      <div
+        id="movementSubtitle"
+        class="chart-subtitle">
+
         Entradas y salidas
+
       </div>
 
       <div class="chart-box">
-        <canvas id="movementsChart"></canvas>
+
+        <canvas
+          id="movementsChart">
+        </canvas>
+
       </div>
 
     </article>
@@ -735,39 +1336,97 @@
   <section class="chart-card full-chart">
 
     <div class="chart-title">
+
       Porcentaje de ocupación
+
     </div>
 
-    <div id="percentageSubtitle" class="chart-subtitle">
+    <div
+      id="percentageSubtitle"
+      class="chart-subtitle">
+
       Utilización de la capacidad disponible
+
     </div>
 
     <div class="chart-box">
-      <canvas id="percentageChart"></canvas>
+
+      <canvas
+        id="percentageChart">
+      </canvas>
+
     </div>
 
   </section>
 
+  <!-- RESUMEN -->
+
   <section class="period-summary">
 
     <article class="summary-card">
-      <div class="summary-title">Período mostrado</div>
-      <div id="periodShown" class="summary-value">—</div>
-      <div id="viewShown" class="summary-description">—</div>
-    </article>
 
-    <article class="summary-card">
-      <div class="summary-title">Cobertura</div>
-      <div id="coverageValue" class="summary-value">—</div>
-      <div id="coverageDetail" class="summary-description">—</div>
-    </article>
-
-    <article class="summary-card">
-      <div class="summary-title">Capacidad total</div>
-      <div class="summary-value">500</div>
-      <div class="summary-description">
-        420 carros · 80 motos
+      <div class="summary-title">
+        Período mostrado
       </div>
+
+      <div
+        id="periodShown"
+        class="summary-value">
+
+        —
+
+      </div>
+
+      <div
+        id="viewShown"
+        class="summary-description">
+
+        —
+
+      </div>
+
+    </article>
+
+    <article class="summary-card">
+
+      <div class="summary-title">
+        Registros
+      </div>
+
+      <div
+        id="coverageValue"
+        class="summary-value">
+
+        —
+
+      </div>
+
+      <div
+        id="coverageDetail"
+        class="summary-description">
+
+        —
+
+      </div>
+
+    </article>
+
+    <article class="summary-card">
+
+      <div class="summary-title">
+        Capacidad total
+      </div>
+
+      <div class="summary-value">
+        500
+      </div>
+
+      <div class="summary-description">
+
+        420 carros · 80 motos
+
+      </div>
+
     </article>
 
   </section>
@@ -775,203 +1434,372 @@
 </main>
 
 <footer>
+
   <div class="footer-inner">
-    <div>Sistema de Control de Parqueos</div>
-    <div>Facilities Management - RT</div>
-    <div>Versión 2.0</div>
+
+    <div>
+      Sistema de Control de Parqueos
+    </div>
+
+    <div>
+      Facilities Management - RT
+    </div>
+
+    <div>
+      Versión 2.0
+    </div>
+
   </div>
+
 </footer>
 
 <script>
 
+/* ==========================================================
+   CONFIGURACIÓN
+========================================================== */
+
 const API_URL =
-"https://script.google.com/macros/s/AKfycbwMErK_ZakrjehkOH1WRNI-wo3iAOWoght6QxuerL-Ss3dVvsksTOwjIGJZp6At_qgS/exec";
+  "https://script.google.com/macros/s/AKfycbwMErK_ZakrjehkOH1WRNI-wo3iAOWoght6QxuerL-Ss3dVvsksTOwjIGJZp6At_qgS/exec";
 
 const CAR_CAPACITY = 420;
 const MOTO_CAPACITY = 80;
 const TOTAL_CAPACITY = 500;
 
 const EXPECTED_HOURS = [
-"12:00am",
-"04:00am",
-"06:00am",
-"08:00am",
-"10:00am",
-"01:00pm",
-"03:00pm",
-"05:00pm",
-"08:00pm",
-"10:00pm"
+  "12:00am",
+  "04:00am",
+  "06:00am",
+  "08:00am",
+  "10:00am",
+  "01:00pm",
+  "03:00pm",
+  "05:00pm",
+  "08:00pm",
+  "10:00pm"
 ];
 
+const AUTO_REFRESH_MS =
+  60000;
+
 let allRecords = [];
-let currentView = "day";
 
-let occupancyChart;
-let movementsChart;
-let percentageChart;
+let currentView =
+  "day";
 
-const $ = id => document.getElementById(id);
+let occupancyChart = null;
+let movementsChart = null;
+let percentageChart = null;
 
-function n(v) {
-  const x = Number(v);
-  return Number.isFinite(x) ? x : 0;
+const $ =
+  id =>
+  document.getElementById(id);
+
+
+/* ==========================================================
+   UTILIDADES
+========================================================== */
+
+function number(value) {
+
+  const result =
+    Number(
+      String(value ?? "")
+      .replace(",",".")
+    );
+
+  return Number.isFinite(result)
+    ? result
+    : 0;
 }
 
-function pad(v) {
-  return String(v).padStart(2,"0");
+
+function pad(value) {
+
+  return String(value)
+    .padStart(2,"0");
 }
+
 
 function parseDMY(value) {
 
   const match =
-  String(value || "").match(
-    /^(\\d{1,2})\\/(\\d{1,2})\\/(\\d{4})$/
-  );
+    String(value || "")
+    .trim()
+    .match(
+      /^(\d{1,2})\/(\d{1,2})\/(\d{4})$/
+    );
 
-  if (!match) return null;
+  if (!match)
+    return null;
 
   return new Date(
     Number(match[3]),
-    Number(match[2])-1,
+    Number(match[2]) - 1,
     Number(match[1])
   );
 }
 
-function dmy(date) {
-  return `${pad(date.getDate())}/${pad(date.getMonth()+1)}/${date.getFullYear()}`;
+
+function formatDMY(date) {
+
+  return (
+    pad(date.getDate()) +
+    "/" +
+    pad(date.getMonth()+1) +
+    "/" +
+    date.getFullYear()
+  );
 }
 
-function isoDate(date) {
-  return `${date.getFullYear()}-${pad(date.getMonth()+1)}-${pad(date.getDate())}`;
+
+function formatISO(date) {
+
+  return (
+    date.getFullYear() +
+    "-" +
+    pad(date.getMonth()+1) +
+    "-" +
+    pad(date.getDate())
+  );
 }
 
-function formatHour(hour) {
-  return String(hour || "")
+
+function formatHour(value) {
+
+  return String(value || "")
+    .toLowerCase()
     .replace("am"," a. m.")
     .replace("pm"," p. m.");
 }
 
-function hourMinutes(hour) {
+
+function hourMinutes(value) {
 
   const match =
-  String(hour || "")
-  .toLowerCase()
-  .replace(/\\s/g,"")
-  .match(/^(\\d{1,2}):(\\d{2})(am|pm)$/);
+    String(value || "")
+    .toLowerCase()
+    .replace(/\s/g,"")
+    .match(
+      /^(\d{1,2}):(\d{2})(am|pm)$/
+    );
 
-  if (!match) return 0;
+  if (!match)
+    return 0;
 
-  let h = Number(match[1]);
+  let hour =
+    Number(match[1]);
 
-  if (match[3] === "am" && h === 12) h = 0;
-  if (match[3] === "pm" && h !== 12) h += 12;
+  const minutes =
+    Number(match[2]);
 
-  return h * 60 + Number(match[2]);
+  const period =
+    match[3];
+
+  if (
+    period === "am" &&
+    hour === 12
+  ) {
+    hour = 0;
+  }
+
+  if (
+    period === "pm" &&
+    hour !== 12
+  ) {
+    hour += 12;
+  }
+
+  return (
+    hour * 60 +
+    minutes
+  );
 }
 
-function normalize(r) {
+
+function normalize(record) {
 
   return {
-    fecha:String(r["Fecha"] || "").trim(),
-    timestamp:String(r["Timestamp"] || "").trim(),
-    hora:String(r["Hora"] || "").trim(),
 
-    entradaCarros:n(r["Entrada Carros"]),
-    entradaMotos:n(r["Entrada Motos"]),
+    fecha:
+      String(
+        record["Fecha"] || ""
+      ).trim(),
 
-    salidaCarros:n(r["Salida Carros"]),
-    salidaMotos:n(r["Salida Motos"]),
+    timestamp:
+      String(
+        record["Timestamp"] || ""
+      ).trim(),
 
-    totalCarros:n(r["Total Carros"]),
-    totalMotos:n(r["Total Motos"])
+    hora:
+      String(
+        record["Hora"] || ""
+      ).trim(),
+
+    entradaCarros:
+      number(
+        record["Entrada Carros"]
+      ),
+
+    entradaMotos:
+      number(
+        record["Entrada Motos"]
+      ),
+
+    salidaCarros:
+      number(
+        record["Salida Carros"]
+      ),
+
+    salidaMotos:
+      number(
+        record["Salida Motos"]
+      ),
+
+    totalCarros:
+      number(
+        record["Total Carros"]
+      ),
+
+    totalMotos:
+      number(
+        record["Total Motos"]
+      )
   };
 }
 
-function recordDateTime(r) {
 
-  const date = parseDMY(r.fecha);
+function recordDateTime(record) {
 
-  if (!date) return 0;
+  const date =
+    parseDMY(record.fecha);
 
-  return date.getTime() +
-         hourMinutes(r.hora) * 60000;
+  if (!date)
+    return 0;
+
+  return (
+    date.getTime() +
+    hourMinutes(
+      record.hora
+    ) * 60000
+  );
 }
+
 
 function latestRecord(records) {
 
+  if (!records.length)
+    return null;
+
   return [...records]
-    .sort((a,b)=>recordDateTime(a)-recordDateTime(b))
-    .at(-1) || null;
+    .sort(
+      (a,b) =>
+      recordDateTime(a) -
+      recordDateTime(b)
+    )
+    .at(-1);
 }
 
+
 function sum(records,key) {
+
   return records.reduce(
-    (total,r)=>total+n(r[key]),
+    (total,record) =>
+    total +
+    number(record[key]),
     0
   );
 }
 
-function pct(value,max) {
+
+function percentage(value,max) {
+
+  if (!max)
+    return 0;
+
   return Math.max(
     0,
-    Math.min(100,(value/max)*100)
+    Math.min(
+      100,
+      (value/max)*100
+    )
   );
 }
 
+
 function setText(id,value) {
-  $(id).textContent=value;
+
+  $(id).textContent =
+    value;
 }
 
-/* =========================
+
+/* ==========================================================
    SEMANA ACTUAL
-========================= */
+========================================================== */
 
 function startOfWeek(date) {
 
-  const d = new Date(date);
+  const result =
+    new Date(date);
 
   const day =
-    (d.getDay()+6)%7;
+    (
+      result.getDay() + 6
+    ) % 7;
 
-  d.setDate(
-    d.getDate()-day
+  result.setDate(
+    result.getDate() -
+    day
   );
 
-  d.setHours(0,0,0,0);
+  result.setHours(
+    0,0,0,0
+  );
 
-  return d;
+  return result;
 }
+
 
 function endOfWeek(date) {
 
-  const d =
+  const result =
     startOfWeek(date);
 
-  d.setDate(
-    d.getDate()+6
+  result.setDate(
+    result.getDate() +
+    6
   );
 
-  d.setHours(
+  result.setHours(
     23,59,59,999
   );
 
-  return d;
+  return result;
 }
 
-/* =========================
-   RANGO DE LA VISTA
-========================= */
+
+/* ==========================================================
+   RANGO SELECCIONADO
+========================================================== */
 
 function selectedRange() {
 
-  if (currentView === "day") {
+  if (
+    currentView === "day"
+  ) {
 
     const value =
       $("periodSelector").value;
 
+    if (!value)
+      return null;
+
     const start =
-      new Date(value+"T00:00:00");
+      new Date(
+        value +
+        "T00:00:00"
+      );
 
     const end =
       new Date(start);
@@ -980,19 +1808,27 @@ function selectedRange() {
       23,59,59,999
     );
 
-    return [start,end];
+    return [
+      start,
+      end
+    ];
   }
+
 
   const today =
     new Date();
 
-  if (currentView === "week") {
+
+  if (
+    currentView === "week"
+  ) {
 
     return [
       startOfWeek(today),
       endOfWeek(today)
     ];
   }
+
 
   return [
 
@@ -1008,88 +1844,156 @@ function selectedRange() {
       0,
       23,59,59,999
     )
-
   ];
 }
 
-function recordsForRange() {
 
-  const [start,end] =
+function recordsForCurrentView() {
+
+  const range =
     selectedRange();
 
-  return allRecords.filter(r=>{
+  if (!range)
+    return [];
 
-    const date =
-      parseDMY(r.fecha);
+  const [
+    start,
+    end
+  ] = range;
 
-    return date &&
-           date >= start &&
-           date <= end;
-  });
+  return allRecords
+    .filter(record => {
+
+      const date =
+        parseDMY(
+          record.fecha
+        );
+
+      return (
+        date &&
+        date >= start &&
+        date <= end
+      );
+    })
+    .sort(
+      (a,b) =>
+      recordDateTime(a) -
+      recordDateTime(b)
+    );
 }
 
-/* =========================
-   ESTADO DE INFORMACIÓN
-========================= */
 
-function updateFreshness(updatedAt) {
+/* ==========================================================
+   ESTADO GLOBAL
+========================================================== */
+
+function updateSystemStatus(updatedAt) {
+
+  setText(
+    "lastSync",
+    updatedAt ||
+    new Date()
+      .toLocaleString("es-GT")
+  );
 
   const latest =
-    latestRecord(allRecords);
-
-  $("lastSync").textContent =
-    updatedAt ||
-    new Date().toLocaleString("es-GT");
+    latestRecord(
+      allRecords
+    );
 
   if (!latest) {
 
-    $("statusMain").textContent =
-      "Sin información";
+    $("statusDot")
+      .className =
+      "status-dot error";
 
-    $("statusSub").textContent =
-      "No existen registros";
+    setText(
+      "statusMain",
+      "Sin información disponible"
+    );
+
+    setText(
+      "statusSub",
+      "No existen registros"
+    );
 
     return;
   }
 
+
   const latestDate =
-    parseDMY(latest.fecha);
+    parseDMY(
+      latest.fecha
+    );
 
   const today =
     new Date();
 
-  today.setHours(0,0,0,0);
+  today.setHours(
+    0,0,0,0
+  );
 
-  latestDate.setHours(0,0,0,0);
+  latestDate.setHours(
+    0,0,0,0
+  );
 
-  const dot =
-    $("statusDot");
-
-  dot.className =
-    "status-dot";
 
   if (
     latestDate.getTime() ===
     today.getTime()
   ) {
 
-    dot.classList.add("ok");
+    $("statusDot")
+      .className =
+      "status-dot ok";
 
-    $("statusMain").textContent =
-      "Información de hoy disponible";
+    setText(
+      "statusMain",
+      "Información de hoy disponible"
+    );
 
-    $("statusSub").textContent =
-      `Último reporte: ${latest.fecha} · ${formatHour(latest.hora)}`;
+    setText(
+      "statusSub",
+      "Último reporte: " +
+      latest.fecha +
+      " · " +
+      formatHour(
+        latest.hora
+      )
+    );
+
+    setText(
+      "latestStatus",
+      "Información de hoy"
+    );
 
   } else {
 
-    $("statusMain").textContent =
-      "Sin reporte de hoy";
+    $("statusDot")
+      .className =
+      "status-dot";
 
-    $("statusSub").textContent =
-      `Último reporte: ${latest.fecha} · ${formatHour(latest.hora)}`;
+    setText(
+      "statusMain",
+      "Sin reporte de hoy"
+    );
 
+    setText(
+      "statusSub",
+      "Último reporte: " +
+      latest.fecha +
+      " · " +
+      formatHour(
+        latest.hora
+      )
+    );
+
+    setText(
+      "latestStatus",
+      "Último dato disponible"
+    );
   }
+
 
   setText(
     "latestOperationalDate",
@@ -1098,56 +2002,172 @@ function updateFreshness(updatedAt) {
 
   setText(
     "latestOperationalHour",
-    formatHour(latest.hora)
+    formatHour(
+      latest.hora
+    )
   );
 
   setText(
-    "latestReceivedDate",
-    latest.timestamp || "—"
-  );
-
-  setText(
-    "latestReceivedTime",
+    "latestTimestamp",
     latest.timestamp || "—"
   );
 }
 
-/* =========================
-   DUPLICADOS
-========================= */
+
+/* ==========================================================
+   CALIDAD DE DATOS
+========================================================== */
+
+function getQuality(records) {
+
+  const duplicateMap =
+    new Map();
+
+  let overCapacity = 0;
+  let negativeValues = 0;
+
+
+  records.forEach(record => {
+
+    const key =
+      record.fecha +
+      "|" +
+      record.hora;
+
+    duplicateMap.set(
+      key,
+      (
+        duplicateMap.get(key) ||
+        0
+      ) + 1
+    );
+
+
+    if (
+      record.totalCarros >
+      CAR_CAPACITY ||
+      record.totalMotos >
+      MOTO_CAPACITY
+    ) {
+
+      overCapacity++;
+    }
+
+
+    const values = [
+
+      record.entradaCarros,
+      record.entradaMotos,
+
+      record.salidaCarros,
+      record.salidaMotos,
+
+      record.totalCarros,
+      record.totalMotos
+    ];
+
+
+    if (
+      values.some(
+        value =>
+        value < 0
+      )
+    ) {
+
+      negativeValues++;
+    }
+  });
+
+
+  const duplicates =
+    [...duplicateMap.values()]
+    .filter(
+      value =>
+      value > 1
+    )
+    .reduce(
+      (total,value) =>
+      total +
+      (
+        value - 1
+      ),
+      0
+    );
+
+
+  let missingHours = 0;
+
+
+  const dates =
+    [
+      ...new Set(
+        records.map(
+          record =>
+          record.fecha
+        )
+      )
+    ];
+
+
+  dates.forEach(date => {
+
+    const hours =
+      new Set(
+
+        records
+        .filter(
+          record =>
+          record.fecha === date
+        )
+        .map(
+          record =>
+          record.hora
+        )
+      );
+
+
+    EXPECTED_HOURS
+      .forEach(hour => {
+
+        if (
+          !hours.has(hour)
+        ) {
+
+          missingHours++;
+        }
+      });
+  });
+
+
+  return {
+
+    duplicates,
+    overCapacity,
+    negativeValues,
+    missingHours
+  };
+}
+
 
 function renderQuality(records) {
 
-  const map =
-    new Map();
+  const quality =
+    getQuality(records);
 
-  records.forEach(r=>{
+  const issues =
+    quality.duplicates +
+    quality.overCapacity +
+    quality.negativeValues +
+    quality.missingHours;
 
-    const key =
-      `${r.fecha}|${r.hora}`;
-
-    map.set(
-      key,
-      (map.get(key)||0)+1
-    );
-  });
-
-  const duplicates =
-    [...map.values()]
-    .filter(v=>v>1)
-    .reduce(
-      (total,v)=>
-      total+(v-1),
-      0
-    );
 
   const icon =
     $("qualityIcon");
 
-  const items =
-    $("qualityItems");
 
-  if (duplicates > 0) {
+  if (
+    !records.length
+  ) {
 
     icon.className =
       "quality-icon warn";
@@ -1155,18 +2175,27 @@ function renderQuality(records) {
     icon.textContent =
       "!";
 
-    $("qualityMain").textContent =
-      "Datos duplicados detectados";
+    setText(
+      "qualityMain",
+      "Sin datos en el período"
+    );
 
-    $("qualitySub").textContent =
-      `${duplicates} registro(s) con fecha y hora duplicados`;
+    setText(
+      "qualitySub",
+      "No hay información para validar"
+    );
 
-    items.innerHTML =
-      `<span class="quality-chip warn">
-       ! ${duplicates} duplicado(s)
-       </span>`;
+    $("qualityItems")
+      .innerHTML =
+      "";
 
-  } else {
+    return;
+  }
+
+
+  if (
+    issues === 0
+  ) {
 
     icon.className =
       "quality-icon ok";
@@ -1174,131 +2203,425 @@ function renderQuality(records) {
     icon.textContent =
       "✓";
 
-    $("qualityMain").textContent =
-      "Calidad de datos";
+    setText(
+      "qualityMain",
+      "Calidad de datos: Sin incidencias"
+    );
 
-    $("qualitySub").textContent =
-      "Sin registros duplicados";
+    setText(
+      "qualitySub",
+      "Información validada"
+    );
 
-    items.innerHTML =
-      `<span class="quality-chip ok">
-       ✓ Sin duplicados
-       </span>`;
+  } else {
+
+    icon.className =
+      "quality-icon warn";
+
+    icon.textContent =
+      "!";
+
+    setText(
+      "qualityMain",
+      "Calidad de datos: Requiere revisión"
+    );
+
+    setText(
+      "qualitySub",
+      issues +
+      " incidencia(s) detectada(s)"
+    );
   }
+
+
+  const chips = [
+
+    {
+      ok:
+        quality.duplicates === 0,
+
+      text:
+        quality.duplicates === 0
+        ? "Sin duplicados"
+        : quality.duplicates +
+          " duplicado(s)"
+    },
+
+    {
+      ok:
+        quality.missingHours === 0,
+
+      text:
+        quality.missingHours === 0
+        ? "Sin horarios faltantes"
+        : quality.missingHours +
+          " horario(s) faltante(s)"
+    },
+
+    {
+      ok:
+        quality.overCapacity === 0,
+
+      text:
+        quality.overCapacity === 0
+        ? "Dentro de capacidad"
+        : quality.overCapacity +
+          " sobre capacidad"
+    },
+
+    {
+      ok:
+        quality.negativeValues === 0,
+
+      text:
+        quality.negativeValues === 0
+        ? "Sin valores negativos"
+        : quality.negativeValues +
+          " valor(es) negativo(s)"
+    }
+  ];
+
+
+  $("qualityItems")
+    .innerHTML =
+
+    chips
+    .map(item => {
+
+      return (
+
+        '<span class="quality-chip ' +
+
+        (
+          item.ok
+          ? "ok"
+          : "warn"
+        ) +
+
+        '">' +
+
+        (
+          item.ok
+          ? "✓ "
+          : "! "
+        ) +
+
+        item.text +
+
+        "</span>"
+      );
+
+    })
+    .join("");
 }
 
-/* =========================
+
+/* ==========================================================
    AGRUPAR POR DÍA
-========================= */
+========================================================== */
 
 function aggregateByDay(records) {
 
   const groups = {};
 
-  records.forEach(r=>{
 
-    if (!groups[r.fecha])
-      groups[r.fecha]=[];
+  records.forEach(record => {
 
-    groups[r.fecha].push(r);
+    if (
+      !groups[
+        record.fecha
+      ]
+    ) {
+
+      groups[
+        record.fecha
+      ] = [];
+    }
+
+
+    groups[
+      record.fecha
+    ].push(record);
   });
 
-  return Object.entries(groups)
-    .map(([fecha,rows])=>{
 
-      rows.sort(
-        (a,b)=>
-        hourMinutes(a.hora)-
-        hourMinutes(b.hora)
-      );
+  return Object
+    .entries(groups)
+    .map(
+      ([fecha,rows]) => {
 
-      const peak =
-        rows.reduce(
-          (max,r)=>
-          (r.totalCarros+r.totalMotos) >
-          (max.totalCarros+max.totalMotos)
-          ? r:max,
-          rows[0]
+        rows.sort(
+          (a,b) =>
+          hourMinutes(a.hora) -
+          hourMinutes(b.hora)
         );
 
-      return {
 
-        fecha,
-        date:parseDMY(fecha),
+        const peak =
+          rows.reduce(
+            (max,record) => {
 
-        maxCars:
-          Math.max(
-            ...rows.map(
-              r=>r.totalCarros
+              const current =
+                record.totalCarros +
+                record.totalMotos;
+
+              const maximum =
+                max.totalCarros +
+                max.totalMotos;
+
+              return (
+                current >
+                maximum
+              )
+              ? record
+              : max;
+
+            },
+            rows[0]
+          );
+
+
+        return {
+
+          fecha,
+
+          date:
+            parseDMY(fecha),
+
+          label:
+            fecha.slice(0,5),
+
+          maxCars:
+            Math.max(
+              ...rows.map(
+                record =>
+                record.totalCarros
+              )
+            ),
+
+          maxMotos:
+            Math.max(
+              ...rows.map(
+                record =>
+                record.totalMotos
+              )
+            ),
+
+          maxTotal:
+            peak.totalCarros +
+            peak.totalMotos,
+
+          entries:
+            sum(
+              rows,
+              "entradaCarros"
+            ) +
+            sum(
+              rows,
+              "entradaMotos"
+            ),
+
+          exits:
+            sum(
+              rows,
+              "salidaCarros"
+            ) +
+            sum(
+              rows,
+              "salidaMotos"
             )
-          ),
-
-        maxMotos:
-          Math.max(
-            ...rows.map(
-              r=>r.totalMotos
-            )
-          ),
-
-        maxTotal:
-          peak.totalCarros+
-          peak.totalMotos,
-
-        entries:
-          sum(rows,"entradaCarros")+
-          sum(rows,"entradaMotos"),
-
-        exits:
-          sum(rows,"salidaCarros")+
-          sum(rows,"salidaMotos")
-      };
-
-    })
+        };
+      }
+    )
     .sort(
-      (a,b)=>a.date-b.date
+      (a,b) =>
+      a.date -
+      b.date
     );
 }
 
-/* =========================
-   DASHBOARD
-========================= */
 
-function render() {
+/* ==========================================================
+   ESTADO DEL PARQUEO
+========================================================== */
+
+function parkingState(value) {
+
+  if (
+    value >= 100
+  ) {
+
+    return [
+      "Completo",
+      "Capacidad alcanzada"
+    ];
+  }
+
+
+  if (
+    value >= 90
+  ) {
+
+    return [
+      "Muy alta ocupación",
+      "Menos del 10% disponible"
+    ];
+  }
+
+
+  if (
+    value >= 75
+  ) {
+
+    return [
+      "Alta ocupación",
+      "Capacidad disponible limitada"
+    ];
+  }
+
+
+  return [
+    "Disponible",
+    "Nivel de ocupación normal"
+  ];
+}
+
+
+/* ==========================================================
+   LIMPIAR VISTA
+========================================================== */
+
+function clearDashboard() {
+
+  [
+    "carsValue",
+    "motosValue",
+    "totalValue",
+
+    "entriesValue",
+    "exitsValue",
+
+    "maxValue",
+    "peakValue",
+
+    "recordsValue"
+  ]
+  .forEach(
+    id =>
+    setText(
+      id,
+      "—"
+    )
+  );
+
+
+  setText(
+    "carsAvailable",
+    "Sin datos"
+  );
+
+  setText(
+    "motosAvailable",
+    "Sin datos"
+  );
+
+  setText(
+    "totalAvailable",
+    "Sin datos"
+  );
+
+
+  setText(
+    "carsPct",
+    "—%"
+  );
+
+  setText(
+    "motosPct",
+    "—%"
+  );
+
+  setText(
+    "totalPct",
+    "—%"
+  );
+
+
+  $("carsBar")
+    .style.width =
+    "0%";
+
+  $("motosBar")
+    .style.width =
+    "0%";
+
+  $("totalBar")
+    .style.width =
+    "0%";
+
+
+  setText(
+    "parkingState",
+    "Sin datos"
+  );
+
+  setText(
+    "parkingStateSub",
+    "No existen registros"
+  );
+
+  setText(
+    "parkingSpacesSub",
+    "—"
+  );
+
+
+  destroyCharts();
+}
+
+
+/* ==========================================================
+   RENDER PRINCIPAL
+========================================================== */
+
+function renderDashboard() {
 
   const records =
-    recordsForRange()
-    .sort(
-      (a,b)=>
-      recordDateTime(a)-
-      recordDateTime(b)
-    );
+    recordsForCurrentView();
 
-  renderQuality(records);
 
-  if (!records.length) {
+  renderQuality(
+    records
+  );
 
-    [
-      "carsValue",
-      "motosValue",
-      "totalValue",
-      "entriesValue",
-      "exitsValue",
-      "maxValue",
-      "peakValue",
-      "recordsValue"
-    ].forEach(
-      id=>setText(id,"—")
-    );
 
-    destroyCharts();
+  renderPeriod(
+    records
+  );
 
-    renderPeriod();
+
+  if (
+    !records.length
+  ) {
+
+    clearDashboard();
 
     return;
   }
 
+
   const latest =
     latestRecord(records);
+
+
+  /*
+    En Día representa el último
+    dato de esa fecha.
+
+    En Semana/Mes representa el
+    último dato disponible dentro
+    del período actual.
+  */
 
   const cars =
     latest.totalCarros;
@@ -1307,7 +2630,27 @@ function render() {
     latest.totalMotos;
 
   const total =
-    cars+motos;
+    cars + motos;
+
+
+  const carsPct =
+    percentage(
+      cars,
+      CAR_CAPACITY
+    );
+
+  const motosPct =
+    percentage(
+      motos,
+      MOTO_CAPACITY
+    );
+
+  const totalPct =
+    percentage(
+      total,
+      TOTAL_CAPACITY
+    );
+
 
   setText(
     "carsValue",
@@ -1324,137 +2667,231 @@ function render() {
     total
   );
 
-  const carsPct =
-    pct(cars,CAR_CAPACITY);
-
-  const motosPct =
-    pct(motos,MOTO_CAPACITY);
-
-  const totalPct =
-    pct(total,TOTAL_CAPACITY);
-
-  $("carsBar").style.width =
-    carsPct+"%";
-
-  $("motosBar").style.width =
-    motosPct+"%";
-
-  $("totalBar").style.width =
-    totalPct+"%";
 
   setText(
     "carsPct",
-    carsPct.toFixed(1)+"%"
+    carsPct.toFixed(1) +
+    "%"
   );
 
   setText(
     "motosPct",
-    motosPct.toFixed(1)+"%"
+    motosPct.toFixed(1) +
+    "%"
   );
 
   setText(
     "totalPct",
-    totalPct.toFixed(1)+"%"
+    totalPct.toFixed(1) +
+    "%"
   );
+
+
+  $("carsBar")
+    .style.width =
+    carsPct + "%";
+
+  $("motosBar")
+    .style.width =
+    motosPct + "%";
+
+  $("totalBar")
+    .style.width =
+    totalPct + "%";
+
 
   setText(
     "carsAvailable",
-    `${Math.max(0,420-cars)} disponibles`
+
+    Math.max(
+      0,
+      CAR_CAPACITY -
+      cars
+    ) +
+    " disponibles"
   );
+
 
   setText(
     "motosAvailable",
-    `${Math.max(0,80-motos)} disponibles`
+
+    Math.max(
+      0,
+      MOTO_CAPACITY -
+      motos
+    ) +
+    " disponibles"
   );
+
 
   setText(
     "totalAvailable",
-    `${Math.max(0,500-total)} disponibles`
+
+    Math.max(
+      0,
+      TOTAL_CAPACITY -
+      total
+    ) +
+    " espacios disponibles"
+  );
+
+
+  const state =
+    parkingState(
+      totalPct
+    );
+
+
+  setText(
+    "parkingState",
+    state[0]
+  );
+
+  setText(
+    "parkingStateSub",
+    state[1]
   );
 
   setText(
     "parkingSpacesSub",
-    `${Math.max(0,500-total)} espacios disponibles`
+
+    Math.max(
+      0,
+      TOTAL_CAPACITY -
+      total
+    ) +
+    " espacios disponibles"
   );
 
-  if (totalPct >= 90) {
 
-    setText(
-      "parkingState",
-      "Alta ocupación"
+  /* ENTRADAS / SALIDAS */
+
+  const entryCars =
+    sum(
+      records,
+      "entradaCarros"
     );
 
-    setText(
-      "parkingStateSub",
-      "Capacidad disponible limitada"
+  const entryMotos =
+    sum(
+      records,
+      "entradaMotos"
     );
 
-  } else {
-
-    setText(
-      "parkingState",
-      "Disponible"
+  const exitCars =
+    sum(
+      records,
+      "salidaCarros"
     );
 
-    setText(
-      "parkingStateSub",
-      "Nivel de ocupación normal"
+  const exitMotos =
+    sum(
+      records,
+      "salidaMotos"
     );
-  }
 
-  const entriesCars =
-    sum(records,"entradaCarros");
 
-  const entriesMotos =
-    sum(records,"entradaMotos");
+  setText(
+    "entriesLabel",
 
-  const exitsCars =
-    sum(records,"salidaCarros");
+    currentView === "day"
+    ? "Entradas del día"
+    : "Entradas del período"
+  );
 
-  const exitsMotos =
-    sum(records,"salidaMotos");
+
+  setText(
+    "exitsLabel",
+
+    currentView === "day"
+    ? "Salidas del día"
+    : "Salidas del período"
+  );
+
 
   setText(
     "entriesValue",
-    entriesCars+entriesMotos
+
+    entryCars +
+    entryMotos
   );
+
 
   setText(
     "entriesDetail",
-    `${entriesCars} carros · ${entriesMotos} motos`
+
+    entryCars +
+    " carros · " +
+    entryMotos +
+    " motos"
   );
+
 
   setText(
     "exitsValue",
-    exitsCars+exitsMotos
+
+    exitCars +
+    exitMotos
   );
+
 
   setText(
     "exitsDetail",
-    `${exitsCars} carros · ${exitsMotos} motos`
+
+    exitCars +
+    " carros · " +
+    exitMotos +
+    " motos"
   );
+
+
+  /* PICO */
 
   const peak =
     records.reduce(
-      (max,r)=>
-      (r.totalCarros+r.totalMotos) >
-      (max.totalCarros+max.totalMotos)
-      ? r:max,
+      (max,record) => {
+
+        const current =
+          record.totalCarros +
+          record.totalMotos;
+
+        const maximum =
+          max.totalCarros +
+          max.totalMotos;
+
+        return (
+          current >
+          maximum
+        )
+        ? record
+        : max;
+
+      },
       records[0]
     );
 
+
   setText(
     "maxValue",
-    peak.totalCarros+
+
+    peak.totalCarros +
     peak.totalMotos
   );
 
+
   setText(
     "maxDetail",
-    `${peak.totalCarros} carros · ${peak.totalMotos} motos`
+
+    peak.totalCarros +
+    " carros · " +
+    peak.totalMotos +
+    " motos"
   );
 
-  if (currentView==="day") {
+
+  if (
+    currentView === "day"
+  ) {
 
     setText(
       "peakLabel",
@@ -1463,7 +2900,9 @@ function render() {
 
     setText(
       "peakValue",
-      formatHour(peak.hora)
+      formatHour(
+        peak.hora
+      )
     );
 
   } else {
@@ -1475,73 +2914,113 @@ function render() {
 
     setText(
       "peakValue",
-      `${peak.fecha} · ${formatHour(peak.hora)}`
+
+      peak.fecha +
+      " · " +
+      formatHour(
+        peak.hora
+      )
     );
   }
+
 
   setText(
     "recordsValue",
     records.length
   );
 
+
   const days =
     new Set(
+
       records.map(
-        r=>r.fecha
+        record =>
+        record.fecha
       )
+
     ).size;
+
 
   setText(
     "recordsDetail",
-    currentView==="day"
-      ? `${records.length} registros del día`
-      : `${days} día(s) con información`
+
+    currentView === "day"
+
+    ? records.length +
+      " bloques registrados"
+
+    : days +
+      " día(s) con información"
   );
 
-  renderPeriod();
 
-  renderCharts(records);
+  renderCharts(
+    records
+  );
 }
 
-/* =========================
+
+/* ==========================================================
    PERÍODO
-========================= */
+========================================================== */
 
-function renderPeriod() {
+function renderPeriod(records) {
 
-  const [start,end] =
+  const range =
     selectedRange();
 
-  if (currentView==="day") {
+  if (!range)
+    return;
+
+
+  const [
+    start,
+    end
+  ] = range;
+
+
+  if (
+    currentView === "day"
+  ) {
 
     setText(
       "periodShown",
-      dmy(start)
+      formatDMY(start)
     );
 
     setText(
       "viewShown",
       "Vista diaria"
     );
+  }
 
-  } else if (
-    currentView==="week"
+
+  if (
+    currentView === "week"
   ) {
 
     setText(
       "periodShown",
-      `${dmy(start)} – ${dmy(end)}`
+
+      formatDMY(start) +
+      " – " +
+      formatDMY(end)
     );
 
     setText(
       "viewShown",
       "Semana en curso"
     );
+  }
 
-  } else {
+
+  if (
+    currentView === "month"
+  ) {
 
     setText(
       "periodShown",
+
       start.toLocaleDateString(
         "es-GT",
         {
@@ -1557,215 +3036,374 @@ function renderPeriod() {
     );
   }
 
-  const records =
-    recordsForRange();
 
   const days =
     new Set(
+
       records.map(
-        r=>r.fecha
+        record =>
+        record.fecha
       )
+
     ).size;
+
 
   setText(
     "coverageValue",
     records.length
   );
 
+
   setText(
     "coverageDetail",
-    currentView==="day"
-      ? "Registros recibidos"
-      : `${days} día(s) con información`
+
+    currentView === "day"
+
+    ? records.length +
+      " registros recibidos"
+
+    : days +
+      " día(s) con información"
   );
 }
 
-/* =========================
+
+/* ==========================================================
    GRÁFICAS
-========================= */
+========================================================== */
 
 function destroyCharts() {
 
-  [
-    occupancyChart,
-    movementsChart,
+  if (
+    occupancyChart
+  ) {
+
+    occupancyChart.destroy();
+  }
+
+
+  if (
+    movementsChart
+  ) {
+
+    movementsChart.destroy();
+  }
+
+
+  if (
     percentageChart
-  ].forEach(
-    chart=>{
-      if(chart) chart.destroy();
-    }
-  );
+  ) {
+
+    percentageChart.destroy();
+  }
+
+
+  occupancyChart = null;
+  movementsChart = null;
+  percentageChart = null;
 }
+
 
 function renderCharts(records) {
 
   destroyCharts();
 
-  let labels;
-  let cars;
-  let motos;
-  let entries;
-  let exits;
-  let percentages;
 
-  if (currentView==="day") {
+  let labels = [];
+
+  let cars = [];
+  let motos = [];
+
+  let entries = [];
+  let exits = [];
+
+  let percentages = [];
+
+
+  if (
+    currentView === "day"
+  ) {
 
     labels =
       records.map(
-        r=>formatHour(r.hora)
+        record =>
+        formatHour(
+          record.hora
+        )
       );
+
 
     cars =
       records.map(
-        r=>r.totalCarros
+        record =>
+        record.totalCarros
       );
+
 
     motos =
       records.map(
-        r=>r.totalMotos
+        record =>
+        record.totalMotos
       );
+
 
     entries =
       records.map(
-        r=>
-        r.entradaCarros+
-        r.entradaMotos
+        record =>
+        record.entradaCarros +
+        record.entradaMotos
       );
+
 
     exits =
       records.map(
-        r=>
-        r.salidaCarros+
-        r.salidaMotos
+        record =>
+        record.salidaCarros +
+        record.salidaMotos
       );
+
 
     percentages =
       records.map(
-        r=>
-        pct(
-          r.totalCarros+
-          r.totalMotos,
+        record =>
+
+        percentage(
+
+          record.totalCarros +
+          record.totalMotos,
+
           TOTAL_CAPACITY
         )
       );
+
+
+    setText(
+      "occupancyTitle",
+      "Ocupación durante el día"
+    );
+
+    setText(
+      "occupancySubtitle",
+      "Total estacionado por bloque horario"
+    );
+
+    setText(
+      "movementTitle",
+      "Movimientos por hora"
+    );
+
+    setText(
+      "movementSubtitle",
+      "Entradas y salidas por bloque horario"
+    );
+
+    setText(
+      "percentageSubtitle",
+      "Utilización total por bloque horario"
+    );
 
   } else {
 
     const days =
-      aggregateByDay(records);
+      aggregateByDay(
+        records
+      );
+
 
     labels =
       days.map(
-        d=>d.fecha.slice(0,5)
+        day =>
+        day.label
       );
+
 
     cars =
       days.map(
-        d=>d.maxCars
+        day =>
+        day.maxCars
       );
+
 
     motos =
       days.map(
-        d=>d.maxMotos
+        day =>
+        day.maxMotos
       );
+
 
     entries =
       days.map(
-        d=>d.entries
+        day =>
+        day.entries
       );
+
 
     exits =
       days.map(
-        d=>d.exits
+        day =>
+        day.exits
       );
+
 
     percentages =
       days.map(
-        d=>
-        pct(
-          d.maxTotal,
+        day =>
+
+        percentage(
+          day.maxTotal,
           TOTAL_CAPACITY
         )
       );
+
+
+    setText(
+      "occupancyTitle",
+      "Máxima ocupación por día"
+    );
+
+    setText(
+      "occupancySubtitle",
+      "Máximo diario registrado"
+    );
+
+    setText(
+      "movementTitle",
+      "Movimientos por día"
+    );
+
+    setText(
+      "movementSubtitle",
+      "Entradas y salidas acumuladas"
+    );
+
+    setText(
+      "percentageSubtitle",
+      "Máxima utilización por día"
+    );
   }
 
-  $("occupancyTitle").textContent =
-    currentView==="day"
-      ? "Ocupación durante el día"
-      : "Ocupación por día";
-
-  $("movementTitle").textContent =
-    currentView==="day"
-      ? "Movimientos por hora"
-      : "Movimientos por día";
 
   occupancyChart =
     new Chart(
+
       $("occupancyChart"),
+
       {
+
         type:"line",
 
         data:{
+
           labels,
 
           datasets:[
+
             {
+
               label:"Carros",
+
               data:cars,
-              borderColor:"#4f7df5",
-              backgroundColor:"rgba(79,125,245,.10)",
+
+              borderColor:
+                "#4f7df5",
+
+              backgroundColor:
+                "rgba(79,125,245,.10)",
+
               fill:true,
-              tension:.3
+
+              tension:.3,
+
+              borderWidth:3
             },
+
             {
+
               label:"Motos",
+
               data:motos,
-              borderColor:"#e3a008",
-              backgroundColor:"rgba(227,160,8,.08)",
+
+              borderColor:
+                "#e3a008",
+
+              backgroundColor:
+                "rgba(227,160,8,.08)",
+
               fill:true,
-              tension:.3
+
+              tension:.3,
+
+              borderWidth:3
             }
           ]
         },
 
         options:{
+
           responsive:true,
+
           maintainAspectRatio:false,
 
+          interaction:{
+            mode:"index",
+            intersect:false
+          },
+
           plugins:{
+
             legend:{
               position:"bottom"
             }
           },
 
           scales:{
+
             y:{
               beginAtZero:true
+            },
+
+            x:{
+              grid:{
+                display:false
+              }
             }
           }
         }
       }
     );
 
+
   movementsChart =
     new Chart(
+
       $("movementsChart"),
+
       {
+
         type:"bar",
 
         data:{
+
           labels,
 
           datasets:[
+
             {
+
               label:"Entradas",
+
               data:entries,
+
               backgroundColor:
                 "rgba(34,165,91,.72)"
             },
+
             {
+
               label:"Salidas",
+
               data:exits,
+
               backgroundColor:
                 "rgba(220,76,76,.72)"
             }
@@ -1773,63 +3411,105 @@ function renderCharts(records) {
         },
 
         options:{
+
           responsive:true,
+
           maintainAspectRatio:false,
 
           plugins:{
+
             legend:{
               position:"bottom"
             }
           },
 
           scales:{
+
             y:{
               beginAtZero:true
+            },
+
+            x:{
+              grid:{
+                display:false
+              }
             }
           }
         }
       }
     );
 
+
   percentageChart =
     new Chart(
+
       $("percentageChart"),
+
       {
+
         type:"line",
 
         data:{
+
           labels,
 
           datasets:[
+
             {
-              label:"Ocupación total",
-              data:percentages,
-              borderColor:"#7654c5",
-              backgroundColor:"rgba(118,84,197,.10)",
+
+              label:
+                "Ocupación total",
+
+              data:
+                percentages,
+
+              borderColor:
+                "#7654c5",
+
+              backgroundColor:
+                "rgba(118,84,197,.10)",
+
               fill:true,
-              tension:.3
+
+              tension:.3,
+
+              borderWidth:3
             }
           ]
         },
 
         options:{
+
           responsive:true,
+
           maintainAspectRatio:false,
 
           plugins:{
+
             legend:{
               position:"bottom"
             }
           },
 
           scales:{
+
             y:{
+
               beginAtZero:true,
               max:100,
 
               ticks:{
+
                 callback:
-                  value=>value+"%"
+                  value =>
+                  value + "%"
+              }
+            },
+
+            x:{
+
+              grid:{
+                display:false
               }
             }
           }
@@ -1838,146 +3518,236 @@ function renderCharts(records) {
     );
 }
 
-/* =========================
-   CARGAR DATOS
-========================= */
+
+/* ==========================================================
+   CARGAR API
+========================================================== */
 
 async function loadData() {
 
   try {
 
-    $("statusMain").textContent =
-      "Actualizando información…";
+    $("statusDot")
+      .className =
+      "status-dot";
+
+
+    setText(
+      "statusMain",
+      "Actualizando información…"
+    );
+
+
+    setText(
+      "statusSub",
+      "Consultando Google Sheets"
+    );
+
 
     const response =
       await fetch(
-        API_URL+
-        "?cache="+
+
+        API_URL +
+        "?cache=" +
         Date.now(),
+
         {
           cache:"no-store"
         }
       );
 
-    const json =
-      await response.json();
 
     if (
-      json.status!=="success"
+      !response.ok
     ) {
+
       throw new Error(
-        json.message ||
+        "HTTP " +
+        response.status
+      );
+    }
+
+
+    const result =
+      await response.json();
+
+
+    if (
+      result.status !==
+      "success"
+    ) {
+
+      throw new Error(
+        result.message ||
         "Respuesta inválida"
       );
     }
 
+
     allRecords =
-      (json.data || [])
-      .map(normalize);
+      Array.isArray(
+        result.data
+      )
 
-    const latest =
-      latestRecord(allRecords);
+      ? result.data
+        .map(normalize)
 
-    if (!latest) {
+      : [];
+
+
+    if (
+      !allRecords.length
+    ) {
+
       throw new Error(
-        "No hay registros"
+        "La hoja no contiene registros"
       );
     }
 
-    updateFreshness(
-      json.updatedAt
-    );
+
+    /*
+      Primero determinamos el
+      último día disponible.
+    */
+
+    const latest =
+      latestRecord(
+        allRecords
+      );
+
+
+    const latestDate =
+      parseDMY(
+        latest.fecha
+      );
+
 
     /*
       Al abrir el dashboard,
-      Día muestra automáticamente
-      la fecha del último registro
-      disponible.
+      Día empieza mostrando el
+      último día que sí tiene datos.
     */
 
     if (
       !$("periodSelector").value
     ) {
 
-      const latestDate =
-        parseDMY(
-          latest.fecha
+      $("periodSelector")
+        .value =
+        formatISO(
+          latestDate
         );
-
-      $("periodSelector").value =
-        isoDate(latestDate);
     }
 
-    render();
+
+    updateSystemStatus(
+      result.updatedAt
+    );
+
+
+    renderDashboard();
 
   } catch(error) {
 
-    $("statusDot").className =
+    $("statusDot")
+      .className =
       "status-dot error";
 
-    $("statusMain").textContent =
-      "No se pudo actualizar";
 
-    $("statusSub").textContent =
-      error.message;
+    setText(
+      "statusMain",
+      "No se pudo actualizar"
+    );
 
-    console.error(error);
+
+    setText(
+      "statusSub",
+      error.message
+    );
+
+
+    console.error(
+      error
+    );
   }
 }
 
-/* =========================
-   BOTONES DÍA / SEMANA / MES
-========================= */
+
+/* ==========================================================
+   EVENTOS
+========================================================== */
 
 document
-.querySelectorAll(".view-tab")
-.forEach(tab=>{
+.querySelectorAll(
+  ".view-tab"
+)
+.forEach(tab => {
 
   tab.addEventListener(
     "click",
-    ()=>{
+    () => {
 
       document
-      .querySelectorAll(".view-tab")
+      .querySelectorAll(
+        ".view-tab"
+      )
       .forEach(
-        button=>
-        button.classList.remove(
-          "active"
-        )
+        button =>
+        button
+        .classList
+        .remove("active")
       );
 
-      tab.classList.add(
-        "active"
-      );
+
+      tab
+      .classList
+      .add("active");
+
 
       currentView =
         tab.dataset.view;
 
+
       /*
-        Solo Día necesita selector.
-        Semana y Mes son siempre
-        los períodos actuales.
+        Día conserva selector.
+
+        Semana y Mes siempre
+        corresponden a los
+        períodos actuales.
       */
 
-      document
-      .querySelector(
-        ".period-control"
-      )
-      .style.display =
-        currentView==="day"
+      $("periodControl")
+        .style.display =
+
+        currentView === "day"
+
         ? "flex"
+
         : "none";
 
-      render();
+
+      renderDashboard();
     }
   );
 });
 
+
 $("periodSelector")
 .addEventListener(
   "change",
-  render
+  () => {
+
+    /*
+      No necesita Submit.
+
+      Cambiar la fecha ejecuta
+      inmediatamente el dashboard.
+    */
+
+    renderDashboard();
+  }
 );
+
 
 $("refreshButton")
 .addEventListener(
@@ -1985,16 +3755,17 @@ $("refreshButton")
   loadData
 );
 
-/*
-  Actualización automática
-  cada 60 segundos
-*/
+
+/* ==========================================================
+   INICIO
+========================================================== */
 
 loadData();
 
+
 setInterval(
   loadData,
-  60000
+  AUTO_REFRESH_MS
 );
 
 </script>
